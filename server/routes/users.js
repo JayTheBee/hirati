@@ -26,5 +26,6 @@ const userController = require('../controller/userController')
 // });
 
 router.post("/", userController.createUser);
+router.get("/:id/verify/:token", userController.verify);
 
 module.exports = router;
