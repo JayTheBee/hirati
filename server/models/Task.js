@@ -8,7 +8,7 @@ const taskSchema = new mongoose.Schema({
 	//case
 	//hints
 	//tags
-	case: [{ input: String, output: String }],
+	casevar: [{ input: String, output: String }],
 	examples: [String],
 	constraints: [{ type: String, required:true }],
 })

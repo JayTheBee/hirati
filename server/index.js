@@ -8,7 +8,7 @@ require('dotenv').config()
 const mongoose = require('mongoose')
 //import dotenv from "dotenv"
 const connectDB = require('./config/dbConnection')
-
+const corsOptions = require('./config/corsOptions')
 const express = require('express')
 const cors = require('cors')
 const path = require('path')
@@ -20,7 +20,7 @@ const port = process.env.PORT || 5000
 connectDB()
 
 //cors is used for cors connections which means being able to access the API from any links
-app.use(cors())
+app.use(cors(corsOptions))
 
 app.use(cookieParser())
 app.use(express.json())
@@ -36,7 +36,7 @@ app.use(express.json())
 
 //tell express that ./routes/root is required for routing
 app.use('/', require('./routes/root'))
-app.use('/tasks', require('./routes/tasks'))
+app.use('/api/tasks', require('./routes/tasks'))
 
 
 //tell express that for anything that has 404 it presents a json that says not found
