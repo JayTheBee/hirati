@@ -1,5 +1,5 @@
 import { useState } from 'react'
-
+import ReactMarkdown from 'react-markdown'
 
 const TaskForm = () => {
 	const [title, setTitle] = useState('')
@@ -7,6 +7,7 @@ const TaskForm = () => {
 	const [perf, setPerf] = useState({ cputime: 0, memory: 0})
 	const [score, setScore] = useState(0)
 	const [casevar, setCase] = useState([{input: '', output:''}])
+	const [activeInput, setActiveInput] = useState(true)
 
 
 	const [example, setExample] = useState([""])
@@ -110,12 +111,16 @@ const TaskForm = () => {
 			<br/>
 
 			<label>Task Desc:</label>
-			<input 
+			<textarea
 			type="text" 
 			onChange={(e) => setDesc(e.target.value)} 
 			value={desc}
 			/>
 			<br/>
+			<div className="desc-output">
+				<ReactMarkdown children={desc}/> 
+			</div>
+
 
 			<label>Memory Performance Constraints:</label>
 			<input 
@@ -144,14 +149,26 @@ const TaskForm = () => {
 			<h3>Cases:</h3>
 			{casevar.map((element, index) => (
 				<div className='case-form' key={index}>
-					<label>Case Input:</label>
-					<input 
-					type="text" 
-					name="input"
-					onChange={(e) => handleCase(index, e)} 
-					value={element.input}
-					/>
-					<br/>
+
+					{activeInput 
+					? 
+					<div className="case-input">
+						<label>Case Input:</label>
+						<input 
+						type="text" 
+						name="input"
+						onChange={(e) => handleCase(index, e)} 
+						value={element.input}
+						/>
+						<br/>
+						<button className="button add" type="button" onClick={() => setActiveInput(false)}>No Inputs</button>
+					</div>
+
+
+					:
+					<button className="button add" type="button" onClick={() => setActiveInput(true)}>Add Inputs</button>
+					}
+
 
 					<label>Case Output:</label>
 					<input 

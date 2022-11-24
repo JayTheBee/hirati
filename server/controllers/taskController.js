@@ -41,7 +41,7 @@ const createTask = async (req, res) => {
 		const task = await Task.create({ ...req.body })
 	
 		if (task) { //created 
-			res.status(201).json({ message: `New task created` })
+			res.status(201).json(task)
 		 } else {
 			res.status(400).json({ message: 'Invalid task information received' })
 		 }
