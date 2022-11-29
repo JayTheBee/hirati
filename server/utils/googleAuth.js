@@ -6,9 +6,9 @@ const Token = require("../models/token");
 let token;
 
 passport.use(new GoogleStrategy({
-    clientID:    '961175355541-rcijpp4orfor42ik751b35gcvb903fms.apps.googleusercontent.com',
-    clientSecret: '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',
-    callbackURL: 'http://localhost:8080/auth/google/callback',
+    clientID:    process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK,
     passReqToCallback: true,
     scope: ["profile","email"]
   },
@@ -17,23 +17,23 @@ passport.use(new GoogleStrategy({
     if(gmail){
       // token = gmail.generateAuthToken();
       console.log(profile);
-      //stucc nako dito lods
+      //help stepbro im stucc
       return done(null, profile);
     }
       
 		//   res.status(200).send({ data: token, message: "logged in successfully" });
 
 
-    new User({
-      firstName: profile.given_name, 
-      lastName: profile.family_name, 
-      email: profile.email, 
-      password: "gmailLogin" ,
-      role: "student",
-      classes: "" ,
-      verified: true,
-    }).save().then( console.log("save to db using Google auth"));
-
+    // new User({
+    //   firstName: profile.given_name, 
+    //   lastName: profile.family_name, 
+    //   email: profile.email, 
+    //   password: "gmailLogin" ,
+    //   role: "student",
+    //   classes: "" ,
+    //   verified: true,
+    // }).save().then( console.log("save to db using Google auth"));
+    console.log(profile);
     req.user = profile;
     return done(null, user);
     

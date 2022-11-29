@@ -15,6 +15,7 @@ const Login = () => {
 		e.preventDefault();
 		try {
 			const url = "http://localhost:8080/api/auth";
+			axios.defaults.withCredentials = true;
 			const { data: res } = await axios.post(url, data);
 			localStorage.setItem("token", res.data);
 			window.location = "/";
@@ -28,6 +29,29 @@ const Login = () => {
 			}
 		}
 	};
+
+	const handleGoogle = async (e) => {
+		// e.preventDefault();
+		window.open('http://localhost:8080/auth/google', "_self");
+		// try {
+		// 	console.log(profile);
+		// 	exit();
+		// 	const { data: res } = await axios.post(url, data);
+		// 	localStorage.setItem("token", res.data);
+		// 	window.location = "/";
+		// } catch (error) {
+		// 	if (
+		// 		error.response &&
+		// 		error.response.status >= 400 &&
+		// 		error.response.status <= 500
+		// 	) {
+		// 		setError(error.response.data.message);
+		// 	}
+		// }
+	};
+
+
+
 
 	return (
 		<div className={styles.login_container}>
@@ -58,6 +82,9 @@ const Login = () => {
 							Sign In
 						</button>
 					</form>
+					<button  className={styles.green_btn} onClick={handleGoogle}>
+						Open with google
+					</button>
 				</div>
 				<div className={styles.right}>
 					<h1>New User?</h1>

@@ -76,9 +76,14 @@ const loginUser = async (req, res) => {
 				}
 			return res.status(400).send({message: "An Email is sent to your Account please Verify"})
 		}	
+
+
 		const token = user.generateAuthToken();
-		res.status(200).send({ data: token, message: "logged in successfully" });
+
+		res.cookie("token", token, { httpOnly: true }).send((user, ["_id", "email", "role"]));
+		// res.status(200).send({ data: token, message: "logged in successfully" });
 	} catch (error) {
+		console.log(error);
 		res.status(500).send({ message: "Internal Server Error" });
 	}
 }
