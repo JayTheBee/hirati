@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Tasks from "./pages/Tasks"
-import Editor from "./pages/Editor"
+import CodeEditor from "./pages/Editor"
+// import Dummy from "./pages/Dummy"
 
 function App() {
   return (
@@ -8,12 +9,11 @@ function App() {
       <BrowserRouter>
         <div className="pages">
           <Routes>
-            {/* {user && <Route path="/" exact element={<Main />} />}
-            <Route path="/signup" exact element={<Signup />} />
-            <Route path="/login" exact element={<Login />} />
-            <Route path="/" element={<Navigate replace to="/login" />} /> */}
+
             <Route path="/tasks" exact element={<Tasks />} />
-            <Route path="/editor" exact element={<Editor />} />
+            <Route path="/editor" exact element={<CodeEditor />} />
+            {/* <Route path="/dummy" exact element={<Dummy />} /> */}
+
           </Routes>
         </div>
       </BrowserRouter>

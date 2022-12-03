@@ -1,14 +1,10 @@
 const Task = require('../models/Task')
 
 
-
-// @desc Create new task
-// @route POST /task
-// @access Private
-
-
 //getTaskByCreator
 //getTaskByAssigned
+
+
 const getAllTask = async (req, res) => {
 	try{
 		const tasks = await Task.find().lean()
@@ -24,12 +20,15 @@ const getAllTask = async (req, res) => {
 }
 
 
+// @desc Create new task
+// @route POST /task
+// @access Private
 const createTask = async (req, res) => {
 	try {
-		const { title, perf, score,  constraints } = req.body
+		const { title, perf, score,  constraint } = req.body
 
 		// checks for empty inputs
-		if(!title || !perf || !score || !constraints){
+		if(!title || !perf || !score || !constraint){
 			return res.status(400).json({message: "All task information requried"})
 		}
 	

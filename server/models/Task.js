@@ -9,8 +9,8 @@ const taskSchema = new mongoose.Schema({
 	//hints
 	//tags
 	casevar: [{ input: String, output: String }],
-	examples: [String],
-	constraints: [{ type: String, required:true }],
+	example: [String],
+	constraint: [{ type: String, required:true }],
 })
 
 module.exports = mongoose.model('Task', taskSchema)

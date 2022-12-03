@@ -4,11 +4,11 @@ import ReactMarkdown from "react-markdown"
 
 const TaskDetail = ({task}) => {
 	const caseArr = []
-	if(task.case){
-		for (const [index, value] of task.case.entries()){
+	if(task.casevar){
+		for (const [index, value] of task.casevar.entries()){
 			caseArr.push(
-				<div key={value._id}>
-					<p>Case {index + 1}</p>
+				<div key={index}>
+					<b>I/O Test Case {index + 1}: </b>
 					<p>Input: {value.input}</p>
 					<p>Output: {value.output}</p>
 				</div>
@@ -22,15 +22,17 @@ const TaskDetail = ({task}) => {
 			<br></br>
 			<br></br>
 			<h4>Title: {task.title}</h4>
-			<h4>desc: <ReactMarkdown children={task.desc} /></h4>	
-			<p>Memory Constraints: {task.perf.memory}</p>
-			<p>Time Constraints: {task.perf.cputime}</p>
+			<h4>Description: </h4>	
+			<ReactMarkdown children={task.desc} />
+			<p>Memory Constraints: {task.perf.memory} kilobytes</p>
+			<p>Time Constraints: {task.perf.cputime} seconds</p>
 			<p>Score: {task.score}</p>
 			{caseArr}
-			<p>Examples: <br />{task.examples.join(' ')}</p>
-			<p>Constraints: <br />{task.constraints.join(' ')}</p>
-			<br></br>
-			<br></br>
+			<h4>Examples: </h4>
+			<p> {task.example.join(`\n`)} </p> 
+			<h4>Constraints: </h4>
+			<p> {task.constraint.join(`\n`)}</p>
+
 		</div>
 	)
 }
