@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-module.exports = async (email, subject, text) => {
+const sendEmail = async (email, subject, text) => {
 	try {
 		const transporter = nodemailer.createTransport({
 			host: process.env.HOST,
@@ -14,7 +14,7 @@ module.exports = async (email, subject, text) => {
 		});
 
 		await transporter.sendMail({
-			from: process.env.USER,
+			from: process.env.USER_SENDER,
 			to: email,
 			subject: subject,
 			text: text,
@@ -26,3 +26,5 @@ module.exports = async (email, subject, text) => {
 		return error;
 	}
 }
+// I don't know why, but nodemailer doesn't work without explicityly doing this
+module.exports = sendEmail

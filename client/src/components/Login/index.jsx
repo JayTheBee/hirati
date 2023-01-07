@@ -14,10 +14,12 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const url = "http://localhost:8080/api/auth";
+			const url = `http://localhost:${process.env.REACT_APP_SERVER_PORT}/api/auth`;
 			axios.defaults.withCredentials = true;
-			const { data: res } = await axios.post(url, data);
-			localStorage.setItem("token", res.data);
+			// const { data: res } = await axios.post(url, data)  // what??
+			const userResp = await axios.post(url, data)  
+			console.log("axios res is ", userResp.data)  //userResp should be in a context state when necessary
+			localStorage.setItem("token", userResp.data);	//dont use localstorage at all, just use state
 			window.location = "/";
 		} catch (error) {
 			if (
@@ -32,7 +34,7 @@ const Login = () => {
 
 	const handleGoogle = async (e) => {
 		// e.preventDefault();
-		window.open('http://localhost:8080/auth/google', "_self");
+		window.open(`http://localhost:${process.env.REACT_APP_SERVER_PORT}/auth/google`, "_self");
 		// try {
 		// 	console.log(profile);
 		// 	exit();

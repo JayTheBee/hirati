@@ -24,7 +24,7 @@ const createUser = async (req, res) => {
 			userId: user._id, 
 			token: crypto.randomBytes(32).toString("hex")
 		}).save();
-		const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+		const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
 		await sendEmail (user.email,"Verify Email", url);
 		
 		res
@@ -71,17 +71,19 @@ const loginUser = async (req, res) => {
 						userId: user._id, 
 						token: crypto.randomBytes(32).toString("hex")
 					}).save();
-					const url = `${process.env.BASE_URL}users/${user._id}/verify/${token.token}`;
+					const url = `${process.env.BASE_URL}/users/${user._id}/verify/${token.token}`;
 					await sendEmail (user.email,"Verify Email", url);
 				}
 			return res.status(400).send({message: "An Email is sent to your Account please Verify"})
 		}	
 
 
-		const token = user.generateAuthToken();
-
-		res.cookie("token", token, { httpOnly: true }).send((user, ["_id", "email", "role"]));
-		// res.status(200).send({ data: token, message: "logged in successfully" });
+		const loginToken = user.generateAuthToken();
+		
+		res.cookie("token", loginToken, { httpOnly: true })		// Assign JWT to cookie
+		res.status(200).json({message: "Successfully logged in"})
+			// .send({id: user._id, email: user.email, role: user.role}); // cookies with localstorage too
+		// res.status(200).send({ data: loginToken, message: "logged in successfully" }); // this is for just localstorage
 	} catch (error) {
 		console.log(error);
 		res.status(500).send({ message: "Internal Server Error" });
