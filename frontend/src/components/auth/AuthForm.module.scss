@@ -1,0 +1,92 @@
+.banner {
+	flex: 2;
+	width: 1px;
+	max-height: 50%;
+	filter: drop-shadow(7px 7px 7px #666666);
+	-webkit-filter: drop-shadow(7px 7px 7px #666666);
+	@media screen and (max-width: 768px) {
+		width: 100%;
+	}
+}
+
+.login {
+	flex: 1;
+}
+
+.title {
+	color: rgba(255, 255, 255, 0.726);
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+	font-size: 3rem;
+	outline: #3bb19b;
+}
+.authForm {
+	margin-top: 2rem;
+	width: 100%;
+	label {
+		width: 100%;
+		font-size: 2rem;
+	}
+	input:not([type='checkbox']):not([type='radio']) {
+		font-size: 2rem;
+		width: 100%;
+		margin-bottom: 2rem;
+		margin-top: 0.5rem;
+		padding: 1rem;
+		border-radius: 6px;
+		border: none;
+		background-color: rgb(206, 206, 206);
+	}
+
+	button[type='submit'] {
+		font-size: 2rem;
+		padding: 0.5rem 1rem;
+		cursor: pointer;
+		background-color: #3bb19b;
+		color: white;
+		margin: 10px;
+		border-radius: 10px;
+	}
+	button:hover {
+		background-color: #e6a15c;
+	}
+}
+
+.error_msg,
+.sucess_msg {
+	padding: 15px;
+	margin: 5px 0;
+	font-size: 1.5rem;
+	background-color: #f34646;
+	color: white;
+	border-radius: 5px;
+	text-align: center;
+}
+.sucess_msg {
+	background-color: #5cdd5c;
+}
+
+.register {
+	font-size: small;
+	cursor: pointer;
+
+	color: rgb(68, 68, 158);
+	text-decoration: underline;
+}
+.flex {
+	display: flex;
+	gap: 5px;
+	align-items: flex-end;
+}
+.space {
+	margin: 5px 0px 5px 0px;
+	align-self: flex-start;
+	color: grey;
+}
+.roles {
+	margin: 1em;
+	align-self: flex-start;
+	color: #3a9483;
+	border-radius: 10px;
+	background-color: #edf5f3;
+	padding: 0.5em;
+}
