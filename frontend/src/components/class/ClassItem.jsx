@@ -2,29 +2,26 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import classes from './ClassItem.module.scss';
 
 function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
-  // const [isCompleted, setIsCompleted] = useState(eachClass.completed);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isUpdating, setisUpdating] = useState(false);
-  const [classData, setclassData] = useState({});
-  // const [count, setcount] = useState(1);
-
-  const openUpdateform = async () => {
-    // setisUpdating(!isUpdating);
+  const openUpdateform = async (e) => {
     updateButtonClick(eachClass);
-    // setclassData(classData => ({
-    //   ...classData,
-    //   ...updatedValue,
-    // }))
-    // console.log(classData);
   };
+  // const handleClick = () => {
+  //   // console.log(`class/${eachClass._id}`);
+  //   // route to class->task
+  //   window.location.href = `class/${eachClass._id}`;
+  // };
 
   return (
     <tr className={classes.task_item}>
       <td className={classes.task_name}>
-        <p>{eachClass.className}</p>
+        <a href={`class/${eachClass._id}`}>
+
+          <p>{eachClass.className}</p>
+        </a>
       </td>
 
       <td>{moment(eachClass.createdAt).calendar()}</td>
@@ -56,21 +53,8 @@ function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
         >
           Update
         </button>
+
       </td>
-      {/* {isUpdating && (
-        <td>
-          <form className={classes.addNewForm} onSubmit={updateClass(eachClass)}>
-            <input
-              name="className"
-              type="text"
-              placeholder="Enter Classname"
-              defaultValue={eachClass.className}
-            />
-            <textarea type="textarea" name="studentEmail" rows="10" placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " defaultValue={eachClass.studentEmail.map((each) => `${`${each},`} `)} />
-            <button type="submit">Add</button>
-          </form>
-        </td>
-      )} */}
     </tr>
   );
 }

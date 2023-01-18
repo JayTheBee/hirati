@@ -6,9 +6,7 @@
 	&:hover {
 		background-color: rgba(95, 95, 95, 0.2);
 	}
-	td {
-		padding: 0.3rem;
-	}
+
 	.task_name {
 		max-width: 200px;
 		display: flex;
@@ -40,6 +38,7 @@
 }
 
 .deleteBtn {
+	margin: 1rem;
 	display: inline-block;
 	border: 1px solid crimson;
 	padding: 0.5rem 1.5rem;
@@ -52,4 +51,27 @@
 		background-color: rgb(142, 13, 39);
 		color: rgb(205, 205, 205);
 	}
+}
+.updateBtn {
+	display: inline-block;
+	border: 1px solid blue;
+	margin: 1rem;
+	padding: 0.5rem 1.5rem;
+	font-size: 1.6rem;
+	color: blue;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: rgb(48, 27, 163);
+		color: rgb(205, 205, 205);
+	}
+}
+td {
+	padding: 1rem;
+	text-align: center;
+	vertical-align: center;
+}
+
+tr {
 }
