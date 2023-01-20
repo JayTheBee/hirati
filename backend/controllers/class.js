@@ -47,7 +47,8 @@ export const deleteClass = async (req, res, next) => {
     if (targetClass.user === req.user.id) {
       return next(createError({ status: 401, message: "It's not your class to delete." }));
     }
-    await Class.findByIdAndDelete(req.params.classId);
+    // await Class.findByIdAndDelete(req.params.classId);
+    await Class.findOneAndDelete({ _id: req.params.classId });
     return res.json('Class Deleted Successfully');
   } catch (err) {
     return next(err);

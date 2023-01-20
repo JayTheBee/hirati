@@ -6,6 +6,7 @@ import Auth from './pages/Auth';
 import Register from './pages/RegisterPage';
 import EditProfile from './pages/EditProfile';
 import Home from './pages/Home';
+import Task from './pages/Task';
 import EmailVerify from './components/auth/EmailVerification';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="/" element={<Home />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/class/:id" element={<Task />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />

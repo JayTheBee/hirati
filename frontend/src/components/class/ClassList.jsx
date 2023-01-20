@@ -28,6 +28,10 @@ function ClassList() {
     getClass();
   }, []);
 
+  useEffect(() => {
+    console.log(dataSaved);
+  }, [dataSaved]);
+
   const addNewButtonClick = () => {
     setIsAddingNew(!isAddingNew);
     setIsUpdatingNew(false);
@@ -71,14 +75,15 @@ function ClassList() {
   const cancleButtonClick = () => {
     setIsUpdatingNew(false);
   };
-  const updateButtonClick = (eachClass) => {
-    setIsAddingNew(false);
-    setIsUpdatingNew(true);
-    window.scrollTo({
+  const updateButtonClick = async (eachClass) => {
+    await setData(eachClass);
+    setIsUpdatingNew(!isUpdatingNew);
+
+    await window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-    setData(eachClass);
+    // console.log(dataSaved);
   };
 
   const updateClass = async (e) => {
@@ -127,8 +132,7 @@ function ClassList() {
       {isUpdatingNew && (
         <form className={classes.addNewForm} onSubmit={updateClass}>
 
-          <input name="className1" type="text" placeholder="Enter Classname" defaultValue={dataSaved.className} />
-
+          <input name="className1" type="text" defaultValue={dataSaved.className} placeholder="Enter Classname" />
           <textarea type="textarea" name="studentEmail1" rows="10" placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " defaultValue={dataSaved.studentEmail.map((each) => `${`${each},`} `)} />
           <button type="submit">Update</button>
           <button onClick={cancleButtonClick} type="button" className={classes.addNew}>Cancel</button>
