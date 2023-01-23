@@ -14,7 +14,7 @@ export default async (email, subject, text) => {
     });
 
     await transporter.sendMail({
-      from: process.env.USER,
+      from: process.env.USER_SENDER,
       to: email,
       subject,
       text,

@@ -8,6 +8,8 @@ import EditProfile from './pages/EditProfile';
 import Home from './pages/Home';
 import Task from './pages/Task';
 import EmailVerify from './components/auth/EmailVerification';
+import Editor from './pages/Editor';
+import CodeEditor from './components/editor/Main'
 
 function App() {
   return (
@@ -28,7 +30,10 @@ function App() {
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/task" element={<Task />} />
+        <Route path="/editor" exact element={<Editor />} />
         <Route path="/auth/:id/verify/:token" element={<EmailVerify />} />
+        <Route path="/dummy-editor" exact element={<CodeEditor />} />
       </Routes>
     </>
   );

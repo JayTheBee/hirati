@@ -1,7 +1,7 @@
 import {  useState } from 'react';
 import {Buffer} from 'buffer';
-import  MonacoEditor from "@monaco-editor/react";
-import Select from "react-select";
+import  MonacoEditor from '@monaco-editor/react';
+import Select from 'react-select';
 
 const OutputDetails = ({output}) => {
   return(
@@ -32,7 +32,7 @@ const CodeEditor = () => {
     const encodedSource = Buffer.from(code).toString('base64')
     console.log("code64 is ", encodedSource)
 
-    const compileResponse = await fetch(`${process.env.REACT_APP_JUDGE_LINK}/?base64_encoded=true`,{
+    const compileResponse = await fetch(import.meta.env.VITE_JUDGE_LINK + "/submissions/",{
       method: 'POST',
 		  body: JSON.stringify({
         source_code: encodedSource,
@@ -46,6 +46,7 @@ const CodeEditor = () => {
 		
 		const tokenJson = await compileResponse.json()
 
+    console.log("called compile")
     if (!compileResponse.ok) {
       setProcessing(false)
 		  console.log("err response is ", tokenJson.error)
@@ -58,7 +59,7 @@ const CodeEditor = () => {
 
   const checkStatus = async (token) => {
     try{
-      let statusResponse = await fetch(`${process.env.REACT_APP_JUDGE_LINK}/submissions/`+ token , {
+      let statusResponse = await fetch(import.meta.env.VITE_JUDGE_LINK + "/submissions/"+ token , {
         method: 'GET',
         headers: {
           "Content-Type": "application/json"
@@ -94,7 +95,7 @@ const CodeEditor = () => {
   return (
     <>
       <form className="create-code" onSubmit={handleCompile}> 
-        <h2>CODEMIRROR EDITOR COMPONENT</h2>
+        <h2>MONACO EDITOR COMPONENT</h2>
         <Select
           name="languages"
           options={supportedLang}
