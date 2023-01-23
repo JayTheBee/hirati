@@ -7,6 +7,7 @@ import Register from './pages/RegisterPage';
 import EditProfile from './pages/EditProfile';
 import Home from './pages/Home';
 import Task from './pages/Task';
+import Question from './pages/Question';
 import EmailVerify from './components/auth/EmailVerification';
 import Editor from './pages/Editor';
 import CodeEditor from './components/editor/Main'
@@ -27,6 +28,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/class/:id" element={<Task />} />
+          <Route path="/class/:id/task" element={<Question />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />

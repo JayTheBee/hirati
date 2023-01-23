@@ -23,45 +23,66 @@
 }
 .addNewForm {
 	width: 100%;
+	font-size: smaller;
+	div {
+		align-items: center;
+	}
 	label {
 		font-size: 1.5rem;
 		margin-left: 1.5rem;
 	}
 	h1 {
-		margin-left: 50%;
+		text-align: center;
+		margin-bottom: 10px;
 	}
-	input,
-	textarea {
-		font-size: smaller;
-		margin: 1rem 4rem;
+	input {
+		margin-bottom: 10px;
 		display: block;
 		padding: 1rem;
-		height: 5rem;
-		width: 30%;
+		border: none;
+		border-radius: 10px;
+		font-size: 1.8rem;
+		color: black;
+		background-color: #bbbbbb;
+		min-height: 5rem;
+	}
+	textarea {
+		display: block;
+		padding: 1rem;
+		height: 20%;
 		border: none;
 		border-radius: 5px;
 		font-size: 1.8rem;
 		color: black;
 		background-color: #bbbbbb;
+		min-height: 15rem;
+		min-width: 25rem;
 	}
-	input[type='text'] {
-		width: 20%;
-		height: 5rem;
-	}
+
 	button {
 		display: flex;
-		margin: 1rem 4rem;
-		background-color: #bbbbbb;
-		padding: 1rem 2rem;
-		font-size: 1.8rem;
+		margin-top: 5px;
+		background-color: #156542;
+		padding: 1rem;
+		font-size: 1.5rem;
 		border: none;
-		color: black;
-		border-radius: 6px;
+		color: whitesmoke;
+		border-radius: 10px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			background-color: #156542;
-			color: rgb(205, 205, 205);
+			background-color: rgb(47, 172, 119);
+			color: black;
+		}
+	}
+	.flex {
+		display: flex;
+		justify-content: space-around;
+		align-items: baseline;
+	}
+	@media screen and (max-width: 600px) {
+		.flex {
+			display: block;
 		}
 	}
 }
@@ -91,8 +112,8 @@
 	display: flex;
 	align-items: center;
 	font-size: small;
-	gap: 5px;
 	margin-top: 1rem;
+	gap: 5px;
 	.a {
 		text-decoration: none;
 		cursor: pointer;
