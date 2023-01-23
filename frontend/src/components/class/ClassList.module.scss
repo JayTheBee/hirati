@@ -81,3 +81,16 @@
 		color: rgb(205, 205, 205);
 	}
 }
+
+.containerflex {
+	display: flex;
+	align-items: center;
+	font-size: small;
+	margin-top: 1rem;
+	gap: 5px;
+	.a {
+		text-decoration: none;
+		cursor: pointer;
+		background-color: #156542;
+	}
+}

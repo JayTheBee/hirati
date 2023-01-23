@@ -112,6 +112,11 @@ function ClassList() {
   return (
     <div>
       <h1>Class List </h1>
+      <hr />
+      <div className={classes.containerflex}>
+        <p> Class </p>
+      </div>
+
       <div className={classes.topBar}>
         <button
           type="button"

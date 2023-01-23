@@ -3,22 +3,13 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const questionSchema = new Schema({
-  questionTitle: {
+  title: {
     type: String,
     required: true,
   },
 
-  completed: {
-    type: Boolean,
-    default: false,
-  },
-  score: {
-    type: Number,
-  },
-
-  questionBody: {
+  description: {
     type: String,
-    required: true,
   },
 
   taskId: {
@@ -29,6 +20,7 @@ const questionSchema = new Schema({
   performance: {
     cputime: Number,
     memory: Number,
+    score: Number,
   },
   testcase: [{
     input: String,
@@ -36,10 +28,11 @@ const questionSchema = new Schema({
   }],
 
   example: [String],
-  constraint: [{
-    ype: String,
-    required: true,
-  }],
+  // constraint: [{
+  //   type: String,
+  //   required: true,
+  // }],
+  constraints: [String],
   // add 'rubrics' later for grading guide automation
 }, { timestamps: true });
 
