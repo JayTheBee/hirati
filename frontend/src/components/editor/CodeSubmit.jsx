@@ -1,37 +1,38 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
-// import {Buffer} from 'buffer';
 
+const BatchDetails = ({data, index}) => {
+	return(
+		<div key ={data.token}>
+			<h1>Case {index + 1}:</h1>
+			<h2>Console Output:</h2>
+			<i>{data.stdout}</i>
+			<h2><b> Status:</b> {data.status.description} </h2>
+			<h2><b>Runtime memory is </b>{data.memory} kb</h2>
+			<h2><b>Runtime is</b> {data.time} seconds</h2>
+		</div>
+	)
+}
 const OutputDetails = ({results, isBatch}) => {
 	if(isBatch){
+
 		return(
 		<>
-			{results.map( (element, index) => {
-				<div key={index}>
-					<h4>case {index + 1}: </h4>
-					<h4>Console Output:</h4>
-					<i>{element.data.stdout}</i>
-					<p><b> Status:</b> {element.data.status.description}</p>
-					<p><b>Runtime memory is </b>{element.data.memory} kb</p>
-					<p><b>Runtime is</b> {element.data.time} seconds</p>
-				</div>
-
-				}
-				)
-			
-			
+			{results.map((element, index) => {
+				return <BatchDetails data ={element.data} index={index}/>
+			})
 			}
 		</>
 		)
 	}else{
 		return(
 		<>
-			<h4>Console Output:</h4>
+			<h2>Console Output:</h2>
 			<i>{results.stdout}</i>
-			<p><b> Status:</b> {results.status.description}</p>
-			<p><b>Runtime memory is </b>{results.memory} kb</p>
-			<p><b>Runtime is</b> {results.time} seconds</p>
+			<h2><b> Status:</b> {results.status.description} </h2>
+			<h2><b>Runtime memory is </b>{results.memory} kb</h2>
+			<h2><b>Runtime is</b> {results.time} seconds</h2>
 		</>
 		)   
 	}
@@ -39,23 +40,32 @@ const OutputDetails = ({results, isBatch}) => {
 }
    
 const BatchSubmission = ({code, lang, casevar}) => {
-	// const [code, setCode] = useState("");
-	// const [lang, setLang] = useState({ name:"javascript", id:63 })
-	// const [processing, setProcessing] = useState(null)
-	const [results, setResults] = useState()
+	// const [processing, setProcessing] = useState(true)
+	const [results, setResults] = useState(null)
 	const [isBatch, setIsBatch] = useState(false)
-	// const supportedLang = [{ name:"c", id:50 }, { name:"cpp", id:76 }, { name:"java", id:62 }, { name:"python", id:71 }, { name:"shell", id:46 }, { name:"javascript", id:63 }]
+	const [loaded, setLoaded] = useState(false)
 	
-	useEffect(() => {
+	
+	// const isInitialMount = useRef(true);
 
-		console.log("Changed results: ", results)
-  
-	 }, [results])
+	// useEffect(() => {
+	//   if (isInitialMount.current) {
+	// 	isInitialMount.current = false;
+	//   } else {
+	// 	setProcessing(false)
+	//   }
+	// }, [results]);
 
-	const handleCompile = async(e) => {
+	// useEffect(() => {
+	// 	if (results) {
+	// 		console.log('results state update: ', results);
+	// 		setLoaded(true)
+	// 	}
+	//    }, [results]);
+	 
+
+	const handleCompile = async (e) => {
 		e.preventDefault()
-		console.log("lang is ", lang)
-		console.log("code is ", code)
 		// const encodedSource = Buffer.from(code).toString('base64')
 		// console.log("code64 is ", encodedSource)
 		let url = import.meta.env.VITE_JUDGE_LINK + "/submissions/"
@@ -66,7 +76,6 @@ const BatchSubmission = ({code, lang, casevar}) => {
 			"expected_output":casevar[0].output,							
 		}
 		// flag for multiple test cases
-		setIsBatch(false)
 		if(casevar.length > 1){
 			const subs = casevar.map((element) => {
 				return(
@@ -81,16 +90,18 @@ const BatchSubmission = ({code, lang, casevar}) => {
 			setIsBatch(true)
 			data = {submissions: subs}
 			url = import.meta.env.VITE_JUDGE_LINK + "/submissions/batch"
+		}else{
+			setIsBatch(false)
 		}
+		
 		const conf = { 'Content-Type': 'application/json' }
 		console.log("req is ", url, data, conf)
+
 		try {
-			const postRes = await axios.post(url, data, {headers: conf})
+			const postRes = await axios.post(url, data, {"headers": conf})
 			console.log("res is ", postRes)
 			console.log("data is ", postRes.data)
-			const getRes = await checkStatus(postRes.data, isBatch)
-			console.log("status is now", getRes)
-			setResults(getRes)
+			await checkStatus(postRes.data, isBatch)
 
 		} catch (error) {
 			console.log(error)
@@ -105,48 +116,60 @@ const BatchSubmission = ({code, lang, casevar}) => {
 	}
 
 	const checkStatus = async (data, isBatch) =>{
-		if(isBatch){
-			const subsURL = data.map((element) => 
-				axios.get(import.meta.env.VITE_JUDGE_LINK + "/submissions/" + element.token)
-			)
-			let statusResp = await Promise.all(subsURL)
-			console.log("statusResp is", statusResp)
-			let statusArr = statusResp.map((e) => e.data.status.id)
-			console.log("statuses is ", statusArr)
-			while(statusArr.includes(1) || statusArr.includes(2)){
-				console.log("inside while")
-				console.log("whatis", subsURL)
-				console.log("whatis", statusArr)
-				console.log("whatis", statusResp)
-				await wait(3000)
-				statusResp = await Promise.all(subsURL)
-				statusArr = statusResp.map(e => e.data.status.id)
-			}
-			console.log("statusResp now is", statusResp)
-			return statusResp
+		try {
+			if(isBatch){
+				const subsURL = data.map((element) => import.meta.env.VITE_JUDGE_LINK + "/submissions/" + element.token)
+				const requests = subsURL.map((url) => axios.get(url))
+				const responses = await Promise.all(requests)
+				const status = responses.map(e => e.data.status.id)
 
-
-		}else{
-			let statusResp = await axios.get(import.meta.env.VITE_JUDGE_LINK + "/submissions/" + data.token)
-			console.log("statusResp is", statusResp)
-			while(statusResp.data.status.id == 1 || statusResp.data.status.id == 2){
-				await wait(3000)
-				statusResp = await axios.get(import.meta.env.VITE_JUDGE_LINK + "/submissions/" + data.token)
-			}
-			console.log("statusResp now is", statusResp)
-			return statusResp.data
-		}	
+				if(!status.includes(1) && !status.includes(2)){
+					console.log("resps are ", responses)
+					setResults([...responses])
+					console.log("results is ", results)
+					return responses
+				}else{
+					await wait(3000)
+					await checkStatus(data, isBatch)	
+				}
+	
+			}else{
+				const statusResp = await axios.get(import.meta.env.VITE_JUDGE_LINK + "/submissions/" + data.token)
+				console.log("statusResp is", statusResp)
+				if(statusResp.data.status.id == 1 || statusResp.data.status.id == 2){
+					await wait(3000)
+					await checkStatus(data, isBatch)
+				}else{
+					console.log("statusResp now is", statusResp)
+					setResults(statusResp.data)
+					return statusResp
+				}
+	
+			}				
+		} catch (error) {
+			console.log(error)
+		}
 				
 	}
 
-
-	return(
-		<>
+	// if(loaded){
+	// 	return(
+	// 		<>
+				
+				
+	// 		</>
+	// 	)
+	// }else{
+		return(
+			<>
 			<button  type="submit"
-			onClick={handleCompile}>Compile and Execute</button>
-			{results && <OutputDetails results={results} isBatch={isBatch}/>}
-		</>
-	)
+				onClick={handleCompile}>Compile and Execute</button>
+				{results && <OutputDetails results={results} isBatch={isBatch}/> }
+			</>
+		)
+	// }
+
+
 
 }
 

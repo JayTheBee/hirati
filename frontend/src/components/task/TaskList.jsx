@@ -70,13 +70,13 @@ function TaskList() {
       return;
     }
     try {
-      const { data } = await axios.post('/api/tasks/', taskData);
+      const { data } = await axios.post('/api/tasks/', taskData, {headers:{"Content-Type" : "application/json"}});
       toast.success('New task added');
       setIsAddingNew(false);
       setNewTask('');
       setTaskList([{ ...data }, ...taskList]);
     } catch (err) {
-      console.log(err);
+      console.log(err.response.data);
     }
   };
 
@@ -124,7 +124,7 @@ function TaskList() {
       <hr></hr>
       <div className={classes.containerflex}>
       <a href="/">Class  </a>
-      <p> >> Task </p>
+      <p> Task </p>
       </div>
       <div className={classes.topBar}>
         <button
