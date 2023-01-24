@@ -19,6 +19,7 @@ function ClassList() {
       setClassList(
         data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
       );
+      console.log(data);
     } catch (err) {
       console.log(err);
     }

@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const questionSchema = new Schema({
-  title: {
-    type: String,
+  questionNumber: {
+    type: Number,
     required: true,
   },
 
@@ -22,16 +22,13 @@ const questionSchema = new Schema({
     memory: Number,
     score: Number,
   },
-  testcase: [{
-    input: String,
-    output: String,
-  }],
+  testcase: {
+    input: [String],
+    output: [String],
+  },
 
   example: [String],
-  // constraint: [{
-  //   type: String,
-  //   required: true,
-  // }],
+
   constraints: [String],
   // add 'rubrics' later for grading guide automation
 }, { timestamps: true });
