@@ -3,9 +3,9 @@ import moment from 'moment';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
-import classes from './TaskItem.module.scss';
+import classes from './QuestionItem.module.scss';
 
-function TaskItem({ task, deleteTask, updateButtonClick }) {
+function QuestionItem({ question, deleteTask, updateButtonClick }) {
   const params = useParams();
   // const [isCompleted, setIsCompleted] = useState(task.completed);
   // const [isLoading, setIsLoading] = useState(false);
@@ -25,21 +25,23 @@ function TaskItem({ task, deleteTask, updateButtonClick }) {
   //   }
   // };
   const openUpdateform = async () => {
-    updateButtonClick(task);
+    updateButtonClick(question);
   };
 
   return (
     <tr className={classes.task_item}>
       <td className={classes.task_name}>
-        <p>{task.title}</p>
-        <p>{params._id}</p>
+        <p>{question.description}</p>
 
       </td>
-      <td>{moment(task.createdAt).calendar()}</td>
-      <td>{moment(task.dateExp).format('MMMM Do YYYY, h:mm a')}</td>
-      <td>{task.category}</td>
+      <td><p>{question.performance.cputime}</p></td>
+      <td><p>{question.performance.memory}</p></td>
+      <td><p>{question.performance.score}</p></td>
+      <td>{moment(question.createdAt).calendar()}</td>
+      <td>{moment(question.dateExp).format('MMMM Do YYYY, h:mm a')}</td>
+      <td>{question.category}</td>
       {/* update later for db update logic */}
-      <td>{moment().isBefore(task.dateExp) ? 'Active' : 'Completed'}</td>
+      {/* <td>{moment().isBefore(question.dateExp) ? 'Active' : 'Completed'}</td> */}
 
       <td>
         <button
@@ -63,4 +65,4 @@ function TaskItem({ task, deleteTask, updateButtonClick }) {
   );
 }
 
-export default TaskItem;
+export default QuestionItem;

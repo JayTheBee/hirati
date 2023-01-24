@@ -1,11 +1,11 @@
-import Question from '../models/Class.js';
+import Question from '../models/Question.js';
 import createError from '../utils/createError.js';
 
 export const createQuestion = async (req, res, next) => {
   const questionData = new Question({
-    title: req.body.title,
+    questionNumber: req.body.questionNumber,
     description: req.body.description,
-    taskId: req.body.id,
+    taskId: req.body.taskId,
     performance: {
       cputime: req.body.cputime,
       memory: req.body.memory,
@@ -56,8 +56,8 @@ export const updateQuestion = async (req, res, next) => {
 
 export const getCurrentQuestion = async (req, res, next) => {
   try {
-    const targetQuestion = await Question.find({ user: req.body.id });
-    return res.status(200).json(targetQuestion);
+    const question = await Question.find({ taskId: req.params.taskId });
+    return res.status(200).json(question);
   } catch (err) {
     return next(err);
   }
