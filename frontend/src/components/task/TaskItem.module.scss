@@ -1,65 +1,53 @@
 .task_item {
-	background-color: rgba(128, 128, 128, 0.174);
-	margin-top: 0.5rem;
-	border-radius: 6px;
+	background-color: rgba(128, 128, 128, 0.226);
 	font-size: 1.5rem;
 	&:hover {
 		background-color: rgba(95, 95, 95, 0.2);
 	}
-
-	.task_name {
-		max-width: 200px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		gap: 0.5rem;
-		.checkbox {
-			width: 3rem;
-			height: 3rem;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 50%;
-			transition: 0.3s ease background-color;
-			cursor: pointer;
-			& input {
-				width: 1.7rem;
-				height: 1.7rem;
-				cursor: pointer;
-			}
-			&:hover {
-				background-color: rgba(128, 128, 128, 0.2);
-			}
-		}
-		p {
-			width: calc(100% - 3rem);
-		}
+}
+.action {
+	display: flex;
+}
+.assignBtn {
+	margin: auto auto;
+	display: flex;
+	justify-self: center;
+	border: 1px solid rgb(146, 214, 155);
+	padding: 0.5rem 1rem;
+	font-size: 1.5rem;
+	color: rgb(59, 139, 86);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: rgb(18, 131, 23);
+		color: rgb(205, 205, 205);
 	}
 }
 
 .deleteBtn {
-	margin: 1rem;
-	display: inline-block;
-	border: 1px solid crimson;
-	padding: 0.5rem 1.5rem;
-	font-size: 1.6rem;
-	color: crimson;
-	border-radius: 50px;
+	display: flex;
+	margin: auto auto;
+	border: 1px solid red;
+	padding: 0.5rem 1rem;
+	font-size: 1.5rem;
+	color: red;
+	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
 	&:hover {
-		background-color: rgb(142, 13, 39);
+		background-color: rgb(155, 21, 21);
 		color: rgb(205, 205, 205);
 	}
 }
 .updateBtn {
-	display: inline-block;
+	margin: auto auto;
+	display: flex;
 	border: 1px solid blue;
-	margin: 1rem;
-	padding: 0.5rem 1.5rem;
-	font-size: 1.6rem;
+	padding: 0.5rem 1rem;
+	font-size: 1.5rem;
 	color: blue;
-	border-radius: 50px;
+	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
 	&:hover {
@@ -67,11 +55,211 @@
 		color: rgb(205, 205, 205);
 	}
 }
+
 td {
-	padding: 1rem;
+	padding: 0.25rem;
 	text-align: center;
 	vertical-align: center;
+	height: 10px;
+	border-radius: 20px;
+}
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(63, 83, 70, 0.288);
+}
+*::-webkit-scrollbar-track {
+	-webkit-box-shadow: inset 0 0 6px rgba(92, 85, 85, 0.3);
+	background-color: #f5f5f500;
+	border-radius: 200px;
 }
 
-tr {
+*::-webkit-scrollbar {
+	width: 2px;
+	background-color: #00000000;
+	overflow: hidden;
+	border-radius: 200px;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #056641;
+	border-radius: 20px;
+}
+
+.modal {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+	// gap: 100px;
+	width: 80%;
+	height: 600px;
+	padding: 30px;
+	margin: 5% 10%;
+
+	@media screen and (max-width: 760px) {
+		// transform: translateY(0%);
+	}
+
+	border: solid;
+
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+	.modalClose {
+		display: inline-block;
+		float: right;
+
+		border: 1px solid rgb(224, 224, 224);
+		padding: 0.5rem 1.5rem;
+		font-size: 1.6rem;
+		background-color: rgba(245, 222, 179, 0.534);
+		border-radius: 10px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			background-color: rgb(100, 109, 100);
+			color: rgb(205, 205, 205);
+		}
+	}
+	h2 {
+		display: block;
+	}
+}
+.active {
+	color: rgb(4, 102, 4);
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+.completed {
+	color: grey;
+	font-size: 1.5rem;
+	font-weight: 600;
+}
+
+// modal
+
+.topBar {
+	margin-top: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem;
+	margin-bottom: 2rem;
+}
+.addNew {
+	display: inline-block;
+	background-color: #187f52;
+	padding: 1rem 2rem;
+	font-size: 1.8rem;
+	border: none;
+	color: white;
+	border-radius: 50px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: #156542;
+		color: rgb(205, 205, 205);
+	}
+}
+.addNewForm {
+	width: 100%;
+	font-size: smaller;
+	div {
+		align-items: center;
+	}
+	label {
+		font-size: 1.5rem;
+		margin-left: 1.5rem;
+	}
+	h1 {
+		text-align: center;
+		margin-bottom: 10px;
+	}
+	input {
+		margin-bottom: 10px;
+		display: block;
+		padding: 1rem;
+		border: none;
+		border-radius: 10px;
+		font-size: 1.8rem;
+		color: black;
+		background-color: #bbbbbb;
+		min-height: 5rem;
+	}
+	textarea {
+		display: block;
+		padding: 1rem;
+		height: 20%;
+		border: none;
+		border-radius: 5px;
+		font-size: 1.8rem;
+		color: black;
+		background-color: #bbbbbb;
+		min-height: 15rem;
+		min-width: 25rem;
+	}
+
+	button {
+		display: flex;
+		margin-top: 5px;
+		margin-bottom: 5px;
+		background-color: #156542;
+		padding: 1rem;
+		font-size: 1.5rem;
+		border: none;
+		color: whitesmoke;
+		border-radius: 10px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			background-color: rgb(47, 172, 119);
+			color: black;
+		}
+	}
+	.flex {
+		display: flex;
+		justify-content: space-around;
+		align-items: baseline;
+	}
+	@media screen and (max-width: 600px) {
+		.flex {
+			display: block;
+		}
+	}
+}
+.taskList_table {
+	width: 100%;
+	margin-top: 2rem;
+}
+
+.cancelBtn {
+	display: flex;
+	margin: 1rem 4rem;
+	background-color: #bbbbbb;
+	padding: 1rem 2rem;
+	font-size: 1.8rem;
+	border: none;
+	color: black;
+	border-radius: 6px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: #156542;
+		color: rgb(205, 205, 205);
+	}
+}
+
+.containerflex {
+	display: flex;
+	align-items: center;
+	font-size: small;
+	margin-top: 1rem;
+	gap: 5px;
+	.a {
+		text-decoration: none;
+		cursor: pointer;
+		background-color: #156542;
+	}
 }

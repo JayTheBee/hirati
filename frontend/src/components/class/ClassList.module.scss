@@ -1,5 +1,13 @@
+.title {
+	color: wheat;
+	text-shadow: 2px 2px 2px rgb(90, 62, 62);
+	text-align: center;
+	.pageTitle {
+		font-size: 4rem;
+	}
+}
 .topBar {
-	margin-top: 2rem;
+	margin-top: 1rem;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -7,11 +15,13 @@
 	margin-bottom: 2rem;
 }
 .addNew {
-	display: inline-block;
+	display: flex;
+	align-items: center;
 	background-color: #187f52;
 	padding: 1rem 2rem;
 	font-size: 1.8rem;
 	border: none;
+	margin: 1rem 0%;
 	color: white;
 	border-radius: 50px;
 	cursor: pointer;
@@ -23,16 +33,21 @@
 }
 .addNewForm {
 	width: 100%;
+	label {
+		font-size: 1.5rem;
+		margin-left: 1.5rem;
+	}
 	h1 {
 		margin-left: 50%;
 	}
 	input,
 	textarea {
+		font-size: smaller;
 		margin: 1rem 4rem;
 		display: block;
 		padding: 1rem;
-		height: 10rem;
-		width: 50%;
+		height: 130px;
+		width: 70%;
 		border: none;
 		border-radius: 5px;
 		font-size: 1.8rem;
@@ -46,23 +61,23 @@
 	button {
 		display: flex;
 		margin: 1rem 4rem;
-		background-color: #bbbbbb;
+		background-color: #21865a;
 		padding: 1rem 2rem;
 		font-size: 1.8rem;
 		border: none;
-		color: black;
-		border-radius: 6px;
+		color: white;
+		border-radius: 20px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			background-color: #156542;
-			color: rgb(205, 205, 205);
+			background-color: rgba(3, 65, 27, 0.829);
 		}
 	}
 }
 .taskList_table {
 	width: 100%;
 	margin-top: 2rem;
+	margin-bottom: 10rem;
 }
 
 .cancelBtn {
@@ -83,14 +98,73 @@
 }
 
 .containerflex {
+	width: 100%;
+	white-space: nowrap;
 	display: flex;
 	align-items: center;
 	font-size: small;
-	margin-top: 1rem;
 	gap: 5px;
-	.a {
-		text-decoration: none;
-		cursor: pointer;
-		background-color: #156542;
+	margin-top: 1rem;
+	background-color: #187f524b;
+	border-radius: 20px;
+	padding: 5px;
+}
+.taskList_table {
+	top: 0;
+	width: 100%;
+}
+
+.tableContainer {
+	display: flex;
+	width: 100%;
+	white-space: nowrap;
+	overflow: auto;
+}
+
+.modal {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+	// gap: 100px;
+	width: 50%;
+	height: 400px;
+	padding: 30px;
+	margin: 5% 20%;
+
+	@media screen and (max-width: 760px) {
+		// transform: translateY(0%);
 	}
+
+	border: solid;
+
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+	.modalClose {
+		display: inline-block;
+		float: right;
+
+		border: 1px solid rgb(224, 224, 224);
+		padding: 0.5rem 1.5rem;
+		font-size: 1.6rem;
+		background-color: rgba(245, 222, 179, 0.534);
+		border-radius: 10px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			background-color: rgb(100, 109, 100);
+			color: rgb(205, 205, 205);
+		}
+	}
+	h2 {
+		display: block;
+	}
+}
+
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(63, 83, 70, 0.288);
 }

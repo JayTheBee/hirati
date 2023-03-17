@@ -25,7 +25,6 @@ function Auth() {
       <div className={classes.form_container}>
         <Banner />
         <Login />
-        {/* <Register /> */}
       </div>
     </Layout>
   );

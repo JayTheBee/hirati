@@ -13,6 +13,7 @@ export default function Navbar() {
     try {
       const { data } = await axios.get('/api/users/me');
       setUser(data);
+      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -38,13 +39,17 @@ export default function Navbar() {
   return (
     <header>
       <div className={classes.userInfo}>
-        <FaUserAlt className={classes.userIcon} />
-        <div>
+        <div className={classes.flex1}>
+          <Link to="/edit-profile">
+            <FaUserAlt className={classes.userIcon} />
+            <p className={classes.editBtn}>Edit</p>
+          </Link>
+        </div>
+        <div className={classes.flex2}>
           <h1 className={classes.name}>{user.name}</h1>
           <p className={classes.email}>{user.email}</p>
-          <Link to="/edit-profile" className={classes.editBtn}>
-            Edit
-          </Link>
+          <p className={classes.role}>{user.role}</p>
+
         </div>
       </div>
       <nav>
@@ -52,6 +57,7 @@ export default function Navbar() {
           logout
         </button>
       </nav>
+
     </header>
   );
 }

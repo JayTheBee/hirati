@@ -1,39 +1,8 @@
 .task_item {
 	background-color: rgba(128, 128, 128, 0.174);
-	margin-top: 0.5rem;
-	border-radius: 6px;
 	font-size: 1.5rem;
 	&:hover {
 		background-color: rgba(95, 95, 95, 0.2);
-	}
-
-	.task_name {
-		max-width: 200px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		gap: 0.5rem;
-		.checkbox {
-			width: 3rem;
-			height: 3rem;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 50%;
-			transition: 0.3s ease background-color;
-			cursor: pointer;
-			& input {
-				width: 1.7rem;
-				height: 1.7rem;
-				cursor: pointer;
-			}
-			&:hover {
-				background-color: rgba(128, 128, 128, 0.2);
-			}
-		}
-		p {
-			width: calc(100% - 3rem);
-		}
 	}
 }
 
@@ -68,10 +37,11 @@
 	}
 }
 td {
-	padding: 1rem;
-	text-align: center;
-	vertical-align: center;
+	// padding: 1rem;
+	// text-align: center;
+	// vertical-align: center;
 }
 
-tr {
+table {
+	width: 100%;
 }

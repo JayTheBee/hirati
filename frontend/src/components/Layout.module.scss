@@ -1,11 +1,29 @@
+* {
+	@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;700&display=swap');
+	margin: 0;
+	font-family: 'Poppins', sans-serif;
+}
 .container {
 	width: 100%;
 	max-width: 90%;
 	margin: 2rem auto;
 	padding: 10px 20px;
+	min-height: 500px;
+	border: solid rgb(48, 41, 28) 8px;
+	display: block;
+
 	@media screen and (max-width: 768px) {
+		transform: translateY(5%);
+		margin-bottom: 10rem;
 		width: 100%;
 	}
 	background-color: rgb(164, 194, 151);
 	border-radius: 50px;
+}
+.overlay {
+	min-height: 100vh;
+	overflow: hidden;
+	background-size: cover;
+	background-image: linear-gradient(rgba(0, 0, 0, 0.247), rgba(0, 0, 0, 0.26)),
+		url('../resource/background.jpg');
 }

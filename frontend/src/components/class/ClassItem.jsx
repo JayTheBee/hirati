@@ -3,25 +3,20 @@ import moment from 'moment';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
+import { AiFillDelete, AiFillEdit, AiFillFileAdd } from 'react-icons/ai';
 import classes from './ClassItem.module.scss';
 
 function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
   const openUpdateform = async (e) => {
     updateButtonClick(eachClass);
   };
-  // const handleClick = () => {
-  //   // console.log(`class/${eachClass._id}`);
-  //   // route to class->task
-  //   window.location.href = `class/${eachClass._id}`;
-  // };
-
   return (
     <tr className={classes.task_item}>
-      <td className={classes.task_name}>
-        <a href={`class/${eachClass._id}`}>
-
-          <p>{eachClass.className}</p>
-        </a>
+      <td>
+        <Link to={`class/${eachClass._id}`} state={{ classId: eachClass.id, className: eachClass.className }}>
+          {' '}
+          <p className={classes.links}>{eachClass.className}</p>
+        </Link>
       </td>
 
       <td>{moment(eachClass.createdAt).calendar()}</td>
@@ -39,20 +34,33 @@ function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
       </td>
 
       <td>
-        <button
-          type="button"
-          className={classes.deleteBtn}
-          onClick={() => deleteClass(eachClass._id)}
-        >
-          Delete
-        </button>
-        <button
-          type="button"
-          className={classes.updateBtn}
-          onClick={openUpdateform}
-        >
-          Update
-        </button>
+        {/* <p>{eachClass.studentEmail}</p> */}
+        { eachClass.teamCode}
+
+      </td>
+
+      <td>
+        <div className={classes.action}>
+          <button
+            type="button"
+            className={classes.updateBtn}
+            onClick={openUpdateform}
+          >
+            <AiFillEdit />
+            {' '}
+            Edit
+          </button>
+
+          <button
+            type="button"
+            className={classes.deleteBtn}
+            onClick={() => deleteClass(eachClass._id)}
+          >
+            <AiFillDelete />
+            {' '}
+            Del
+          </button>
+        </div>
 
       </td>
     </tr>
