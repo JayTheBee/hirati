@@ -17,6 +17,11 @@ const classSchema = new Schema({
   studentEmail: {
     type: Array,
   },
+  teamCode: {
+    type: String,
+    required: true,
+    unique: true,
+  },
 
 }, { timestamps: true });
 

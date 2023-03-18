@@ -6,7 +6,17 @@ export const createClass = async (req, res, next) => {
     className: req.body.className,
     studentEmail: req.body.studentEmail,
     userId: req.user.id,
+    teamCode: req.body.teamCode,
   });
+  const result = await Class.findOne({ teamCode: req.body.teamCode });
+  if (result) {
+    return next(
+      createError({
+        message: 'TeamCode already Exist!',
+        status: 409,
+      }),
+    );
+  }
   try {
     const userClass = await newClass.save();
     return res.status(200).json(userClass);
@@ -33,8 +43,9 @@ export const updateClass = async (req, res, next) => {
 };
 
 export const getCurrentUserClasss = async (req, res, next) => {
+  console.log(req.user);
   try {
-    const targetClass = await Class.find({ user: req.user.id });
+    const targetClass = await Class.find({ userId: req.user.id });
     return res.status(200).json(targetClass);
   } catch (err) {
     return next(err);

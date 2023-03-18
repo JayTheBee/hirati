@@ -3,7 +3,9 @@ import classes from './Layout.module.scss';
 
 function Layout({ children }) {
   return (
-    <main className={classes.container}>{children}</main>
+    <div className={classes.overlay}>
+      <main className={classes.container}>{children}</main>
+    </div>
   );
 }
 

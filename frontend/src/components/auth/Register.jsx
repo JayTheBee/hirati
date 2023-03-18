@@ -8,7 +8,7 @@ function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [msg, setMsg] = useState('');
-  const [disabled,setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const register = async (e) => {
     e.preventDefault();
     const user = {
@@ -44,15 +44,15 @@ function Register() {
         </label>
         <label htmlFor="email">
           Email:
-          <input name="email" type="email" placeholder="email" required />
+          <input name="email" type="email" placeholder="Email" required />
         </label>
         <br />
-        <label htmlFor="password">
+        <label htmlFor="Password">
           Password:
           <input
             name="password"
             type="password"
-            placeholder="password"
+            placeholder="Password"
             required
           />
         </label>

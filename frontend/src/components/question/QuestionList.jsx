@@ -7,6 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import QuestionItem from './QuestionItem';
 import classes from './QuestionList.module.scss';
 import { useLocation } from 'react-router-dom';
+import { deleteQuestion } from '../../../../backend/controllers/question';
 
 let questionData = {
   description: null ,
@@ -17,7 +18,9 @@ let questionData = {
   output:[],
   example:[],
   constraints:[],
-}
+};
+let questionCollation = {data: []};
+
 
 const reducerCounter = (state, action) => {
   switch (action.type) {
@@ -29,6 +32,10 @@ const reducerCounter = (state, action) => {
       return { ...state, exampleCount: state.exampleCount + 1 };
     case 'constCount':
       return { ...state, constCount: state.constCount + 1 };
+    case 'addQuestionPress':
+      return { ...state, addQuestionPress: true };
+    case 'clearQuestionPress':
+       return { ...state, addQuestionPress: false };
     default:
       throw new Error();
   }
@@ -40,6 +47,7 @@ function QuestionList() {
         caseCount: 1, 
         exampleCount:1,
         constCount:1,
+        addQuestionPress:false,
       }
     );
 
@@ -57,11 +65,11 @@ function QuestionList() {
 
   const getQuestion = async () => {
     try {
-      const myquestion= await axios.get(`/api/question/${data.taskId}`);
-      console.log(myquestion.data);
-      if (myquestion) {
+      const questionData= await axios.get(`/api/question/${data.taskId}`);
+      // console.log(questionData.data);
+      if (questionData) {
         setQuestionList(
-          myquestion.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+          questionData.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
         );
       }
     } catch (err) {
@@ -84,8 +92,9 @@ function QuestionList() {
   };
 
 
-  const updateButtonClick = async (eachTask) => {
-    await setNewTask(eachTask);
+  const updateButtonClick = async (each) => {
+    questionData = {...each};
+    console.log(questionData);
     await setIsAddingNew(false);
     setIsUpdatingNew(!isUpdatingNew);
     await window.scrollTo({
@@ -121,8 +130,7 @@ function QuestionList() {
     dispatch({ type: 'constCount' })  ;
     toast.success('Additional Constraints Added');
   }
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const dataSetter = async (e) => {
     questionData = {
       description: e.target.description.value,
       cputime:e.target.cputime.value,
@@ -134,66 +142,89 @@ function QuestionList() {
       taskId: data.taskId,
       questionNumber: state.count,
     };
-    console.log(questionData);
-    dispatch({ type: 'questionCount' });
-    // console.log(Object.keys(questionData).length);
-    if (Object.keys(description).length <= 0) {
-      toast.error('Task is empty');
-      return;
+  }
+  const dataClear= ()=>{
+    questionData = {
+      description: null ,
+      cputime: null ,
+      memory: null ,
+      score:null ,
+      input:[],
+      output:[],
+      example:[],
+      constraints:[],
     }
-    try {
-      const { result } = await axios.post('/api/question/', questionData);
-      toast.success('New Question added');
-      setIsAddingNew(false);
-      questionData = {
-        description: null ,
-        cputime: null ,
-        memory: null ,
-        score:null ,
-        input:[],
-        output:[],
-        example:[],
-        constraints:[],
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    dataSetter(e);
+    if(state.addQuestionPress === true){
+      dispatch({ type: 'questionCount' });
+      dispatch({ type: 'clearQuestionPress' });
+      questionCollation = {data: [...questionCollation.data , questionData]};
+      console.log(questionCollation);
+      dataClear();
+    }
+    // console.log(questionData);
+    // if (Object.keys(description).length <= 0) {
+    //   toast.error('q is empty');
+    //   return;
+    // }
+    else {
+      try {
+        //if there is no data collated
+        if(!questionCollation.data.length)
+         await axios.post('/api/question/', questionData);
+        else {
+          questionCollation.data.map(async(each) =>{
+            await axios.post('/api/question/', each);
+            });
+          }
+        dataClear();
+        questionCollation = {data: []};
+        toast.success('New Question added');
+        setIsAddingNew(false);
+        await getQuestion();
+      } catch (err) {
+        console.log(err);
       }
-      setQuestionList([{ ...result }, ...questionList]);
-    } catch (err) {
-      console.log(err);
     }
   };
 
-  // const updateTask = async (e) => {
-  //   e.preventDefault();
-    
-  //   const taskData = {
-  //     title: e.target.title.value,
-  //     category: e.target.category.value,
-  //     dateExp: e.target.dateExp.value,
-  //     classId: params.id,
-  //     completed: true,
-  //   };
-  //   if(moment().isBefore(taskData.dateExp))
-  //     taskData.completed =  false;
-  //   if (taskData.length <= 0) {
-  //     toast.error('Task is empty');
-  //     return;
-  //   }
-  //   // console.log(newTask._id);
-  //   try {
-  //     const { data } = await axios.put(`/api/tasks/${params.id}/${newTask._id}`, taskData);
-  //     toast.success('New task added');
-  //     setIsUpdatingNew(false);
-  //     // setNewTask('');
-  //     getTasks();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const updateQuestion = async (e) => {
+    e.preventDefault();
+    console.log(e.target);
+    // const taskData = {
+    //   title: e.target.title.value,
+    //   category: e.target.category.value,
+    //   dateExp: e.target.dateExp.value,
+    //   classId: params.id,
+    //   completed: true,
+    // };
+    // if(moment().isBefore(taskData.dateExp))
+    //   taskData.completed =  false;
+    // if (taskData.length <= 0) {
+    //   toast.error('Task is empty');
+    //   return;
+    // }
+    // // console.log(newTask._id);
+    // try {
+    //   const { data } = await axios.put(`/api/tasks/${params.id}/${newTask._id}`, taskData);
+    //   toast.success('New task added');
+    //   setIsUpdatingNew(false);
+    //   // setNewTask('');
+    //   getTasks();
+    // } catch (err) {
+    //   console.log(err);
+    // }
+  };
 
-  const deleteTask = async (id) => {
+  const deleteQuestion = async (id) => {
     try {
-      await axios.delete(`/api/tasks/${params.id}/${id}`);
+      await axios.delete(`/api/question/${data.taskId}/${id}`);
       toast.success('Task deleted');
-      setquestionList(questionList.filter((task) => task._id !== id));
+      setQuestionList(questionList.filter((each) => each._id !== id));
     } catch (err) {
       console.log(err);
     }
@@ -267,46 +298,84 @@ function QuestionList() {
 
           </div>
 
-      <button type='button' onClick={() => dispatch({ type: 'questionCount' })}>
+      <button type='submit' onClick={() =>dispatch({ type: 'addQuestionPress' })}>
         Add another Question
       </button>
-          <button type="submit">Submit</button>
+          <button type="submit" >Submit</button>
         </form>
       )}
-{/*       
+
       {isUpdatingNew && (
-        <form className={classes.addNewForm} onSubmit={updateTask}>
-        <label htmlFor="title">
-          Enter Title:
-          <input name="title" type="text" placeholder="Title" defaultValue={newTask.title} id="title" required />
-        </label>
+        // onSubmit={updateQuestion}
+        <form className={classes.addNewForm} onSubmit={updateQuestion}>
+        <h1>Question: #{questionData.questionNumber}</h1>
+          <div className={classes.flex}>
+          <label htmlFor="description">
+            Description:
+          <textarea name="description" defaultValue={questionData.description} type="areatext" placeholder="Enter Description . ." id="description"   /> 
+          
+          </label>
 
-        <label htmlFor="category">
-          Enter Category:
-          <input name="category" type="text" placeholder="Category eg. Programming"defaultValue={newTask.category} id="category" />
-        </label>
+          <label htmlFor="performance">
+            Performance:
+            <input name="cputime" type="number" defaultValue={questionData.performance.cputime === null? "" :questionData.performance.cputime } placeholder="cputime" id="performance" />
+            <input name="memory" type="number"defaultValue={questionData.performance.memory  === null? "" :questionData.performance.memory }  placeholder="memory" id="memory"  />
+            <input name="score" type="number" defaultValue={questionData.performance.score  === null? "" :questionData.performance.score } placeholder="score" id="score"/>
+          </label>
 
-        <label htmlFor="dateExp">
-          Enter Validity/Expiration for task:
-          <input name="dateExp" type="datetime-local" defaultValue={moment(newTask.dateExp).format("YYYY-MM-DDTkk:mm")} id="dateExp" required />
-        </label>
-        <button type="submit">Add</button>
-        <button type="button" onClick={cancleButtonClick}>cancel</button>
-      </form>
-      )}  */}
+          <label htmlFor="testcase">
+            Test Case{ ` #${state.caseCount}`}
+            <input name="input" type="text" id="input" placeholder='input' ref={inputRef}/>
+            <input name="output" type="text" id="output" placeholder='output' ref={outputRef}/>
+            <button type='button' onClick={handleAdditionalCase}>
+              Set Additional 
+            </button>
+          </label>  
+
+          <label htmlFor="example">
+            Example{ ` #${state.exampleCount}`}
+            <input name="example" type="text" id="example" placeholder='Input example' ref={sampleRef}/>
+            {/* <button type='button' onClick={() => dispatch({ type: 'exampleCount' })}> */}
+            <button type='button' onClick={handleAdditionalExample}>
+            Set Additional 
+            </button>
+          </label>  
+
+          <label htmlFor="constraints">
+          Constraint{ ` #${state.constCount}`}
+            <input name="constraints" type="text" placeholder="Input constraints" id="constraints"ref={constRef}/>
+            <button type='button' onClick={handleAdditionalConst}>
+            Set Additional 
+            </button>
+          </label>
+
+
+          </div>
+
+      <button type='submit' onClick={() =>dispatch({ type: 'addQuestionPress' })}>
+        Add another Question
+      </button>
+          <button type="submit" >Submit</button>
+          <button type="button" onClick={cancleButtonClick}>Cancel</button>
+        </form>
+
+      )}  
       {questionList.length > 0 ? (
         <table className={classes.questionList_table}>
           <tbody>
             <tr>
+              <td>Question</td>
               <td>Description</td>
               <td>memory</td>
               <td>CPU time</td>
               <td>Input</td>
               <td>Output</td>
-              
+              <td>example</td>
+              <td>Constraints  </td>
+              <td>Action  </td>
             </tr>
             {questionList.map((question) => (
-              <QuestionItem key={question._id} question={question}  />
+              <QuestionItem key={question._id} deleteQuestion={deleteQuestion} question={question}  updateButtonClick={updateButtonClick}/>
             ))}
           </tbody>
         </table>

@@ -32,7 +32,7 @@ function Login() {
   };
 
   return (
-    <div>
+    <div className={classes.container}>
       <h1 className={classes.title}>Login</h1>
       <form className={classes.authForm} onSubmit={login}>
         <label htmlFor="email">
@@ -54,7 +54,7 @@ function Login() {
 
       </form>
       <div>
-        <p className={classes.flex}>
+        <p>
           New here?
           <p className={classes.register} onClick={register}>Register</p>
         </p>

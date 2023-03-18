@@ -69,10 +69,9 @@ export const deleteQuestion = async (req, res, next) => {
     // if (targetClass.user === req.user.id) {
     //   return next(createError({ status: 401, message: "It's not your class to delete." }));
     // }
-    // await Class.findByIdAndDelete(req.params.classId);
-    const targetClass = await Question.findById(req.params.classId);
-    if (targetClass) { await Question.findOneAndDelete({ _id: req.params.classId }); }
-    return res.json('Class Deleted Successfully');
+    const targetQuestion = await Question.findById(req.params.questionId);
+    if (targetQuestion) { await Question.findOneAndDelete({ _id: req.params.questionId }); }
+    return res.json('Question Deleted Successfully');
   } catch (err) {
     return next(err);
   }
