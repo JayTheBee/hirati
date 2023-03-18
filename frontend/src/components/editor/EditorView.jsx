@@ -24,6 +24,7 @@ return (
 		 value={code}
 		 onChange={(value) => setCode(value)}
 		 theme="vs-dark"
+		 colorize
 	    />
 	    <br />
 	</>

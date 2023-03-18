@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 const CaseField = ({casevar, setCase}) => {
-	// const [casevar, setCase] = useState([{input: '', output:''}])
 	const [activeInput, setActiveInput] = useState([true])
 
 	const removeCaseFields = (index) => {
