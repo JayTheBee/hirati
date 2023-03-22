@@ -31,11 +31,16 @@
 		color: rgb(205, 205, 205);
 	}
 }
+.hideBtn {
+	display: none;
+}
+
 .addNewForm {
 	width: 100%;
 	label {
-		font-size: 1.5rem;
+		font-size: 1rem;
 		margin-left: 1.5rem;
+		text-align: center;
 	}
 	h1 {
 		margin-left: 50%;
@@ -55,7 +60,7 @@
 		background-color: #bbbbbb;
 	}
 	input[type='text'] {
-		width: 20%;
+		width: 50%;
 		height: 5rem;
 	}
 	button {
@@ -71,6 +76,36 @@
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
 			background-color: rgba(3, 65, 27, 0.829);
+		}
+	}
+	.view {
+		display: flex;
+		margin: 1rem 4rem;
+		background-color: #394640;
+		padding: 1rem 2rem;
+		font-size: 1.8rem;
+		border: none;
+		background-color: #394640;
+		border-radius: 20px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			background-color: rgba(3, 65, 27, 0.829);
+		}
+	}
+	.disabledBtn {
+		display: flex;
+		margin: 1rem 4rem;
+		background-color: #535050;
+		padding: 1rem 2rem;
+		font-size: 1.8rem;
+		border: none;
+		background-color: #5a5757;
+		border-radius: 20px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			background-color: rgba(139, 136, 136, 0.767);
 		}
 	}
 }
@@ -139,24 +174,38 @@
 
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
-	.modalClose {
-		display: inline-block;
-		float: right;
 
-		border: 1px solid rgb(224, 224, 224);
-		padding: 0.5rem 1.5rem;
-		font-size: 1.6rem;
-		background-color: rgba(245, 222, 179, 0.534);
-		border-radius: 10px;
-		cursor: pointer;
-		transition: 0.3s ease background-color, 0.3s ease color;
-		&:hover {
-			background-color: rgb(100, 109, 100);
-			color: rgb(205, 205, 205);
-		}
+	label {
+		margin-top: 100px;
 	}
-	h2 {
+
+	h1 {
 		display: block;
+		color: wheat;
+		text-shadow: 2px 2px 2px rgb(90, 62, 62);
+		margin: auto 10px;
+	}
+	h3 {
+		color: wheat;
+		text-shadow: 2px 2px 2px rgb(90, 62, 62);
+		margin: auto 10px;
+	}
+}
+
+.modalSmall {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+
+	width: 40%;
+	height: 250px;
+	padding: 30px;
+	margin: 5% 20%;
+	border: solid;
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+	input {
+		width: 100%;
 	}
 }
 
@@ -167,4 +216,21 @@
 	right: 0;
 	bottom: 0;
 	background-color: rgba(63, 83, 70, 0.288);
+}
+
+.modalClose {
+	display: inline-block;
+	float: right;
+
+	border: 1px solid rgb(224, 224, 224);
+	padding: 0.5rem 1.5rem;
+	font-size: 1.6rem;
+	background-color: rgba(245, 222, 179, 0.534);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: rgb(100, 109, 100);
+		color: rgb(205, 205, 205);
+	}
 }

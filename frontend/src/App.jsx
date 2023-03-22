@@ -5,7 +5,7 @@ import PrivateRoutes from './components/PrivateRoutes';
 import Auth from './pages/Auth';
 import Register from './pages/RegisterPage';
 import EditProfile from './pages/EditProfile';
-import Home from './pages/Home';
+import Class from './pages/Class';
 import Task from './pages/Task';
 import Question from './pages/Question';
 import EmailVerify from './components/auth/EmailVerification';
@@ -23,7 +23,7 @@ function App() {
       />
       <Routes>
         <Route element={<PrivateRoutes />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Class />} />
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/class/:id" element={<Task />} />
           <Route path="/class/:id/task" element={<Question />} />

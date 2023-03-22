@@ -20,7 +20,7 @@ export const login = async (req, res, next) => {
 
   try {
     const user = await User.findOne({ email: req.body.email }).select(
-      'name email password',
+      'name email password role',
     );
     if (!user) {
       return next(
@@ -39,6 +39,7 @@ export const login = async (req, res, next) => {
     const payload = {
       id: user._id,
       name: user.name,
+      role: user.role,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
       expiresIn: '1d',
@@ -48,7 +49,9 @@ export const login = async (req, res, next) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ name: user.name, email: user.email, message: 'login success' });
+      .json({
+        name: user.name, email: user.email, role: user.role, message: 'login success',
+      });
   } catch (err) {
     return next(err);
   }
