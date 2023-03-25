@@ -10,7 +10,7 @@ import Modal from 'react-modal';
 import { AiFillPlusCircle } from "react-icons/ai";
 import { useLocation } from 'react-router-dom';
 
-function TaskList() {
+function TaskList(taskData) {
   const [taskList, setTaskList] = useState([]);
   const [newTask, setNewTask] = useState({});
   const params = useParams();
@@ -21,13 +21,13 @@ function TaskList() {
   // fetch task base on class id
   const getTasks = async () => {
     try {
-      const { data } = await axios.get(`/api/tasks/${params.id}`);
-      if (data) {
-        setTaskList(
-          data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
-        );
-      }
-      // console.log();
+      // const { data } = await axios.get(`/api/tasks/${params.id}`);
+      // if (data) {
+      //   setTaskList(
+      //     data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+      //   );
+      // }
+      console.log('loob ng class');
     } catch (err) {
       console.log(err);
     }
@@ -51,12 +51,14 @@ function TaskList() {
     setIsOpen(false);
   }
 
-  useEffect(() => {
-    getTasks();
-  }, []);
+  // useEffect(() => {
+  //   getTasks();
+  // }, []);
 
+  // useEffect(() => {
+  // }, [newTask]);
   useEffect(() => {
-  }, [newTask]);
+  }, [taskData]);
 
 
   const updateButtonClick = async (eachTask) => {

@@ -7,15 +7,20 @@ import { AiFillPlusCircle } from 'react-icons/ai';
 import ClassItem from './ClassItem';
 import classes from './ClassList.module.scss';
 
-function ClassList() {
+function ClassList(userData) {
   const [classList, setClassList] = useState([]);
   const [isAddingNew, setIsAddingNew] = useState(false);
   const [isUpdatingNew, setIsUpdatingNew] = useState(false);
   const [classData, setClassData] = useState({});
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalJoin, setModalJoin] = useState(false);
+  const [error, setError] = useState('');
   let subtitle;
   // class fetch
   const getClass = async () => {
+    // console.log(userData.data.email);
     try {
+      // const { data } = await axios.get('/api/class/myClass');
       const { data } = await axios.get('/api/class/myClass');
       setClassList(
         data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
@@ -25,31 +30,36 @@ function ClassList() {
       console.log(err);
     }
   };
+  
+  function checkRole (){
+    if (userData.data){
+      // console.log(userData.data.role);  
+      return (userData.data.role === 'student'? true: false )
+    }
+    else 
+      return false;
+  }
 
   useEffect(() => {
     getClass();
-  }, []);
+  }, [userData]);
 
-  useEffect(() => {
-    // console.log(classData.);
-  }, [classData]);
 
-  const addNewButtonClick = () => {
-    setIsAddingNew(!isAddingNew);
-    setIsUpdatingNew(false);
-  };
+
 
   const addNewClass = async (e) => {
     e.preventDefault();
-    const classData = {
+    let classData = {
       className: e.target.className.value,
       studentEmail: e.target.studentEmail.value,
       teamCode: makeid(5),
     };
+    // classData = {...classData,studentEmail: [...classData.studentEmail, userData.data.email]};
     classData.studentEmail = classData.studentEmail.split(',').map((item) => item.trim()).filter((a) => a);
+    classData.studentEmail.push(userData.data.email);
     const valid = ValidateEmails(classData.studentEmail);
 
-    console.log(valid);
+    // console.log(valid);
 
     if(!valid){
       toast.error('Please enter valid Email');
@@ -121,10 +131,42 @@ function ClassList() {
     }
   };
 
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const joinClass = async (e) => {
+    e.preventDefault();
+    if(!e.target.teamCode.value){
+      toast.error('Please enter team code');
+    }
+    else {
+      const data = {
+        teamCode: e.target.teamCode.value,
+        email: userData.data.email
+      };
+      // console.log(data);
+      try{
+        await axios.put(`/api/class/joinClass/${e.target.teamCode.value}`, data);
+        getClass();
+        setError('');
+        toast.success('Class Joined Succesfully');
+      }catch(e){
+        if (
+          e.response && e.response.status >= 400 && e.response.status <= 500
+        ) {
+          setError(e.response.data.message);
+          toast.error('Something went wrong');
+        }
+      }
+    }
+  };
+
+
+
   function openModalNew() {
     setClassData({});
     setIsOpen(true);
+  }
+
+  function openModalJoin() {
+    setModalJoin(true);
   }
 
   // generate random teamcode
@@ -137,7 +179,7 @@ function ClassList() {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
       counter += 1;
     }
-    console.log(result);
+    // console.log(result);
     return result;
 }
 
@@ -145,12 +187,12 @@ function ClassList() {
     setIsOpen(true);
   }
   function afterOpenModal() {
-    // references are now sync'd and can be accessed.
     subtitle.style.color = '#f5f5f5';
   }
 
   function closeModal() {
     setIsOpen(false);
+    setModalJoin(false);
   }
   //check textarea
   function ValidateEmails(email) {  
@@ -172,36 +214,82 @@ function ClassList() {
         <p> Class >></p>
     </div>
       <div>
-        <button onClick={openModalNew} type="button" className={classes.addNew}>
+        <button onClick={openModalNew} type="button" className={checkRole()? classes.hideBtn :classes.addNew} hidden>
           <AiFillPlusCircle />
-          <p>&nbsp;Class</p>
+          <p>&nbsp;Add Class</p>
+        </button>
+
+
+        <button onClick={openModalJoin} type="button" className={checkRole()?classes.addNew  :classes.hideBtn} hidden>
+          <AiFillPlusCircle />
+          <p>&nbsp;Join Class</p>
         </button>
       </div>
       <Modal
         isOpen={modalIsOpen}
-        onAfterOpen={afterOpenModal}
+        // onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
         className={classes.modal}
         overlayClassName={classes.overlay}
         contentLabel="Assign Task"
+        ariaHideApp={false}
       >
+
+
         {/* modal render */}
         <button onClick={closeModal} type="button" className={classes.modalClose}> X </button>
         <h1 className={classes.titleTask}>
           {classData.className ? 'Updating Class': 'Creating New Class'}      
         </h1>
+        <h3> CLASS CODE: &nbsp; {classData.teamCode}</h3>
         <form className={classes.addNewForm} onSubmit={classData.className ? updateClass : addNewClass}>
           <label htmlFor="">
             Classname
-            <input name="className" type="text" placeholder="Classname" defaultValue={classData.className} />
+            <input name="className" type="text" placeholder="Classname" defaultValue={classData.className} disabled={checkRole()?true:false}/>
           </label>
           <label htmlFor="">
             Email
-            <textarea type="textarea" name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " />
+            <textarea type="textarea" name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " disabled={checkRole()?true:false} />
           </label>
-            <button type="submit"> <AiFillPlusCircle/> &nbsp; Add</button>
+            <button type="submit"className={checkRole()? classes.disabledBtn :'' } disabled={checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { checkRole() ?'Disabled' : 'Confirm'}</button>
         </form>
-      </Modal>
+      </Modal>  
+        {/* modal render */}
+
+      {/* modal for join class */}
+        <Modal
+        isOpen={modalJoin}
+        // onAfterOpen={afterOpenModal}
+            onRequestClose={closeModal}
+        className={classes.modalSmall}
+        overlayClassName={classes.overlay}
+        contentLabel="Assign Task"
+        ariaHideApp={false}
+      >
+        {/* modal render */}
+        <button onClick={closeModal} type="button" className={classes.modalClose}> X </button>
+        <h1 className={classes.titleTask}>
+          Joining Class       
+        </h1>
+
+        <form className={classes.addNewForm} onSubmit={ joinClass}>
+          <h4>Warning! Code is Case Sensitive and requires only 5 alphanumeric String</h4>
+          <br />
+          <label htmlFor="">
+            Please Enter Valid Class Code <br /> 
+            
+            <input maxLength="5" minLength={5} name="teamCode" type="text" placeholder="Class Code" defaultValue={classData.className} disabled={!checkRole()?true:false}/>
+          </label>
+            <button type="submit" disabled={!checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { !checkRole() ?'Disabled' : 'Add'}</button>
+        </form>
+        {error && <div className={classes.error_msg}>{error}</div>} 
+      </Modal> 
+      {/* modal for join class */}
+
+
+
+
+
       {classList.length > 0 ? (
         <div className={classes.tableContainer}>
 
@@ -210,7 +298,7 @@ function ClassList() {
             <tr>
               <td>Classname</td>
               <td>Date Created</td>
-              <td>List Of Student Participants Email</td>
+              <td>List Of Participants Email</td>
               <td>Number of Students</td>
               <td>Team Code</td>
               <td>Action</td>
@@ -219,6 +307,7 @@ function ClassList() {
               <ClassItem
                 key={each._id}
                 eachClass={each}
+                role = {checkRole()?'student':'teacher'}
                 deleteClass={deleteClass}
                 updateButtonClick={updateButtonClick}
               />

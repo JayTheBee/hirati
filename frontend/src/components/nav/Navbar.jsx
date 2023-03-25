@@ -5,15 +5,14 @@ import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import classes from './Navbar.module.scss';
 
-export default function Navbar() {
+export default function Navbar(userData) {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get('/api/users/me');
-      setUser(data);
-      console.log(data);
+      if (userData.data) { setUser(userData.data); }
+      // console.log(userData);
     } catch (err) {
       console.log(err);
     }
@@ -21,7 +20,7 @@ export default function Navbar() {
 
   useEffect(() => {
     getUser();
-  }, []);
+  }, [userData]);
 
   const handleLogout = async () => {
     try {
@@ -37,7 +36,7 @@ export default function Navbar() {
   if (!user) return null;
 
   return (
-    <header>
+    <header role={user.role}>
       <div className={classes.userInfo}>
         <div className={classes.flex1}>
           <Link to="/edit-profile">

@@ -43,9 +43,9 @@ export const updateClass = async (req, res, next) => {
 };
 
 export const getCurrentUserClasss = async (req, res, next) => {
-  console.log(req.user);
   try {
-    const targetClass = await Class.find({ userId: req.user.id });
+    // const targetClass = await Class.find({ userId: req.user.id });
+    const targetClass = await Class.find({ studentEmail: req.user.email });
     return res.status(200).json(targetClass);
   } catch (err) {
     return next(err);
@@ -73,4 +73,42 @@ export const deleteAllClasss = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
+};
+
+export const joinClass = async (req, res, next) => {
+  const result = await Class.findOneAndUpdate(
+    { teamCode: `${req.body.teamCode}` },
+    { $addToSet: { studentEmail: req.body.email } },
+    {
+      new: true,
+    },
+  );
+  console.log(result);
+  if (result == null) {
+    return next(
+      createError({
+        message: 'Team Code does not Exist!',
+        status: 404,
+      }),
+    );
+  }
+
+  return res.status(200).json(result);
+  // console.log(result);
+  // return (result);
+  // try {
+  //   Class.find({ teamCode: req.body.teamCode }, null, { limit: 2 }, (err, docs) => {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.log('Third function call : ', docs);
+  //     }
+  //   });
+
+  //   // const updatedList = await Class.find(req.body.teamCode, {
+  //   // }, { new: true });
+  //   return res.json('teamcode');
+  // } catch (err) {
+  //   return next(err);
+  // }
 };

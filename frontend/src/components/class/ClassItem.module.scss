@@ -39,6 +39,22 @@
 	}
 }
 
+.viewBtn {
+	margin: auto auto;
+	display: flex;
+	border: 1px solid rgb(23, 104, 66);
+	padding: 0.5rem 1rem;
+	font-size: 1.5rem;
+	color: rgb(13, 109, 37);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: rgb(10, 85, 32);
+		color: rgb(205, 205, 205);
+	}
+}
+
 tr {
 	padding: 0.25rem;
 	text-align: center;

@@ -3,10 +3,12 @@ import moment from 'moment';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-import { AiFillDelete, AiFillEdit, AiFillFileAdd } from 'react-icons/ai';
+import { AiFillDelete, AiFillEdit, AiTwotoneEye } from 'react-icons/ai';
 import classes from './ClassItem.module.scss';
 
-function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
+function ClassItem({
+  eachClass, deleteClass, updateButtonClick, role,
+}) {
   const openUpdateform = async (e) => {
     updateButtonClick(eachClass);
   };
@@ -36,31 +38,50 @@ function ClassItem({ eachClass, deleteClass, updateButtonClick }) {
       <td>
         {/* <p>{eachClass.studentEmail}</p> */}
         { eachClass.teamCode}
-
       </td>
 
       <td>
-        <div className={classes.action}>
-          <button
-            type="button"
-            className={classes.updateBtn}
-            onClick={openUpdateform}
-          >
-            <AiFillEdit />
-            {' '}
-            Edit
-          </button>
 
-          <button
-            type="button"
-            className={classes.deleteBtn}
-            onClick={() => deleteClass(eachClass._id)}
-          >
-            <AiFillDelete />
-            {' '}
-            Del
-          </button>
-        </div>
+        {
+          role === 'teacher'
+            ? (
+              <div className={classes.action}>
+                <button
+                  type="button"
+                  className={classes.updateBtn}
+                  onClick={openUpdateform}
+                >
+                  <AiFillEdit />
+                  {' '}
+                  Edit
+
+                </button>
+
+                <button
+                  type="button"
+                  className={classes.deleteBtn}
+                  onClick={() => deleteClass(eachClass._id)}
+                >
+                  <AiFillDelete />
+                  {' '}
+                  Del
+                </button>
+              </div>
+            )
+            : (
+              <div>
+                <button
+                  type="button"
+                  className={classes.viewBtn}
+                  onClick={() => openUpdateform(eachClass._id)}
+                >
+                  <AiTwotoneEye />
+                  {' '}
+                  View
+                </button>
+              </div>
+            )
+}
 
       </td>
     </tr>
