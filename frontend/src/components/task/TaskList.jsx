@@ -19,15 +19,15 @@ function TaskList(taskData) {
   let subtitle;
 
   // fetch task base on class id
-  const getTasks = async () => {
+  const getTasks = async () => {  
     try {
-      // const { data } = await axios.get(`/api/tasks/${params.id}`);
-      // if (data) {
-      //   setTaskList(
-      //     data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
-      //   );
-      // }
-      console.log('loob ng class');
+      const { data } = await axios.get(`/api/tasks/${params.id}`);
+      // console.log(data);
+      if (data) {
+        setTaskList(
+          data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)),
+        );
+      }
     } catch (err) {
       console.log(err);
     }
@@ -42,21 +42,19 @@ function TaskList(taskData) {
   function openModalUpdate() {
     setIsOpen(true);
   }
-  function afterOpenModal() {
-    // references are now sync'd and can be accessed.
-    subtitle.style.color = '#f5f5f5';
-  }
+
 
   function closeModal() {
     setIsOpen(false);
   }
 
-  // useEffect(() => {
-  //   getTasks();
-  // }, []);
+  useEffect(() => {
+    getTasks();
+  }, []);
 
-  // useEffect(() => {
-  // }, [newTask]);
+  useEffect(() => {
+  }, [newTask]);
+
   useEffect(() => {
   }, [taskData]);
 
@@ -151,11 +149,11 @@ function TaskList(taskData) {
 
       <Modal
             isOpen={modalIsOpen}
-            onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
             className={classes.modal}
             overlayClassName={classes.overlay}
             contentLabel="Assign Task"
+            ariaHideApp={false}
           >
             {/* modal render */}
             <button onClick={closeModal} type="button" className={classes.modalClose}> X </button>
