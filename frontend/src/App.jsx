@@ -8,6 +8,7 @@ import EditProfile from './pages/EditProfile';
 import Class from './pages/Class';
 import Task from './pages/Task';
 import Question from './pages/Question';
+import Playground from './pages/Playground';
 import EmailVerify from './components/auth/EmailVerification';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/class/:id" element={<Task />} />
           <Route path="/class/:id/task" element={<Question />} />
+          <Route path="/playground" element={<Playground />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />

@@ -32,6 +32,13 @@ export default function Navbar(userData) {
       console.log(err);
     }
   };
+  const handlePlayground = () => {
+    navigate('/playground');
+  };
+
+  const home = () => {
+    navigate('/');
+  };
 
   if (!user) return null;
 
@@ -50,11 +57,22 @@ export default function Navbar(userData) {
           <p className={classes.role}>{user.role}</p>
 
         </div>
+
       </div>
       <nav>
+
+        <button className={classes.Playground} type="button" onClick={home}>
+          Home
+        </button>
+
+        <button className={classes.Playground} type="button" onClick={handlePlayground}>
+          Codepen
+        </button>
         <button type="button" className={classes.logout} onClick={handleLogout}>
           logout
         </button>
+        <div />
+
       </nav>
 
     </header>

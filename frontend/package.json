@@ -8,15 +8,19 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@monaco-editor/react": "^4.4.6",
 		"axios": "^0.27.2",
 		"dotenv": "^16.0.1",
 		"moment": "^2.29.3",
+		"monaco-themes": "^0.4.4",
 		"react": "^18.0.0",
 		"react-dom": "^18.0.0",
 		"react-hot-toast": "^2.2.0",
 		"react-icons": "^4.8.0",
 		"react-modal": "^3.16.1",
-		"react-router-dom": "^6.3.0"
+		"react-router-dom": "^6.3.0",
+		"react-select": "^5.7.2",
+		"react-toastify": "^9.1.2"
 	},
 	"devDependencies": {
 		"@types/react": "^18.0.0",
