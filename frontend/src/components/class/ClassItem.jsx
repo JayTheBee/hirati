@@ -31,7 +31,8 @@ function ClassItem({
       </td>
       <td>
         {/* <p>{eachClass.studentEmail}</p> */}
-        { eachClass.studentEmail.length}
+        {/* -1 excluding teacher */}
+        { eachClass.studentEmail.length - 1}
 
       </td>
 

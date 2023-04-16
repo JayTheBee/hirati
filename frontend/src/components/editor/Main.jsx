@@ -16,8 +16,6 @@ const MainEditor = () => {
 		</>
 	)
 
-
-
 }
 
 export default MainEditor;

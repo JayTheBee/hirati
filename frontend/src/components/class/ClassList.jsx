@@ -210,9 +210,9 @@ function ClassList(userData) {
     </div>
 
     <div className={classes.containerflex}>
-
         <p> Class >></p>
     </div>
+    
       <div>
         <button onClick={openModalNew} type="button" className={checkRole()? classes.hideBtn :classes.addNew} hidden>
           <AiFillPlusCircle />

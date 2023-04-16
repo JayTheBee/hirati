@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import Navbar from '../components/nav/Navbar';
-import TaskList from '../components/task/TaskList';
+import EditorPage from '../components/editor/Landing';
 
 function Home() {
-  const [flag, setflag] = useState(null);
   const [user, setUser] = useState(null);
+  const [flag, setflag] = useState(null);
   const getUser = async () => {
     try {
       const { data } = await axios.get('/api/users/me');
@@ -29,7 +29,7 @@ function Home() {
   return (
     <Layout>
       <Navbar data={user} />
-      <TaskList data={user} />
+      <EditorPage data={user} />
     </Layout>
   );
 }

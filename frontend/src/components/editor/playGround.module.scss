@@ -1,0 +1,99 @@
+.title {
+	color: wheat;
+	text-shadow: 2px 2px 2px rgb(90, 62, 62);
+	text-align: center;
+	.pageTitle {
+		font-size: 4rem;
+	}
+}
+
+.containerline {
+	width: 100%;
+	white-space: nowrap;
+	display: flex;
+	align-items: center;
+	font-size: small;
+	text-align: center;
+	margin-top: 1rem;
+	background-color: #187f524b;
+	border-radius: 20px;
+	padding: 5px;
+}
+.editor {
+	border-radius: 10px;
+	overflow: hidden;
+}
+.option {
+	margin-bottom: 10px;
+	margin-top: 10px;
+	display: flex;
+	gap: 20px;
+}
+
+.editorBody {
+	display: flex;
+	justify-content: space-around;
+	width: 100%;
+	flex-wrap: wrap;
+}
+
+.outputBox {
+	flex: 1 1 auto;
+	flex-direction: row;
+	margin-left: 10px;
+	button {
+		font-size: 1.5rem;
+		padding: 10px;
+		display: flex;
+		margin: auto;
+		margin-top: 10px;
+		background-color: cornflowerblue;
+		border-radius: 10px;
+	}
+	textarea {
+		display: flex;
+		border-radius: 10px;
+		margin: auto;
+		margin-top: 10px;
+		width: 70%;
+		height: 50px;
+		padding: 10px;
+	}
+	textarea::placeholder {
+		padding: 5px;
+	}
+	h1 {
+		margin-top: 20px;
+		color: wheat;
+		text-shadow: 2px 2px 2px rgb(90, 62, 62);
+		text-align: center;
+	}
+	pre {
+		text-align: center;
+		font-size: 1.25rem;
+		font-weight: 400;
+		font-family: Verdana, Geneva, Tahoma, sans-serif;
+		background-color: rgb(253, 253, 253);
+		width: 70%;
+		margin: auto;
+		margin-top: 20px;
+		padding: 1rem;
+		border-radius: 10px;
+		border: 2px solid black;
+		box-shadow: 5px 5px 0px black;
+		overflow: auto;
+	}
+	p {
+		// margin-top: 20px;
+		margin: 10px;
+		font-size: 2rem;
+		text-shadow: 2px 2px 2px black;
+		color: rgb(255, 255, 255);
+		.failed {
+			color: red;
+		}
+		.success {
+			color: green;
+		}
+	}
+}
