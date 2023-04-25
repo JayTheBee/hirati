@@ -56,7 +56,7 @@ const defineTheme = (theme) => new Promise((res) => {
     Promise.all([
       loader.init(),
 
-      import(`monaco-themes/themes/${monacoThemes[theme]}.json`),
+      import.meta.glob(`../../../node_modules/monaco-themes/themes/${monacoThemes[theme]}.json`)
     ])
       .then(([monaco, themeData]) => {
         console.log(monaco);
