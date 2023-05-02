@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+import { AiFillCaretRight } from 'react-icons/ai';
 import CodeEditorWindow from './Editor';
 // import { classnames } from '../utils/general';
 import languageOptions from './languageOption';
-
 import 'react-toastify/dist/ReactToastify.css';
-
-import defineTheme from './defineTheme';
 import useKeyPress from '../../hooks/useKeypress';
 import OutputWindow from './OutputWindow';
 import CustomInput from './CustomInput';
@@ -69,7 +67,9 @@ const target = 5;
 console.log(binarySearch(arr, target));
 `;
 
-function Landing() {
+function SampleCode({
+  handleEditorData,
+}) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
   const [outputDetails, setOutputDetails] = useState(null);
@@ -89,6 +89,7 @@ function Landing() {
     switch (action) {
       case 'code': {
         setCode(data);
+        console.log(code);
         break;
       }
       default: {
@@ -102,8 +103,8 @@ function Landing() {
       method: 'GET',
       url: 'https://judge0-ce.p.rapidapi.com/languages',
       headers: {
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
     };
 
@@ -122,9 +123,9 @@ function Landing() {
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-
+        'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
       },
     };
     try {
@@ -141,6 +142,15 @@ function Landing() {
       }
       setProcessing(false);
       setOutputDetails(response.data);
+
+      await handleEditorData({
+        time: response.data.time,
+        language: response.data.language.name,
+        id: response.data.language.id,
+        status: response.data.status.description,
+        memory: response.data.memory,
+      });
+
       showSuccessToast('Compiled Successfully!');
       console.log('response.data', response.data);
       return;
@@ -150,7 +160,7 @@ function Landing() {
       showErrorToast();
     }
   };
-  const handleCompile = () => {
+  const handleCompile = async () => {
     setProcessing(true);
     const formData = {
       language_id: language.id,
@@ -158,6 +168,7 @@ function Landing() {
       source_code: btoa(code),
       stdin: btoa(customInput),
     };
+
     const options = {
       method: 'POST',
       //   url: process.env.REACT_APP_RAPID_API_URL,
@@ -168,6 +179,8 @@ function Landing() {
         'Content-Type': 'application/json',
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
       data: formData,
     };
@@ -188,7 +201,7 @@ function Landing() {
           console.log('too many requests', status);
 
           showErrorToast(
-            'Quota of 50 requests exceeded for the Day! ',
+            'Quota of 50 requests exceeded for the Day!',
             10000,
           );
         }
@@ -200,12 +213,7 @@ function Landing() {
   function handleThemeChange(th) {
     const theme = th;
     console.log('theme...', theme);
-
-    if (['light', 'vs-dark'].includes(theme.value)) {
-      setTheme(theme);
-    } else {
-      defineTheme(theme.value).then(() => setTheme(theme));
-    }
+    setTheme(theme);
   }
 
   useEffect(() => {
@@ -213,7 +221,7 @@ function Landing() {
   }, []);
 
   useEffect(() => {
-    defineTheme('oceanic-next').then(() => setTheme({ value: 'oceanic-next', label: 'Oceanic Next' }));
+    setTheme({ value: 'vs-light', label: 'Light' });
   }, []);
 
   useEffect(() => {
@@ -237,17 +245,23 @@ function Landing() {
         draggable
         pauseOnHover
       />
-      <div className={classes.title}>
-        <h1 className={classes.pageTitle}>CodePen </h1>
-      </div>
-      <div className={classes.containerline} />
-      <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
-      <div className={classes.option}>
-        <div className="px-4 py-2">
-          <LanguagesDropdown onSelectChange={onSelectChange} />
+
+      <div>
+        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />
+        <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+        <div className={classes.row}>
+          <button
+            type="button"
+            onClick={handleCompile}
+            disabled={processing}
+          >
+            {processing ? 'Processing...' : 'Compile '}
+            {' '}
+            <AiFillCaretRight />
+          </button>
         </div>
-        <div>
-          <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+        <div className={classes.outputBox}>
+          <OutputWindow outputDetails={outputDetails} />
         </div>
       </div>
 
@@ -258,19 +272,26 @@ function Landing() {
           language={language?.value}
           theme={theme.value}
         />
-        <div className={classes.outputBox}>
-          <OutputWindow outputDetails={outputDetails} />
+        <label>
+          Input
           <CustomInput
             customInput={customInput}
             setCustomInput={setCustomInput}
+            className={classes.inputBox}
           />
-          <button
+        </label>
+
+        <div className={classes.outputBox}>
+
+          {/* <button
             type="button"
             onClick={handleCompile}
-            disabled={!code}
+            disabled={processing}
           >
             {processing ? 'Processing...' : 'Compile and Execute'}
-          </button>
+          </button> */}
+
+          <hr className={classes.containerline} />
           {outputDetails && <OutputDetails outputDetails={outputDetails} />}
         </div>
       </div>
@@ -279,4 +300,4 @@ function Landing() {
     </>
   );
 }
-export default Landing;
+export default SampleCode;
