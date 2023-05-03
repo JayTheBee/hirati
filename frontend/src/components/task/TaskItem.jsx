@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 import {
   AiFillDelete, AiFillEdit, AiFillFileAdd, AiOutlineCloseCircle,
@@ -12,13 +13,21 @@ import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import languageOptions from '../editor/languageOption';
 // All data Stored for db submission
-const collateData = [];
+let collateData = [];
 
-let editorData = [];
+// editor Data is given for now cuz its so damn slow fetching from judge0
+let editorData;
+editorData = {
+  time: '0.161',
+  language: 'JavaScript (Node.js 12.14.0)',
+  id: 63,
+  status: 'Accepted',
+  memory: 6980,
+};
+
 let additionalCase = [];
-let additionalRubrics = [[]];
+let additionalRubrics = [];
 let languageName = {};
-const counter = 0;
 
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
@@ -26,6 +35,7 @@ function TaskItem({
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
+  const [counter, setCount] = React.useState(1);
   function openModal() {
     setIsOpen(true);
   }
@@ -42,16 +52,22 @@ function TaskItem({
 
   // HANDLE THE ONCHANGE HERE
   const clearRubrics = () => {
+    if (toggleCondition && addRubrics) {
+      statusRef.current.value = '';
+      memoryRef.current.value = '';
+      cputimeRef.current.value = '';
+      pointsRef.current.value = '';
+      rubricRatingRef.current.value = '';
+      rubricTitleRef.current.value = '';
+    }
     if (toggleCondition) {
       statusRef.current.value = '';
       memoryRef.current.value = '';
       cputimeRef.current.value = '';
       pointsRef.current.value = '';
-    } else {
-      // rubricRatingRef.current.value = '';
-      // rubricTitleRef.current.value = '';
     }
   };
+
   const clearInput = () => {
     descriptionRef.current.value = '';
     inputRef.current.value = '';
@@ -75,50 +91,65 @@ function TaskItem({
     console.log(languageName);
   };
 
-  const closeModal = () => {
-    setIsOpen(false);
-  };
-
   const openUpdateform = async () => {
     updateButtonClick(task);
   };
 
+  // Uncomment this to get editorData when compiled
   const handleEditorData = async (data) => {
-    editorData.push(data);
+    // editorData = data;
+    // console.log(editorData);
+
     console.log(editorData);
   };
   // clear all values
   const clearAllVal = () => {
+    editorData = [];
+    additionalCase = [];
+    additionalRubrics = [];
     descriptionRef.current.value = '';
     inputRef.current.value = '';
     outputRef.current.value = '';
     clearRubrics();
     clearInput();
   };
+  const closeModal = () => {
+    setCount(1);
+    setAddRubrics(false);
+    setToggleCondition(true);
+    collateData = [];
+    clearAllVal();
+    setIsOpen(false);
+  };
 
-  // To do Handle Additional Case
+  // One instance for now -->> On going with other scenario, impelements Create when all fields are given
+  const handleSubmit = () => {
+    // collateData = { ...collateData };
+    try {
+      if (collateData.length > 0) {
+        collateData.map(async (each) => {
+          await axios.post('/api/question/', each);
+        });
+      }
+      clearAllVal();
+      toast.success('All questions in the stack are uploaded!');
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleAdditionalCase = () => {
     if (inputRef.current.value && outputRef.current.value) {
       if (confirm('Push to stack additional case for this question?')) {
-        // Prompt
-        const data = [{ input: inputRef.current.value, output: outputRef.current.value }];
-        additionalCase.push(data);
-        // console.log(additionalCase);
+        additionalCase.push({ testcase: { input: inputRef.current.value, output: outputRef.current.value } });
         toast.success('Additional Case Added');
       }
     } else if (confirm('Push to stack with missing data in input/output ?')) {
-      // Prompt
-      const data = [{ input: inputRef.current.value, output: outputRef.current.value }];
-      // additionalCase.push({ testCase: data });
-      additionalCase[0] = additionalCase.concat(data);
+      additionalCase.push({ testcase: { input: inputRef.current.value, output: outputRef.current.value } });
       toast.success('Additional Case Added');
     }
-    console.log(additionalCase);
-    // collateData.push(...additionalCase);
-    // console.log(collateData);
-    // inputRef.current.value = '';
-    // outputRef.current.value = '';
+    inputRef.current.value = '';
+    outputRef.current.value = '';
   };
 
   const toggleAdditionalRubrics = () => {
@@ -126,10 +157,9 @@ function TaskItem({
   };
 
   const checkRubricsPercentage = () => {
-    if ((parseInt(statusRef.current.value)
+    if (toggleCondition && (parseInt(statusRef.current.value)
     + parseInt(cputimeRef.current.value)
-    + parseInt(memoryRef.current.value)) != 100) {
-      toast.error('Please fill Rubrics Cputime, Memory and Status with whole number that equates to 100%');
+    + parseInt(memoryRef.current.value) !== 100)) {
       return false;
     }
     return true;
@@ -151,7 +181,6 @@ function TaskItem({
     return false;
   };
 
-  // Todo Handle Additional Rubrics
   const handleAdditionalRubrics = () => {
     // Logic for Data assigning
     // if enabled
@@ -175,25 +204,28 @@ function TaskItem({
             rubricRating: rubricRatingRef.current.value,
           };
           additionalRubrics.push(data);
+          console.log(additionalRubrics);
 
           toast.success('Additional Case Added with default Rubrics');
-          clearRubrics();
+          // clearRubrics();
         } else {
           toast.error('Please Complete all Data!');
         }
       }
     }
-    // disabled part
-    else if (rubricTitleRef.current.value && rubricRatingRef.current.value) {
+    // disabled part scenario
+    else if (!toggleCondition && rubricTitleRef.current.value && rubricRatingRef.current.value) {
       const data = {
         rubricTitle: rubricTitleRef.current.value,
         rubricRating: rubricRatingRef.current.value,
       };
       if (confirm(`Adding ${data.rubricTitle} as a Criteria with ${data.rubricRating}% points`)) {
         additionalRubrics.push((data));
-        // console.log(additionalRubrics);
+        console.log(additionalRubrics);
         toast.success('Additional Case Added');
         clearRubrics();
+      } else {
+        toast.error('Please Complete all Data!');
       }
     } else {
       toast.error('Please Complete all Data!');
@@ -202,15 +234,20 @@ function TaskItem({
   };
 
   const handleAnotherQuestion = () => {
-    // if (!checkRubricsPercentage()) { return; }
     if (checkRequiredIfEmpty()) { return; }
+    if (checkRubricsIfEmpty() && toggleCondition) {
+      toast.error('Some Fields are empty in the rubrics! Make sure to fill it up or disable it. ');
+      return;
+    }
+    if (!checkRubricsPercentage() && toggleCondition) {
+      toast.error('Please fill Rubrics Cputime, Memory and Status with whole number that equates to 100%');
+      return;
+    }
 
     // Scenario 1: All rubrics are required (Enabled)
     if (additionalRubrics.length === 0
       && additionalCase.length === 0
       && toggleCondition
-      && checkRubricsPercentage() === true
-      && checkRubricsIfEmpty() === false
     ) {
       collateData.push({
         language: languageName.name,
@@ -222,9 +259,9 @@ function TaskItem({
         memory: memoryRef.current.value,
         status: statusRef.current.value,
         points: pointsRef.current.value,
-        // rubricTitle: (rubricTitleRef.current.value !== null ? rubricTitleRef.current.value : ''),
-        // rubricRatingRef: (pointsRef.current.value !== null ? rubricTitleRef.current.value : ''),
-        ...editorData,
+        result: editorData,
+        count: counter,
+        task_id: task._id,
       });
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
@@ -235,7 +272,8 @@ function TaskItem({
         description: descriptionRef.current.value,
         input: inputRef.current.value,
         output: outputRef.current.value,
-        ...editorData,
+        result: editorData,
+        task_id: task._id,
       });
       console.log('scene2');
       // enabled but some rubrics input are empty
@@ -243,22 +281,21 @@ function TaskItem({
       toast.error('Default Rubrics for automated Testing is enabled. Please fill all fields or disable it');
     } else {
       collateData.push({
-        ...additionalRubrics,
+        rubrics: additionalRubrics,
         ...additionalCase,
-        ...editorData,
+        result: editorData,
         description: descriptionRef.current.value,
         language: languageName.name,
         languageId: languageName.id,
+        task_id: task._id,
       });
       console.log('scene3');
     }
-    console.log(collateData);
-    editorData = [];
-    additionalCase = [];
-    additionalRubrics = [];
+
     // clearAllVal();
-    // toast.success('Question pushed all to stack!');
-    // console.log(additionalRubrics);
+    toast.success('Question pushed all to stack!');
+    setCount(counter + 1);
+    console.log(collateData);
   };
 
   return (
@@ -275,7 +312,7 @@ function TaskItem({
       <td>{moment(task.createdAt).calendar()}</td>
       <td>{moment(task.dateExp).format('MMMM Do YYYY, h:mm a')}</td>
       <td>{task.category}</td>
-      {/* update later for db update logic */}
+
       <td>
         <p className={moment().isBefore(task.dateExp) ? classes.active : classes.completed}>
           {moment().isBefore(task.dateExp) ? 'Active' : 'Completed'}
@@ -297,6 +334,7 @@ function TaskItem({
             className={classes.modal}
             overlayClassName={classes.overlay}
             contentLabel="Assign Task"
+            ariaHideApp={false}
           >
             {/* modal render question */}
             <button onClick={closeModal} type="button" className={classes.modalClose}>
@@ -307,6 +345,10 @@ function TaskItem({
               <h1 className={classes.titleQuestion}>
                 {` ${task.title} `}
               </h1>
+            </h2>
+            <h2 className={classes.center}>
+              Question #
+              {`${counter}`}
             </h2>
             <br />
             <h3>Please fill necessary details such as Language, Description and Sample Code. While Test Cases and Rubrics are'nt necessary, these are important for Automated Grading. Rubrics(Memory, Cputime and Status) requires to equate to a total of 100 but can be disabled in the event that the professor wants to manually check.  </h3>
@@ -398,7 +440,7 @@ function TaskItem({
                   </label>
 
                   <button type="button" onClick={handleAnotherQuestion}>
-                    Add another Question
+                    Add Question to stack
                   </button>
 
                   {/*  To do view all in stack */}
@@ -407,7 +449,7 @@ function TaskItem({
                   </button>
 
                   {/* to do Submit all data to mongodb */}
-                  <button type="submit">Submit</button>
+                  <button type="button" onClick={handleSubmit}>Submit All</button>
 
                 </div>
 

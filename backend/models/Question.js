@@ -3,12 +3,18 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const questionSchema = new Schema({
-  questionNumber: {
+  questionCount: {
     type: Number,
     required: true,
   },
 
   description: {
+    type: String,
+  },
+  language: {
+    type: String,
+  },
+  languageId: {
     type: String,
   },
 
@@ -17,7 +23,7 @@ const questionSchema = new Schema({
     ref: 'Task',
     required: true,
   },
-  performance: {
+  rubrics: {
     cputime: Number,
     memory: Number,
     score: Number,
@@ -27,9 +33,16 @@ const questionSchema = new Schema({
     output: [String],
   },
 
-  example: [String],
+  points: {
+    type: Number,
+  },
 
-  constraints: [String],
+  resultSample: {
+    time: Schema.Types.Decimal128,
+    language: String,
+    languageId: String,
+    status: String,
+  },
   // add 'rubrics' later for grading guide automation
 }, { timestamps: true });
 
