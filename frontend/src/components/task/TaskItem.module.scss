@@ -119,6 +119,47 @@ td {
 		display: block;
 	}
 }
+
+.modalViewAll {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+	width: 60%;
+	height: 60%;
+	padding: 30px;
+	margin: 10% 20%;
+	border: solid;
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+
+	@media screen and (max-width: 425px) {
+		padding: 5px;
+		width: 90%;
+		height: 60%;
+		padding: 30px;
+		margin: 5% 5%;
+	}
+
+	.modalClose {
+		display: inline-block;
+		float: right;
+		border: 0px;
+		padding: 1rem;
+		font-size: 2.5rem;
+		font-weight: 900;
+		background-color: rgba(12, 8, 0, 0);
+		border-radius: 20px;
+		cursor: pointer;
+		transition: 0.3s ease background-color, 0.3s ease color;
+		&:hover {
+			color: rgb(93, 112, 24);
+		}
+	}
+	h2 {
+		display: block;
+	}
+}
+
 .active {
 	color: rgb(4, 102, 4);
 	font-size: 1.5rem;
@@ -300,16 +341,61 @@ td {
 	}
 }
 
-.containerflex {
+.containerFlex {
 	display: flex;
-	align-items: center;
-	font-size: small;
-	margin-top: 1rem;
-	gap: 5px;
-	.a {
-		text-decoration: none;
-		cursor: pointer;
-		background-color: #156542;
+	width: 100%;
+	padding: 5px;
+	gap: 10px;
+	justify-content: space-between;
+	align-content: center;
+
+	.card {
+		padding: 10px;
+		flex: 50%;
+		max-width: 50%;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+		transition: 0.3s;
+		border-radius: 5px;
+		@media screen and (max-width: 768px) {
+			max-width: 100%;
+		}
+		img {
+			width: 100px;
+			height: 100px;
+			@media screen and (max-width: 425px) {
+				display: none;
+			}
+		}
+		.content {
+			display: flex;
+			flex: 100%;
+			gap: 10px;
+			width: 100%;
+
+			.row {
+				display: flex;
+				width: 100%;
+				align-items: end;
+				margin-bottom: 5px;
+				justify-content: space-between;
+				h2 {
+					font-weight: bolder;
+					font: 1.5em 500;
+					color: wheat;
+					text-shadow: 1px 1px 0px rgb(0, 0, 0);
+				}
+				h4 {
+					font-size: 1.5rem;
+					font-weight: 700;
+				}
+			}
+			.column {
+				flex: 100%;
+			}
+		}
+	}
+	.card:hover {
+		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 	}
 }
 .center {

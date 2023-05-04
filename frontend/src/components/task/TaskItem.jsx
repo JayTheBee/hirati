@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
 import { Link, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
@@ -8,16 +8,39 @@ import {
   AiFillDelete, AiFillEdit, AiFillFileAdd, AiOutlineCloseCircle,
 } from 'react-icons/ai';
 import toast from 'react-hot-toast';
+import question from '../../resource/question.png';
 import LanguagesDropdown from '../editor/LanguagesDropdown';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import languageOptions from '../editor/languageOption';
 // All data Stored for db submission
-let collateData = [];
+// let collateData = [];
+// for Dev purpose only delete later
+let collateData = [
+  {
+    language: 'C (Clang 9.2.0)',
+    languageId: 50,
+    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
+    input: '213',
+    output: '213',
+    cputime: '25',
+    memory: '25',
+    status: '50',
+    points: '213',
+    result: {
+      time: '0.161',
+      language: 'JavaScript',
+      id: 63,
+      status: 'Accepted',
+      memory: 6980,
+    },
+    count: 1,
+    task_id: '63d8cc1c97db8f00a2debf15',
+  },
+];
 
 // editor Data is given for now cuz its so damn slow fetching from judge0
-let editorData;
-editorData = {
+let editorData = {
   time: '0.161',
   language: 'JavaScript (Node.js 12.14.0)',
   id: 63,
@@ -33,12 +56,38 @@ function TaskItem({
   task, deleteTask, updateButtonClick, count,
 }) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [viewStackmodal, setviewStackmodal] = React.useState(false);
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
+  const [data, setData] = React.useState();
+
   function openModal() {
     setIsOpen(true);
   }
+
+  function openviewStackmodal() {
+    setviewStackmodal(true);
+  }
+
+  function truncate(str, n) {
+    return (str.length > n) ? `${str.slice(0, n - 1)}...` : str;
+  }
+
+  function deleteQuestionStack(questionNumber) {
+    console.log(collateData);
+    setData(collateData.filter((each) => each.count !== questionNumber));
+    console.log(collateData.filter((each) => each.count !== questionNumber));
+    // const checkCount = (obj) => obj.count === questionNumber;
+    // if (collateData.some(checkCount)) {
+    //   collateData.splice((questionNumber - 1), 1);
+    //   console.log(collateData);
+    // } else { toast.error('No count found'); }
+  }
+  useEffect(() => {
+    setData(collateData);
+    // setData(collateData);
+  }, []);
 
   const inputRef = useRef();
   const outputRef = useRef();
@@ -113,13 +162,27 @@ function TaskItem({
     clearRubrics();
     clearInput();
   };
+
   const closeModal = () => {
-    setCount(1);
-    setAddRubrics(false);
-    setToggleCondition(true);
-    collateData = [];
-    clearAllVal();
-    setIsOpen(false);
+    if (confirm('Exit This Modal?')) {
+      setCount(1);
+      setAddRubrics(false);
+      setToggleCondition(true);
+      collateData = [];
+      clearAllVal();
+      setIsOpen(false);
+    }
+
+    // setCount(1);
+    // setAddRubrics(false);
+    // setToggleCondition(true);
+    // collateData = [];
+    // clearAllVal();
+    // setIsOpen(false);
+  };
+
+  const closeViewAllModal = () => {
+    setviewStackmodal(false);
   };
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
@@ -140,7 +203,7 @@ function TaskItem({
 
   const handleAdditionalCase = () => {
     if (inputRef.current.value && outputRef.current.value) {
-      if (confirm('Push to stack additional case for this question?')) {
+      if (confirm('Add additional case for this question?')) {
         additionalCase.push({ testcase: { input: inputRef.current.value, output: outputRef.current.value } });
         toast.success('Additional Case Added');
       }
@@ -236,7 +299,7 @@ function TaskItem({
   const handleAnotherQuestion = () => {
     if (checkRequiredIfEmpty()) { return; }
     if (checkRubricsIfEmpty() && toggleCondition) {
-      toast.error('Some Fields are empty in the rubrics! Make sure to fill it up or disable it. ');
+      toast.error('Default Rubrics for automated Testing is enabled. Please fill all fields or disable it. ');
       return;
     }
     if (!checkRubricsPercentage() && toggleCondition) {
@@ -263,6 +326,7 @@ function TaskItem({
         count: counter,
         task_id: task._id,
       });
+      toast.success(`Question #${counter} added to the stack!`);
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
     } else if (additionalRubrics.length === 0 && additionalCase.length === 0 && !toggleCondition) {
@@ -277,9 +341,11 @@ function TaskItem({
       });
       console.log('scene2');
       // enabled but some rubrics input are empty
-    } else if (toggleCondition && checkRubricsIfEmpty() === true) {
-      toast.error('Default Rubrics for automated Testing is enabled. Please fill all fields or disable it');
-    } else {
+    }
+    // else if (toggleCondition && checkRubricsIfEmpty() === true) {
+    //   toast.error('Default Rubrics for automated Testing is enabled. Please fill all fields or disable it');
+    // }
+    else {
       collateData.push({
         rubrics: additionalRubrics,
         ...additionalCase,
@@ -292,8 +358,8 @@ function TaskItem({
       console.log('scene3');
     }
 
-    // clearAllVal();
-    toast.success('Question pushed all to stack!');
+    clearAllVal();
+    toast.success(`Question #${counter} added to the stack!`);
     setCount(counter + 1);
     console.log(collateData);
   };
@@ -444,7 +510,7 @@ function TaskItem({
                   </button>
 
                   {/*  To do view all in stack */}
-                  <button type="button">
+                  <button type="button" onClick={openviewStackmodal}>
                     View All Question in stack
                   </button>
 
@@ -483,6 +549,116 @@ function TaskItem({
             {' '}
             Del
           </button>
+
+          {/* this part is for view all stack for Modal question view */}
+
+          <Modal
+            isOpen={viewStackmodal}
+            onRequestClose={closeViewAllModal}
+            className={classes.modalViewAll}
+            overlayClassName={classes.overlay}
+            contentLabel="Assign Task"
+            ariaHideApp={false}
+          >
+            {/* modal render view all stack question */}
+            <button onClick={closeViewAllModal} type="button" className={classes.modalClose}>
+              <AiOutlineCloseCircle />
+            </button>
+            <h2 className={classes.titleTask}>
+              <h1 className={classes.titleQuestion}>
+                Question Stack -
+                {' '}
+                {` ${collateData.length}`}
+              </h1>
+            </h2>
+            <br />
+            <h3>
+              All Questions pushed into the stack:
+              {' '}
+            </h3>
+            <div className={classes.containerFlex}>
+
+              {data.length > 0 ? (
+                data.map((each) => (
+                  <div className={classes.card}>
+                    <div className={classes.content}>
+                      <img src={question} alt="Avatar" />
+                      <div className={classes.column}>
+                        <div className={classes.row}>
+                          <h2>{`Question ${each.count}`}</h2>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Language: </h2>
+                          <h4>{each.language}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Description: </h2>
+                          <h4>{truncate(each.description, 15)}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Input: </h2>
+                          <h4>{each.input}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Output: </h2>
+                          <h4>{each.output}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Cpu Time: </h2>
+                          <h4>{`${each.cputime}%`}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Memory: </h2>
+                          <h4>{`${each.memory}%`}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Status: </h2>
+                          <h4>{`${each.status}%`}</h4>
+                        </div>
+                        <div className={classes.row}>
+                          <h2>Total Points: </h2>
+                          <h4>{each.points}</h4>
+                        </div>
+
+                      </div>
+
+                    </div>
+                    <hr />
+                    <div className={classes.containerFlex}>
+                      <h2>Sample Code Metrics </h2>
+                      <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
+                        Del
+                      </button>
+                    </div>
+                    <dir className={classes.containerFlex}>
+
+                      <div className={classes.row}>
+                        <h2>Language: </h2>
+                        <h4>{each.result.language}</h4>
+                      </div>
+                      <div className={classes.row}>
+                        <h2>Result Time: </h2>
+                        <h4>{each.result.time}</h4>
+                      </div>
+                      <div className={classes.row}>
+                        <h2>Result Status: </h2>
+                        <h4>{each.result.status}</h4>
+                      </div>
+                      <div className={classes.row}>
+                        <h2>Result Memory: </h2>
+                        <h4>{each.result.memory}</h4>
+                      </div>
+                    </dir>
+
+                  </div>
+                ))
+
+              ) : ('No Question Stack added')}
+            </div>
+          </Modal>
+
+          {/* MODAL end */}
+
         </div>
 
       </td>
