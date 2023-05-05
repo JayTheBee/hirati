@@ -3,21 +3,29 @@ import createError from '../utils/createError.js';
 
 export const createQuestion = async (req, res, next) => {
   const questionData = new Question({
-    questionNumber: req.body.questionNumber,
+    questionCount: req.body.count,
     description: req.body.description,
-    taskId: req.body.taskId,
-    performance: {
-      cputime: req.body.cputime,
-      memory: req.body.memory,
-      score: req.body.score,
-    },
+    taskId: req.body.task_id,
     testcase: {
       input: req.body.input,
       output: req.body.output,
     },
-    example: req.body.example,
-    constraints: req.body.constraints,
+    rubrics: {
+      cputime: req.body.cputime,
+      memory: req.body.memory,
+      status: req.body.status,
+    },
+    points: req.body.points,
+
+    resultSample: {
+      time: req.body.result.time,
+      language: req.body.result.language,
+      languageId: req.body.result.id,
+      status: req.body.result.status,
+    },
   });
+
+  console.log(questionData);
   try {
     const userQuestion = await questionData.save();
     return res.status(200).json(userQuestion);

@@ -8,13 +8,11 @@ function ThemeDropdown({ handleThemeChange, theme }) {
     <Select
       placeholder="Select Theme"
       // options={languageOptions}
-      options={Object.entries(monacoThemes).map(([themeId, themeName]) => ({
-        label: themeName,
-        value: themeId,
-        key: themeId,
-      }))}
+      options={[
+        { value: 'vs-light', label: 'Light' },
+        { value: 'vs-dark', label: 'Dark' },
+      ]}
       value={theme}
-      defaultValue="active4d"
       styles={customStyles}
       onChange={handleThemeChange}
     />

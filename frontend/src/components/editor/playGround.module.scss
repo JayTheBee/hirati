@@ -20,27 +20,29 @@
 	padding: 5px;
 }
 .editor {
-	border-radius: 10px;
+	border-radius: 25px;
 	overflow: hidden;
 }
-.option {
-	margin-bottom: 10px;
-	margin-top: 10px;
+.row {
 	display: flex;
-	gap: 20px;
+	justify-content: end;
 }
 
 .editorBody {
-	display: flex;
-	justify-content: space-around;
-	width: 100%;
-	flex-wrap: wrap;
+	margin-top: 10px;
+	display: block;
+	label {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		gap: 50px;
+		input {
+			margin-top: 10px;
+		}
+	}
 }
 
 .outputBox {
-	flex: 1 1 auto;
-	flex-direction: row;
-	margin-left: 10px;
 	button {
 		font-size: 1.5rem;
 		padding: 10px;
@@ -68,7 +70,8 @@
 		text-shadow: 2px 2px 2px rgb(90, 62, 62);
 		text-align: center;
 	}
-	pre {
+
+	p {
 		text-align: center;
 		font-size: 1.25rem;
 		font-weight: 400;
@@ -76,7 +79,7 @@
 		background-color: rgb(253, 253, 253);
 		width: 70%;
 		margin: auto;
-		margin-top: 20px;
+		margin-top: 3px;
 		padding: 1rem;
 		border-radius: 10px;
 		border: 2px solid black;
@@ -84,16 +87,7 @@
 		overflow: auto;
 	}
 	p {
-		// margin-top: 20px;
-		margin: 10px;
-		font-size: 2rem;
-		text-shadow: 2px 2px 2px black;
-		color: rgb(255, 255, 255);
-		.failed {
-			color: red;
-		}
-		.success {
-			color: green;
-		}
+		font-size: 1.5rem;
+		// text-shadow: 2px 2px 2px rgb(0, 0, 0);
 	}
 }

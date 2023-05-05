@@ -1,15 +1,14 @@
 const customStyles = {
   control: (styles) => ({
     ...styles,
-    width: '100%',
-    maxWidth: '14rem',
-    minWidth: '12rem',
+    width: '50%',
+    height: '50px',
     borderRadius: '5px',
     color: '#000',
-    fontSize: '1rem',
-    lineHeight: '1.75rem',
+    fontSize: '1.25rem',
     backgroundColor: '#FFFFFF',
     cursor: 'pointer',
+    display: 'flex',
     border: '2px solid #000000',
     boxShadow: '5px 5px 0px 0px rgba(0,0,0);',
     ':hover': {
@@ -33,7 +32,7 @@ const customStyles = {
   menu: (styles) => ({
     ...styles,
     backgroundColor: '#fff',
-    maxWidth: '14rem',
+    maxWidth: '20rem',
     border: '2px solid #000000',
     borderRadius: '5px',
     boxShadow: '5px 5px 0px 0px rgba(0,0,0);',

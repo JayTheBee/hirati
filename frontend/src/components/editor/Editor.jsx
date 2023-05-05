@@ -12,12 +12,11 @@ function CodeEditorWindow({
     setValue(value);
     onChange('code', value);
   };
-
   return (
     <div className={classes.editor}>
       <Editor
-        height="70vh"
-        width="50vw"
+        height="50vh"
+        // width="40vw"
         language={language || 'javascript'}
         value={value}
         theme={theme}

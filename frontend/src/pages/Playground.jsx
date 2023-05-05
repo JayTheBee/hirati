@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
 import Navbar from '../components/nav/Navbar';
-import EditorPage from '../components/editor/Landing';
+import EditorPage from '../components/editor/Playground';
 
 function Home() {
   const [user, setUser] = useState(null);

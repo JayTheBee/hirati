@@ -4,10 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import CodeEditorWindow from './Editor';
 // import { classnames } from '../utils/general';
 import languageOptions from './languageOption';
-
 import 'react-toastify/dist/ReactToastify.css';
-
-import defineTheme from './defineTheme';
 import useKeyPress from '../../hooks/useKeypress';
 import OutputWindow from './OutputWindow';
 import CustomInput from './CustomInput';
@@ -16,6 +13,7 @@ import ThemeDropdown from './ThemeDropdown';
 import LanguagesDropdown from './LanguagesDropdown';
 import classes from './playGround.module.scss';
 
+// playpen to be fix design
 const showSuccessToast = (msg) => {
   toast.success(msg || 'Compiled Successfully!', {
     position: 'top-right',
@@ -89,6 +87,7 @@ function Landing() {
     switch (action) {
       case 'code': {
         setCode(data);
+        console.log(code);
         break;
       }
       default: {
@@ -102,8 +101,8 @@ function Landing() {
       method: 'GET',
       url: import.meta.env.VITE_JUDGE_LINK + "/languages",
       headers: {
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
     };
 
@@ -122,9 +121,9 @@ function Landing() {
       params: { base64_encoded: 'true'},
       headers: {
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-
+        'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
       },
     };
     try {
@@ -168,6 +167,8 @@ function Landing() {
         'Content-Type': 'application/json',
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
       data: formData,
     };
@@ -188,7 +189,7 @@ function Landing() {
           console.log('too many requests', status);
 
           showErrorToast(
-            'Quota of 50 requests exceeded for the Day! ',
+            'Quota of 50 requests exceeded for the Day!',
             10000,
           );
         }
@@ -200,12 +201,7 @@ function Landing() {
   function handleThemeChange(th) {
     const theme = th;
     console.log('theme...', theme);
-
-    if (['light', 'vs-dark'].includes(theme.value)) {
-      setTheme(theme);
-    } else {
-      defineTheme(theme.value).then(() => setTheme(theme));
-    }
+    setTheme(theme);
   }
 
   useEffect(() => {
@@ -213,7 +209,7 @@ function Landing() {
   }, []);
 
   useEffect(() => {
-    defineTheme('oceanic-next').then(() => setTheme({ value: 'oceanic-next', label: 'Oceanic Next' }));
+    setTheme({ value: 'vs-light', label: 'Light' });
   }, []);
 
   useEffect(() => {
@@ -237,9 +233,6 @@ function Landing() {
         draggable
         pauseOnHover
       />
-      <div className={classes.title}>
-        <h1 className={classes.pageTitle}>CodePen </h1>
-      </div>
       <div className={classes.containerline} />
       <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
       <div className={classes.option}>
@@ -267,7 +260,7 @@ function Landing() {
           <button
             type="button"
             onClick={handleCompile}
-            disabled={!code}
+            disabled={processing}
           >
             {processing ? 'Processing...' : 'Compile and Execute'}
           </button>
