@@ -1,49 +1,47 @@
-//api call to a backend process
-import axios from 'axios'
-import { useState } from 'react'
+// api call to a backend process
+import axios from 'axios';
+import { useState } from 'react';
 
-
-const lintOutput = ({resultArr}) => {
-	if(resultArr.status === 0){
-		return(
-			<>
-			<h2>{resultArr.message}</h2>
-			</>
-		)
-	}else if(resultArr.status === 1){
-		resultArr.map((e) => {
-			return(<>
-			<h2>{e.message}</h2>
-			</>)
-		})
-
-	}else{
-		return(
-			<>
-			<h2>{resultArr.message}</h2>			
-			</>
-		)
-	}
+function LintOutput({ lintRes }) {
+  if (lintRes.status === 0) {
+    return (
+      <h2>{lintRes.output}</h2>
+    );
+  // eslint-disable-next-line no-else-return
+  } else if (lintRes.status === 1){
+    return (<>
+      {lintRes.output.map((element, index) => {
+			  return (
+  <h2 key={index}>{element}</h2>);
+			})}
+            </>);
+  } else {
+    return (
+      <h2>{lintRes.output}</h2>
+    );
+  }
 }
 
-const LintCall = ({code, lang}) => {
-	const [lintRes, setLintRes] = useState()
-	
-	const handleSubmit = async () => {
-		const conf = { 'Content-Type': 'application/json' }
-		const payload = {'code': code }
-		const { data } = await axios.post(`/api/lint/${lang.name}`, payload, {"headers": conf})
-		console.log("data is ", data)
-		setLintRes(data)
-	}
-	return(
-	<>
-			<button  type="submit" onClick={handleSubmit}>Lint</button>
-	</>
-	)
-	
+function LintCall({ code, lang }) {
+  const [lintRes, setLintRes] = useState();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const conf = { 'Content-Type': 'application/json' };
+    const payload = { code };
+    const { data } = await axios.post(`/api/lint/${lang.name}`, payload, { headers: conf });
+    console.log('data is ', data);
+    setLintRes(data);
+    console.log('lintres is ', lintRes);
+  };
+  return (
+    <>
+      <h1>Linter</h1>
+      <button type="submit" onClick={handleSubmit}>Lint</button>
+      {lintRes && <LintOutput lintRes={lintRes} />}
+    </>
+  );
 }
 
-
-
-export default LintCall
+export default LintCall;

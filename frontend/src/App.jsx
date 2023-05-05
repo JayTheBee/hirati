@@ -11,7 +11,7 @@ import Question from './pages/Question';
 import Playground from './pages/Playground';
 import EmailVerify from './components/auth/EmailVerification';
 import Editor from './pages/Editor';
-import CodeEditor from './components/editor/Main'
+import CodeEditor from './components/editor jb/Main'
 
 function App() {
   return (
@@ -30,8 +30,9 @@ function App() {
           <Route path="/edit-profile" element={<EditProfile />} />
           <Route path="/class/:id" element={<Task />} />
           <Route path="/class/:id/task" element={<Question />} />
-          <Route path="/playground" element={<Playground />} />
         </Route>
+
+        <Route path="/playground" element={<Playground />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />
         <Route path="/task" element={<Task />} />
