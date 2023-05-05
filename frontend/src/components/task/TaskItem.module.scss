@@ -401,3 +401,11 @@ td {
 .center {
 	text-align: center;
 }
+
+.btnContainer {
+	display: flex;
+	width: 100%;
+	gap: 0px 10px;
+	align-items: end;
+	justify-content: end;
+}

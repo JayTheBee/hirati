@@ -60,7 +60,7 @@ function TaskItem({
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
-  const [data, setData] = React.useState();
+  const [data, setData] = React.useState([]);
 
   function openModal() {
     setIsOpen(true);
@@ -75,17 +75,19 @@ function TaskItem({
   }
 
   function deleteQuestionStack(questionNumber) {
-    console.log(collateData);
-    setData(collateData.filter((each) => each.count !== questionNumber));
-    console.log(collateData.filter((each) => each.count !== questionNumber));
-    // const checkCount = (obj) => obj.count === questionNumber;
-    // if (collateData.some(checkCount)) {
-    //   collateData.splice((questionNumber - 1), 1);
-    //   console.log(collateData);
-    // } else { toast.error('No count found'); }
+    // weird useState behavior due to asynchronous in nature
+    // console.log(collateData);
+    // collateData = data.filter((each) => each.count !== questionNumber);
+    // console.log(collateData);
+
+    setData(data.filter((each) => each.count !== questionNumber));
+    // console.log(data);
+    toast.success(`Question #${questionNumber} is deleted`);
   }
+
   useEffect(() => {
     setData(collateData);
+    console.log('this run');
     // setData(collateData);
   }, []);
 
@@ -99,7 +101,6 @@ function TaskItem({
   const rubricRatingRef = useRef();
   const descriptionRef = useRef();
 
-  // HANDLE THE ONCHANGE HERE
   const clearRubrics = () => {
     if (toggleCondition && addRubrics) {
       statusRef.current.value = '';
@@ -144,7 +145,7 @@ function TaskItem({
     updateButtonClick(task);
   };
 
-  // Uncomment this to get editorData when compiled
+  // Uncomment this later
   const handleEditorData = async (data) => {
     // editorData = data;
     // console.log(editorData);
@@ -164,21 +165,15 @@ function TaskItem({
   };
 
   const closeModal = () => {
-    if (confirm('Exit This Modal?')) {
+    if (confirm('Exiting means resetting all the value in stack! Please submit all before proceeding')) {
       setCount(1);
       setAddRubrics(false);
       setToggleCondition(true);
       collateData = [];
+      setData([]);
       clearAllVal();
       setIsOpen(false);
     }
-
-    // setCount(1);
-    // setAddRubrics(false);
-    // setToggleCondition(true);
-    // collateData = [];
-    // clearAllVal();
-    // setIsOpen(false);
   };
 
   const closeViewAllModal = () => {
@@ -187,17 +182,18 @@ function TaskItem({
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
   const handleSubmit = () => {
-    // collateData = { ...collateData };
     try {
-      if (collateData.length > 0) {
+      if (data.length > 0) {
         collateData.map(async (each) => {
           await axios.post('/api/question/', each);
         });
+        clearAllVal();
+        toast.success('All questions in the stack are uploaded!');
       }
-      clearAllVal();
-      toast.success('All questions in the stack are uploaded!');
+      toast.error('Cannot Upload due to empty stack');
     } catch (err) {
       console.log(err);
+      toast.error('Something Went wrong! ');
     }
   };
 
@@ -326,7 +322,6 @@ function TaskItem({
         count: counter,
         task_id: task._id,
       });
-      toast.success(`Question #${counter} added to the stack!`);
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
     } else if (additionalRubrics.length === 0 && additionalCase.length === 0 && !toggleCondition) {
@@ -362,6 +357,7 @@ function TaskItem({
     toast.success(`Question #${counter} added to the stack!`);
     setCount(counter + 1);
     console.log(collateData);
+    setData(collateData);
   };
 
   return (
@@ -406,12 +402,16 @@ function TaskItem({
             <button onClick={closeModal} type="button" className={classes.modalClose}>
               <AiOutlineCloseCircle />
             </button>
-            <h2 className={classes.titleTask}>
-              Task Title:
+            <div className={classes.titleTask}>
+              <h5>
+
+                Task Name
+              </h5>
+
               <h1 className={classes.titleQuestion}>
                 {` ${task.title} `}
               </h1>
-            </h2>
+            </div>
             <h2 className={classes.center}>
               Question #
               {`${counter}`}
@@ -564,13 +564,13 @@ function TaskItem({
             <button onClick={closeViewAllModal} type="button" className={classes.modalClose}>
               <AiOutlineCloseCircle />
             </button>
-            <h2 className={classes.titleTask}>
+            <div className={classes.titleTask}>
               <h1 className={classes.titleQuestion}>
                 Question Stack -
                 {' '}
-                {` ${collateData.length}`}
+                {` ${data.length}`}
               </h1>
-            </h2>
+            </div>
             <br />
             <h3>
               All Questions pushed into the stack:
@@ -624,10 +624,13 @@ function TaskItem({
 
                     </div>
                     <hr />
-                    <div className={classes.containerFlex}>
+                    <div className={classes.btnContainer}>
                       <h2>Sample Code Metrics </h2>
                       <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
-                        Del
+                        <AiFillDelete />
+                      </button>
+                      <button type="button" className={classes.updateBtn} onClick={() => 'insert handle update here '}>
+                        <AiFillEdit />
                       </button>
                     </div>
                     <dir className={classes.containerFlex}>
