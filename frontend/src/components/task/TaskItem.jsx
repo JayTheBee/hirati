@@ -57,6 +57,7 @@ function TaskItem({
 }) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [viewStackmodal, setviewStackmodal] = React.useState(false);
+  const [editStackModal, setEditStackModal] = React.useState(false);
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
@@ -100,6 +101,18 @@ function TaskItem({
   const rubricTitleRef = useRef();
   const rubricRatingRef = useRef();
   const descriptionRef = useRef();
+
+  // modal edit ref
+  const inputEditRef = useRef();
+  const outputEditRef = useRef();
+  const cputimeEditRef = useRef();
+  const memoryEditRef = useRef();
+  const statusEditRef = useRef();
+  const pointsEditRef = useRef();
+  const rubricTitleEditRef = useRef();
+  const rubricRatingEditRef = useRef();
+  const descriptionEditRef = useRef();
+  const languageEditRef = useRef();
 
   const clearRubrics = () => {
     if (toggleCondition && addRubrics) {
@@ -152,6 +165,7 @@ function TaskItem({
 
     console.log(editorData);
   };
+
   // clear all values
   const clearAllVal = () => {
     editorData = [];
@@ -162,6 +176,61 @@ function TaskItem({
     outputRef.current.value = '';
     clearRubrics();
     clearInput();
+  };
+
+  const handleEditModal = (count) => {
+    setEditStackModal(!editStackModal);
+    // const index = data.findIndex((each) => each.count == count);
+    // console.log(data[index]);
+    // console.log(descriptionRef.current.value != null);
+
+    // editStackModal
+    //   ? console.log(`yawa true ${index}`)
+    //   : console.log(`yawa false ${index}`);
+  };
+
+  // holy moly Dynamic update SHEESH
+  const handleChangeEditModal = (e, count, field) => {
+    const index = data.findIndex((each) => each.count === count);
+    // if (field === 'status' || 'cputime' || 'memory') {
+
+    switch (field) {
+      case 'status':
+        if (parseInt(collateData[index].cputime) + parseInt(collateData[index].memory) + parseInt(e.target.value) !== 100) {
+          e.target.style.textDecoration = 'underline';
+          e.target.style.textDecorationColor = 'red';
+          collateData[index][field] = e.target.value;
+          return;
+        }
+        e.target.style.textDecoration = 'none';
+        break;
+      case 'cputime':
+        if (parseInt(collateData[index].status) + parseInt(collateData[index].memory) + parseInt(e.target.value) !== 100) {
+          e.target.style.textDecoration = 'underline';
+          e.target.style.textDecorationColor = 'red';
+          collateData[index][field] = e.target.value;
+          return;
+        }
+        e.target.style.textDecoration = 'none';
+        break;
+      case 'memory':
+        if (parseInt(collateData[index].cputime) + parseInt(collateData[index].status) + parseInt(e.target.value) !== 100) {
+          e.target.style.textDecoration = 'underline';
+          e.target.style.textDecorationColor = 'red';
+          collateData[index][field] = e.target.value;
+          return;
+        }
+        e.target.style.textDecoration = 'none';
+        break;
+      default:
+        break;
+    }
+    collateData[index][field] = e.target.value;
+    // data[index][field] = e.target.value;
+    // setData(collateData);
+    // dapat same sila dito ng res
+    console.log(collateData);
+    console.log(data);
   };
 
   const closeModal = () => {
@@ -335,12 +404,7 @@ function TaskItem({
         task_id: task._id,
       });
       console.log('scene2');
-      // enabled but some rubrics input are empty
-    }
-    // else if (toggleCondition && checkRubricsIfEmpty() === true) {
-    //   toast.error('Default Rubrics for automated Testing is enabled. Please fill all fields or disable it');
-    // }
-    else {
+    } else {
       collateData.push({
         rubrics: additionalRubrics,
         ...additionalCase,
@@ -582,42 +646,101 @@ function TaskItem({
                 data.map((each) => (
                   <div className={classes.card}>
                     <div className={classes.content}>
-                      <img src={question} alt="Avatar" />
+                      <img src={question} alt="Question Logo" />
                       <div className={classes.column}>
                         <div className={classes.row}>
                           <h2>{`Question ${each.count}`}</h2>
                         </div>
                         <div className={classes.row}>
                           <h2>Language: </h2>
-                          <h4>{each.language}</h4>
+                          {editStackModal ? (
+                            <select name="language" id="language" defaultValue={each.language}>
+                              <option value="JavaScript">JavaScript</option>
+                              <option value="C">C</option>
+                              <option value="C++">C++</option>
+                              <option value="C#">C#</option>
+                              <option value="Java">Java</option>
+                              <option value="Python">Python</option>
+                            </select>
+                          ) : (<h4>{each.language}</h4>)}
                         </div>
+
                         <div className={classes.row}>
                           <h2>Description: </h2>
-                          <h4>{truncate(each.description, 15)}</h4>
+                          {!editStackModal ? (
+                            <input
+                              type="text"
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'description')}
+                              defaultValue={each.description}
+                            />
+
+                          ) : (<h4>{truncate(each.description, 15)}</h4>)}
                         </div>
+
                         <div className={classes.row}>
                           <h2>Input: </h2>
-                          <h4>{each.input}</h4>
+                          {!editStackModal ? (
+                            <input
+                              type="text"
+                              defaultValue={each.input}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'input')}
+                            />
+                          ) : (<h4>{each.input}</h4>)}
                         </div>
+
                         <div className={classes.row}>
-                          <h2>Output: </h2>
-                          <h4>{each.output}</h4>
+                          <h2>Output:</h2>
+                          {!editStackModal ? (
+                            <input
+                              type="text"
+                              defaultValue={each.output}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'output')}
+                            />
+                          ) : (<h4>{each.output}</h4>)}
                         </div>
+
                         <div className={classes.row}>
-                          <h2>Cpu Time: </h2>
-                          <h4>{`${each.cputime}%`}</h4>
+                          <h2>Cpu time:</h2>
+                          {!editStackModal ? (
+                            <input
+                              type="number"
+                              defaultValue={each.cputime}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'cputime')}
+                            />
+                          ) : (<h4>{each.cputime}</h4>)}
                         </div>
+
                         <div className={classes.row}>
-                          <h2>Memory: </h2>
-                          <h4>{`${each.memory}%`}</h4>
+                          <h2>Memory:</h2>
+                          {!editStackModal ? (
+                            <input
+                              type="number"
+                              defaultValue={each.memory}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'memory')}
+                            />
+                          ) : (<h4>{each.memory}</h4>)}
                         </div>
+
                         <div className={classes.row}>
-                          <h2>Status: </h2>
-                          <h4>{`${each.status}%`}</h4>
+                          <h2>status:</h2>
+                          {!editStackModal ? (
+                            <input
+                              type="number"
+                              defaultValue={each.status}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'status')}
+                            />
+                          ) : (<h4>{each.status}</h4>)}
                         </div>
+
                         <div className={classes.row}>
-                          <h2>Total Points: </h2>
-                          <h4>{each.points}</h4>
+                          <h2>Total Points:</h2>
+                          {!editStackModal ? (
+                            <input
+                              type="number"
+                              defaultValue={each.points}
+                              onChange={(event) => handleChangeEditModal(event, each.count, 'points')}
+                            />
+                          ) : (<h4>{each.points}</h4>)}
                         </div>
 
                       </div>
@@ -629,7 +752,7 @@ function TaskItem({
                       <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
                         <AiFillDelete />
                       </button>
-                      <button type="button" className={classes.updateBtn} onClick={() => 'insert handle update here '}>
+                      <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each.count)}>
                         <AiFillEdit />
                       </button>
                     </div>
