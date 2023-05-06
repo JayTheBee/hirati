@@ -3,7 +3,8 @@ import CaseField from './CaseInputs'
 import CodeEditor from './EditorView'
 import BatchSubmission from './CodeSubmit';
 import LintCall from '../linter/Main';
-import ConstructCheck from '../construct-checking/ConstructChecks';
+import ConstructCheck from '../construct-checking/Main';
+
 const MainEditor = () => {
 	const [casevar, setCase] = useState([{input: '', output:''}])
 	const [code, setCode] = useState("");
