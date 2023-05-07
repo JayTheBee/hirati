@@ -37,6 +37,46 @@ let collateData = [
     count: 1,
     task_id: '63d8cc1c97db8f00a2debf15',
   },
+  {
+    language: 'C (Clang 9.2.0)',
+    languageId: 50,
+    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
+    input: '213',
+    output: '213',
+    cputime: '25',
+    memory: '25',
+    status: '50',
+    points: '213',
+    result: {
+      time: '0.161',
+      language: 'JavaScript',
+      id: 63,
+      status: 'Accepted',
+      memory: 6980,
+    },
+    count: 2,
+    task_id: '63d8cc1c97db8f00a2debf15',
+  },
+  {
+    language: 'C (Clang 9.2.0)',
+    languageId: 50,
+    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
+    input: '213',
+    output: '213',
+    cputime: '25',
+    memory: '25',
+    status: '50',
+    points: '213',
+    result: {
+      time: '0.161',
+      language: 'JavaScript',
+      id: 63,
+      status: 'Accepted',
+      memory: 6980,
+    },
+    count: 3,
+    task_id: '63d8cc1c97db8f00a2debf15',
+  },
 ];
 
 // editor Data is given for now cuz its so damn slow fetching from judge0
@@ -51,6 +91,7 @@ let editorData = {
 let additionalCase = [];
 let additionalRubrics = [];
 let languageName = {};
+let currentEdit = 0;
 
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
@@ -178,58 +219,24 @@ function TaskItem({
     clearInput();
   };
 
-  const handleEditModal = (count) => {
-    setEditStackModal(!editStackModal);
-    // const index = data.findIndex((each) => each.count == count);
-    // console.log(data[index]);
-    // console.log(descriptionRef.current.value != null);
-
-    // editStackModal
-    //   ? console.log(`yawa true ${index}`)
-    //   : console.log(`yawa false ${index}`);
+  const handleEditModal = (data) => {
+    currentEdit = data.count;
+    if ((parseInt(data.status)
+    + parseInt(data.cputime)
+    + parseInt(data.memory) !== 100)) {
+      toast.error('Please enter valid percentage for cpu,memory and status that equates to 100%');
+    } else setEditStackModal(!editStackModal);
   };
 
   // holy moly Dynamic update SHEESH
   const handleChangeEditModal = (e, count, field) => {
     const index = data.findIndex((each) => each.count === count);
-    // if (field === 'status' || 'cputime' || 'memory') {
 
-    switch (field) {
-      case 'status':
-        if (parseInt(collateData[index].cputime) + parseInt(collateData[index].memory) + parseInt(e.target.value) !== 100) {
-          e.target.style.textDecoration = 'underline';
-          e.target.style.textDecorationColor = 'red';
-          collateData[index][field] = e.target.value;
-          return;
-        }
-        e.target.style.textDecoration = 'none';
-        break;
-      case 'cputime':
-        if (parseInt(collateData[index].status) + parseInt(collateData[index].memory) + parseInt(e.target.value) !== 100) {
-          e.target.style.textDecoration = 'underline';
-          e.target.style.textDecorationColor = 'red';
-          collateData[index][field] = e.target.value;
-          return;
-        }
-        e.target.style.textDecoration = 'none';
-        break;
-      case 'memory':
-        if (parseInt(collateData[index].cputime) + parseInt(collateData[index].status) + parseInt(e.target.value) !== 100) {
-          e.target.style.textDecoration = 'underline';
-          e.target.style.textDecorationColor = 'red';
-          collateData[index][field] = e.target.value;
-          return;
-        }
-        e.target.style.textDecoration = 'none';
-        break;
-      default:
-        break;
-    }
-    collateData[index][field] = e.target.value;
-    // data[index][field] = e.target.value;
-    // setData(collateData);
-    // dapat same sila dito ng res
-    console.log(collateData);
+    // collateData[index][field] = e.target.value;
+    data[index][field] = e.target.value;
+    // // setData(collateData);
+    // // dapat same sila dito ng res
+    // console.log(collateData);
     console.log(data);
   };
 
@@ -258,8 +265,7 @@ function TaskItem({
         });
         clearAllVal();
         toast.success('All questions in the stack are uploaded!');
-      }
-      toast.error('Cannot Upload due to empty stack');
+      } else { toast.error('Cannot Upload due to empty stack'); }
     } catch (err) {
       console.log(err);
       toast.error('Something Went wrong! ');
@@ -402,6 +408,7 @@ function TaskItem({
         output: outputRef.current.value,
         result: editorData,
         task_id: task._id,
+        count: counter,
       });
       console.log('scene2');
     } else {
@@ -413,6 +420,7 @@ function TaskItem({
         language: languageName.name,
         languageId: languageName.id,
         task_id: task._id,
+        count: counter,
       });
       console.log('scene3');
     }
@@ -640,7 +648,7 @@ function TaskItem({
               All Questions pushed into the stack:
               {' '}
             </h3>
-            <div className={classes.containerFlex}>
+            <div className={classes.containerAllQuestion}>
 
               {data.length > 0 ? (
                 data.map((each) => (
@@ -649,11 +657,13 @@ function TaskItem({
                       <img src={question} alt="Question Logo" />
                       <div className={classes.column}>
                         <div className={classes.row}>
-                          <h2>{`Question ${each.count}`}</h2>
+                          <h2>{`Question ID #${each.count}`}</h2>
                         </div>
                         <div className={classes.row}>
                           <h2>Language: </h2>
-                          {editStackModal ? (
+                          {
+                          currentEdit == each.count
+                          && editStackModal ? (
                             <select name="language" id="language" defaultValue={each.language}>
                               <option value="JavaScript">JavaScript</option>
                               <option value="C">C</option>
@@ -662,85 +672,96 @@ function TaskItem({
                               <option value="Java">Java</option>
                               <option value="Python">Python</option>
                             </select>
-                          ) : (<h4>{each.language}</h4>)}
+                            ) : (<h4>{each.language}</h4>)
+}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Description: </h2>
-                          {!editStackModal ? (
+                          { currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="text"
                               onChange={(event) => handleChangeEditModal(event, each.count, 'description')}
                               defaultValue={each.description}
                             />
 
-                          ) : (<h4>{truncate(each.description, 15)}</h4>)}
+                            ) : (<h4>{truncate(each.description, 15)}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Input: </h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="text"
                               defaultValue={each.input}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'input')}
                             />
-                          ) : (<h4>{each.input}</h4>)}
+                            ) : (<h4>{each.input}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Output:</h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="text"
                               defaultValue={each.output}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'output')}
                             />
-                          ) : (<h4>{each.output}</h4>)}
+                            ) : (<h4>{each.output}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Cpu time:</h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="number"
                               defaultValue={each.cputime}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'cputime')}
+                              ref={cputimeEditRef}
                             />
-                          ) : (<h4>{each.cputime}</h4>)}
+                            ) : (<h4>{each.cputime}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Memory:</h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="number"
                               defaultValue={each.memory}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'memory')}
+                              ref={memoryEditRef}
                             />
-                          ) : (<h4>{each.memory}</h4>)}
+                            ) : (<h4>{each.memory}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>status:</h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="number"
                               defaultValue={each.status}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'status')}
+                              ref={statusEditRef}
                             />
-                          ) : (<h4>{each.status}</h4>)}
+                            ) : (<h4>{each.status}</h4>)}
                         </div>
 
                         <div className={classes.row}>
                           <h2>Total Points:</h2>
-                          {!editStackModal ? (
+                          {currentEdit == each.count
+                          && editStackModal ? (
                             <input
                               type="number"
                               defaultValue={each.points}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'points')}
                             />
-                          ) : (<h4>{each.points}</h4>)}
+                            ) : (<h4>{each.points}</h4>)}
                         </div>
 
                       </div>
@@ -748,30 +769,31 @@ function TaskItem({
                     </div>
                     <hr />
                     <div className={classes.btnContainer}>
-                      <h2>Sample Code Metrics </h2>
+
                       <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
                         <AiFillDelete />
                       </button>
-                      <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each.count)}>
+                      <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each)}>
                         <AiFillEdit />
                       </button>
                     </div>
                     <dir className={classes.containerFlex}>
+                      <h2>Sample Code Metrics </h2>
 
                       <div className={classes.row}>
-                        <h2>Language: </h2>
+                        <h3>Language: </h3>
                         <h4>{each.result.language}</h4>
                       </div>
                       <div className={classes.row}>
-                        <h2>Result Time: </h2>
+                        <h3>Time: </h3>
                         <h4>{each.result.time}</h4>
                       </div>
                       <div className={classes.row}>
-                        <h2>Result Status: </h2>
+                        <h3>Status: </h3>
                         <h4>{each.result.status}</h4>
                       </div>
                       <div className={classes.row}>
-                        <h2>Result Memory: </h2>
+                        <h3>Memory: </h3>
                         <h4>{each.result.memory}</h4>
                       </div>
                     </dir>
