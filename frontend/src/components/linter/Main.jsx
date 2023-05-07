@@ -8,13 +8,14 @@ function LintOutput({ lintRes }) {
       <h2>{lintRes.output}</h2>
     );
   // eslint-disable-next-line no-else-return
-  } else if (lintRes.status === 1){
-    return (<>
-      {lintRes.output.map((element, index) => {
-			  return (
-  <h2 key={index}>{element}</h2>);
-			})}
-            </>);
+  } else if (lintRes.status === 1) {
+    return (
+      <>
+
+        {lintRes.output.map((element) => (
+          <h2 key={element.id}>{element.error}</h2>))}
+      </>
+    );
   } else {
     return (
       <h2>{lintRes.output}</h2>
@@ -33,7 +34,6 @@ function LintCall({ code, lang }) {
     const { data } = await axios.post(`/api/lint/${lang.name}`, payload, { headers: conf });
     console.log('data is ', data);
     setLintRes(data);
-    console.log('lintres is ', lintRes);
   };
   return (
     <>

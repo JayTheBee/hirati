@@ -29,7 +29,8 @@ export const lintC = async (req, res) => {
     let errArr = error.stderr.split('\n')
     errArr = errArr.filter(s=>~s.indexOf("code.c"));
     errArr.forEach((element, index) => {
-      errArr[index] = element.substring(element.indexOf("code.c"))
+      const x = element.substring(element.indexOf("code.cpp"))
+      errArr[index] = { error: x, id: index}
     });
     console.log("Formatted Error Array is ", errArr)
 
@@ -71,7 +72,8 @@ export const lintJava = async (req, res) => {
     let errArr = error.stdout.split('\n')
     errArr = errArr.filter(s=>~s.indexOf("code.java"));
     errArr.forEach((element, index) => {
-      errArr[index] = element.substring(element.indexOf("code.java"))
+      const x = element.substring(element.indexOf("code.java"))
+      errArr[index] = { error: x, id: index}
     });
     console.log("Formatted Error Array is ", errArr)
 
@@ -98,8 +100,9 @@ export const lintPython = async (req, res) => {
 
     const errArr = error.stdout.split('\n')
     errArr.forEach((element, index) => {
-      errArr[index] = element.substring(element.indexOf("code.py"))
-    })
+      const x = element.substring(element.indexOf("code.py"))
+      errArr[index] = { error: x, id: index}
+    });
     errArr.pop()
     console.log("Formatted Error Array is ", errArr)
     const results = { status: 1, output: errArr}
@@ -123,9 +126,10 @@ export const lintCPP = async (req, res) => {
 
     console.log("Error stdout is ", error.stdout)
     let errArr = error.stderr.split('\n')
-    errArr = errArr.filter(s=>~s.indexOf("code.c"));
+    errArr = errArr.filter(s=>~s.indexOf("code.cpp"));
     errArr.forEach((element, index) => {
-      errArr[index] = element.substring(element.indexOf("code.c"))
+      const x = element.substring(element.indexOf("code.cpp"))
+      errArr[index] = { error: x, id: index}
     });
     console.log("Formatted Error Array is ", errArr)
     const results = { status: 1, output: errArr}
