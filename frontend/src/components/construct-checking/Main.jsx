@@ -23,7 +23,7 @@ function CheckOutputs({ detConstructs }) {
 function ConstructCheck({ code, lang }) {
   let reservedWords = reservedPython;
 
-  switch (lang.name) {
+  switch (lang) {
     case 'c':
       reservedWords = reservedC;
       break;
@@ -40,65 +40,60 @@ function ConstructCheck({ code, lang }) {
       console.log('Language not detected');
   }
 
-  const [reservedArr, setReservedArr] = useState([...reservedWords]);
-  const [detConstructs, setDetConstructs] = useState([]); // possibly just an array
-  const [selConstructs, setSelConstructs] = useState([reservedArr[0]]);
-
-  console.log('Selected is  ', selConstructs);
-  console.log('Remaining options are ', reservedArr);
-  console.log('Detected constructs are ', detConstructs);
-  console.log('Code is ', code);
+  const [selectedConstructs, setSelectedConstructs] = useState(new Set([reservedWords[0]]));
+  const [detectedConstructs, setDetectedConstructs] = useState([]);
 
   const handleAddSelect = () => {
-    setReservedArr(reservedWords.filter((n) => !selConstructs.includes(n)));
-    setSelConstructs([...selConstructs, reservedArr[1]]);
+    const remainingOptions = reservedWords.filter((option) => !selectedConstructs.has(option));
+    const nextOption = remainingOptions[0];
+    setSelectedConstructs(new Set([...selectedConstructs, nextOption]));
   };
 
   const handleRemoveSelect = (index) => {
-    const newConstructs = [...selConstructs];
-    newConstructs.splice(index, 1);
-    setSelConstructs(newConstructs);
-    setReservedArr(reservedWords.filter((n) => !selConstructs.includes(n)));
+    const removedOption = [...selectedConstructs][index];
+    const newSelectedConstructs = new Set(selectedConstructs);
+    newSelectedConstructs.delete(removedOption);
+    setSelectedConstructs(newSelectedConstructs);
   };
 
-  const handleChangeSelect = (selectedWord, index) => {
-    const newSelConstructs = [...selConstructs];
-    newSelConstructs[index] = selectedWord;
-    setSelConstructs(newSelConstructs);
-    setReservedArr(reservedWords.filter((n) => !selConstructs.includes(n)));
+  const handleChangeSelect = (selectedOption, index) => {
+    const newSelectedConstructs = new Set(selectedConstructs);
+    const removedOption = [...selectedConstructs][index];
+    newSelectedConstructs.delete(removedOption);
+    newSelectedConstructs.add(selectedOption);
+    setSelectedConstructs(newSelectedConstructs);
   };
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    const words = code.match(/[a-zA-Z]+/g);
-    console.log('Words array is ', words);
-    const detectedWords = reservedWords.filter((obj) => words.includes(obj.value));
-    console.log('Detected Words are ', detectedWords);
-    setDetConstructs(detectedWords);
+    const words = code.match(/[a-zA-Z]+/g) || [];
+    const detectedWords = reservedWords.filter((word) => words.includes(word.value));
+    setDetectedConstructs(detectedWords);
   };
+
+  const reservedArr = reservedWords.filter((option) => !selectedConstructs.has(option));
 
   return (
     <>
       <h1>Construct Checking</h1>
       <button type="submit" onClick={handleSearch}>Check Constructs</button>
 
-      {selConstructs.map((element, index) => (
-        <div key={element.id}>
+      {Array.from(selectedConstructs).map((option, index) => (
+        <div key={option.id}>
           <Select
             name="Construct selects"
             options={reservedArr}
-            value={selConstructs[index]}
-            onChange={(selectedConstruct) => handleChangeSelect(selectedConstruct, index)}
+            value={option}
+            onChange={(selectedOption) => handleChangeSelect(selectedOption, index)}
             getOptionLabel={(option) => option.value}
-          //   getOptionValue={(option) => option.value}
           />
-
           {index > 0 && <button type="button" className="button remove" onClick={() => handleRemoveSelect(index)}>Remove Word</button>}
         </div>
-
       ))}
-      <button className="button add" type="button" onClick={() => handleAddSelect()}>Add More Words</button>
-      {detConstructs.length > 0 && <CheckOutputs detConstructs={detConstructs} />}
+
+      <button className="button add" type="button" onClick={handleAddSelect}>Add More Words</button>
+
+      {detectedConstructs.length > 0 && <CheckOutputs detConstructs={detectedConstructs} />}
     </>
   );
 }
