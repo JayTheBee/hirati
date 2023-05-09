@@ -1,19 +1,22 @@
 .task_item {
 	background-color: rgba(128, 128, 128, 0.226);
-	font-size: 1.5rem;
+	font-size: 1.25rem;
 	&:hover {
 		background-color: rgba(95, 95, 95, 0.2);
 	}
 }
 .action {
 	display: flex;
+	padding: 0px 10px;
 }
 .deleteBtn {
 	display: flex;
-	margin: auto auto;
+	align-items: center;
+	margin: auto;
 	border: 1px solid red;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0.25rem;
 	font-size: 1.5rem;
+	margin: 0px 5px;
 	color: red;
 	border-radius: 10px;
 	cursor: pointer;
@@ -26,10 +29,12 @@
 .updateBtn {
 	margin: auto auto;
 	display: flex;
+	align-items: center;
 	border: 1px solid blue;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0.25rem;
 	font-size: 1.5rem;
 	color: blue;
+	margin: 0px 5px;
 	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
@@ -40,8 +45,8 @@
 }
 
 .viewBtn {
-	margin: auto auto;
 	display: flex;
+	justify-content: center;
 	border: 1px solid rgb(23, 104, 66);
 	padding: 0.5rem 1rem;
 	font-size: 1.5rem;

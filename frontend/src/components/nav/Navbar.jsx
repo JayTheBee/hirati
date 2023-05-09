@@ -12,7 +12,6 @@ export default function Navbar(userData) {
   const getUser = async () => {
     try {
       if (userData.data) { setUser(userData.data); }
-      // console.log(userData);
     } catch (err) {
       console.log(err);
     }
@@ -26,6 +25,7 @@ export default function Navbar(userData) {
     try {
       await axios.get('/api/auth/logout');
       setUser(null);
+      localStorage.removeItem('user');
       toast.success('Logged out successfully');
       navigate('/auth');
     } catch (err) {

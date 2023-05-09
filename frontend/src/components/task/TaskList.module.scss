@@ -125,12 +125,10 @@
 	background-color: #187f524b;
 	border-radius: 20px;
 	padding: 5px;
-	a {
-		text-decoration: underline;
-		margin: 0px 10px;
-		cursor: pointer;
-		color: rgb(28, 48, 68);
-	}
+}
+table {
+	border-collapse: separate;
+	border-spacing: 0.5em;
 }
 
 .modal {
