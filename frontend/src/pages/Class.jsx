@@ -12,7 +12,10 @@ function Home() {
       const { data } = await axios.get('/api/users/me');
       setUser(data);
       setflag(1);
-      // console.log(user);
+      console.log(user);
+      if (user != null) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
     } catch (err) {
       console.log(err);
     }

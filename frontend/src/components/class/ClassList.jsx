@@ -209,27 +209,28 @@ function ClassList(userData) {
       <h1 className={classes.pageTitle}>Class List </h1>
     </div>
 
-    <div className={classes.containerflex}>
-        <p> Class >></p>
+  <div className='container-fluid rounded-pill px-4 py-0 ' style={{backgroundColor:'#187f524b' }} >
+        <p class='text-white my-auto fs-4 fw-bolder'> Class {' '}  >></p>
     </div>
     
       <div>
-        <button onClick={openModalNew} type="button" className={checkRole()? classes.hideBtn :classes.addNew} hidden>
+        {/* //// test */}
+        <button onClick={openModalNew} type="button" className={checkRole()? 'd-none' :'d-flex align-items-center border border-dark px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
           <AiFillPlusCircle />
-          <p>&nbsp;Add Class</p>
+          <p className='my-auto p-2'>&nbsp;Add</p>
         </button>
 
 
-        <button onClick={openModalJoin} type="button" className={checkRole()?classes.addNew  :classes.hideBtn} hidden>
+        <button onClick={openModalJoin} type="button" className={!checkRole()?'d-none' :'d-flex align-items-center border border-dark px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
           <AiFillPlusCircle />
-          <p>&nbsp;Join Class</p>
+          <p className='my-auto p-2'>&nbsp;Join</p>
         </button>
       </div>
       <Modal
         isOpen={modalIsOpen}
         // onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
-        className={classes.modal}
+        className={classes.customModal}
         overlayClassName={classes.overlay}
         contentLabel="Assign Task"
         ariaHideApp={false}
@@ -242,16 +243,18 @@ function ClassList(userData) {
           {classData.className ? 'Updating Class': 'Creating New Class'}      
         </h1>
         <h3> CLASS CODE: &nbsp; {classData.teamCode}</h3>
-        <form className={classes.addNewForm} onSubmit={classData.className ? updateClass : addNewClass}>
-          <label htmlFor="">
-            Classname
-            <input name="className" type="text" placeholder="Classname" defaultValue={classData.className} disabled={checkRole()?true:false}/>
+        <form className='row align-center fs-4 fw-bold ' onSubmit={classData.className ? updateClass : addNewClass}>
+          <label htmlFor="" className=' my-4'>
+            Classname:
+            <input name="className" className='mx-4 p-2 rounded-3' type="text" placeholder="Classname" defaultValue={classData.className} disabled={checkRole()?true:false}/>
           </label>
-          <label htmlFor="">
-            Email
-            <textarea type="textarea" name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " disabled={checkRole()?true:false} />
-          </label>
-            <button type="submit"className={checkRole()? classes.disabledBtn :'' } disabled={checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { checkRole() ?'Disabled' : 'Confirm'}</button>
+
+          <span htmlFor="" className=''>
+            Email:
+          </span>
+            <textarea type="textarea" className='d-inline mx-4 h-100 w-75' name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " disabled={checkRole()?true:false} />
+          
+          <button type="submit"className={checkRole()? 'd-none' :'w-25 btn btn-success p-3 m-4 fs-4 text-center rounded-pill' } > <AiFillPlusCircle/> &nbsp; { checkRole() ?'Disabled' : 'Confirm'}</button>
         </form>
       </Modal>  
         {/* modal render */}
@@ -268,19 +271,19 @@ function ClassList(userData) {
       >
         {/* modal render */}
         <button onClick={closeModal} type="button" className={classes.modalClose}> X </button>
-        <h1 className={classes.titleTask}>
+        <h1 className={classes.title}>
           Joining Class       
         </h1>
 
         <form className={classes.addNewForm} onSubmit={ joinClass}>
-          <h4>Warning! Code is Case Sensitive and requires only 5 alphanumeric String</h4>
+          <h3 className='text-center'>Class Code is Case Sensitive and requires only 5 alphanumeric String</h3>
           <br />
-          <label htmlFor="">
+          <label htmlFor="" className='text-center fs-4'>
             Please Enter Valid Class Code <br /> 
             
-            <input maxLength="5" minLength={5} name="teamCode" type="text" placeholder="Class Code" defaultValue={classData.className} disabled={!checkRole()?true:false}/>
+            <input className='w-100' maxLength="5" minLength={5} name="teamCode" type="text" placeholder="Class Code" defaultValue={classData.className} disabled={!checkRole()?true:false}/>
           </label>
-            <button type="submit" disabled={!checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { !checkRole() ?'Disabled' : 'Add'}</button>
+            <button className='mx-4 d-flex align-items-center' type="submit" disabled={!checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { !checkRole() ?'Disabled' : 'Add'}</button>
         </form>
         {error && <div className={classes.error_msg}>{error}</div>} 
       </Modal> 
@@ -291,11 +294,11 @@ function ClassList(userData) {
 
 
       {classList.length > 0 ? (
-        <div className={classes.tableContainer}>
+        <div className='d-grid container-fluid fs-5 px-4 gap-2 overflow-auto '>
 
         <table className={classes.taskList_table}>
           <tbody>
-            <tr>
+            <tr className='my-2'>
               <td>Classname</td>
               <td>Date Created</td>
               <td>List Of Participants Email</td>

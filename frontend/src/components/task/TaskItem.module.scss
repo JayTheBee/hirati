@@ -7,46 +7,52 @@
 }
 .action {
 	display: flex;
+	justify-content: center;
 }
 .assignBtn {
 	margin: auto auto;
 	display: flex;
-	justify-self: center;
-	border: 1px solid rgb(146, 214, 155);
-	padding: 0.5rem 1rem;
+	align-items: center;
+	border: 1px solid rgb(18, 158, 18);
+	padding: 0.5rem 0.25rem;
 	font-size: 1.5rem;
-	color: rgb(59, 139, 86);
+	color: rgb(70, 131, 83);
+	margin: 0px 5px;
 	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
 	&:hover {
-		background-color: rgb(18, 131, 23);
+		background-color: rgb(78, 121, 72);
 		color: rgb(205, 205, 205);
 	}
 }
 
 .deleteBtn {
-	display: flex;
 	margin: auto auto;
-	border: 1px solid red;
-	padding: 0.5rem 1rem;
+	display: flex;
+	align-items: center;
+	border: 1px solid rgb(255, 0, 0);
+	padding: 0.5rem 0.25rem;
 	font-size: 1.5rem;
 	color: red;
+	margin: 0px 5px;
 	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
 	&:hover {
-		background-color: rgb(155, 21, 21);
-		color: rgb(205, 205, 205);
+		background-color: rgb(253, 0, 0);
+		color: rgb(255, 255, 255);
 	}
 }
 .updateBtn {
 	margin: auto auto;
 	display: flex;
+	align-items: center;
 	border: 1px solid blue;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 0.25rem;
 	font-size: 1.5rem;
 	color: blue;
+	margin: 0px 5px;
 	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
@@ -97,7 +103,7 @@ td {
 	height: 80%;
 	padding: 30px;
 	margin: 5% 10%;
-	border: solid;
+	border: solid 5px rgb(77, 63, 33);
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
 	.modalClose {
@@ -124,11 +130,11 @@ td {
 	position: absolute;
 	overflow: auto;
 	justify-content: space-between;
-	width: 60%;
-	height: 60%;
+	width: 70%;
+	height: 75%;
 	padding: 30px;
-	margin: 10% 20%;
-	border: solid;
+	margin: 6% 15%;
+	border: solid 5px rgb(77, 63, 33);
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
 
@@ -236,7 +242,7 @@ td {
 	}
 
 	textarea {
-		display: block;
+		margin: auto;
 		padding: 1rem;
 		border: none;
 		border-radius: 5px;
@@ -244,7 +250,7 @@ td {
 		color: black;
 		background-color: #ffffff;
 		min-height: 15rem;
-		min-width: 100%;
+		width: 100%;
 	}
 
 	button {
@@ -315,9 +321,10 @@ td {
 	padding: 30px;
 	width: 100%;
 }
-.language {
-	width: 50%;
-}
+// .language {
+// 	width: 100%;
+// 	display: block;
+// }
 
 .taskList_table {
 	width: 100%;
@@ -341,23 +348,24 @@ td {
 	}
 }
 
-.containerFlex {
-	display: flex;
+.containerAllQuestion {
 	width: 100%;
 	padding: 5px;
-	gap: 10px;
-	justify-content: space-between;
-	align-content: center;
+	gap: 20px;
+	margin: auto;
 
 	.card {
+		display: inline-block;
 		padding: 10px;
-		flex: 50%;
-		max-width: 50%;
+		max-width: 48%;
+		margin: 5px;
+		width: 50%;
 		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 		transition: 0.3s;
 		border-radius: 5px;
-		@media screen and (max-width: 768px) {
+		@media screen and (max-width: 1024px) {
 			max-width: 100%;
+			width: 100%;
 		}
 		img {
 			width: 100px;
@@ -375,12 +383,13 @@ td {
 			.row {
 				display: flex;
 				width: 100%;
-				align-items: end;
+				align-items: center;
 				margin-bottom: 5px;
 				justify-content: space-between;
+				overflow: auto;
 				h2 {
 					font-weight: bolder;
-					font: 1.5em 500;
+					font-size: 1.5rem;
 					color: wheat;
 					text-shadow: 1px 1px 0px rgb(0, 0, 0);
 				}
@@ -397,7 +406,23 @@ td {
 	.card:hover {
 		box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 	}
+	input,
+	select {
+		width: 50%;
+		background-color: rgb(255, 255, 255);
+		padding-left: 5px;
+		border-radius: 5px;
+		min-height: 30px;
+	}
 }
 .center {
 	text-align: center;
+}
+
+.btnContainer {
+	float: right;
+	button {
+		margin: 5px 3px;
+		padding: 5px 10px;
+	}
 }

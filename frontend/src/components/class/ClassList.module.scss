@@ -6,22 +6,16 @@
 		font-size: 4rem;
 	}
 }
-.topBar {
-	margin-top: 1rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0.5rem;
-	margin-bottom: 2rem;
-}
 .addNew {
 	display: flex;
-	align-items: center;
+	align-content: center;
+	justify-content: center;
 	background-color: #187f52;
-	padding: 1rem 2rem;
-	font-size: 1.8rem;
+	padding: 5px;
+	width: 50px;
+	font-size: 1.5rem;
 	border: none;
-	margin: 1rem 0%;
+	margin: 10px 20px;
 	color: white;
 	border-radius: 50px;
 	cursor: pointer;
@@ -48,7 +42,6 @@
 	input,
 	textarea {
 		font-size: smaller;
-		margin: 1rem 4rem;
 		display: block;
 		padding: 1rem;
 		height: 130px;
@@ -81,6 +74,7 @@
 	.view {
 		display: flex;
 		margin: 1rem 4rem;
+		align-content: center;
 		background-color: #394640;
 		padding: 1rem 2rem;
 		font-size: 1.8rem;
@@ -156,7 +150,7 @@
 	overflow: auto;
 }
 
-.modal {
+.customModal {
 	position: absolute;
 	overflow: auto;
 	justify-content: space-between;
@@ -196,16 +190,15 @@
 	position: absolute;
 	overflow: auto;
 	justify-content: space-between;
-
-	width: 40%;
-	height: 250px;
+	width: 50%;
+	height: 350px;
 	padding: 30px;
 	margin: 5% 20%;
 	border: solid;
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
 	input {
-		width: 100%;
+		width: 100px;
 	}
 }
 
@@ -221,11 +214,12 @@
 .modalClose {
 	display: inline-block;
 	float: right;
-
-	border: 1px solid rgb(224, 224, 224);
-	padding: 0.5rem 1.5rem;
+	border: 0px solid;
+	padding: 0.5rem 1rem;
 	font-size: 1.6rem;
-	background-color: rgba(245, 222, 179, 0.534);
+	font-weight: 500;
+
+	background-color: rgba(73, 146, 97, 0.534);
 	border-radius: 10px;
 	cursor: pointer;
 	transition: 0.3s ease background-color, 0.3s ease color;
