@@ -114,16 +114,17 @@ tr {
 	.modalClose {
 		display: inline-block;
 		float: right;
-
-		border: 1px solid rgb(224, 224, 224);
+		font-weight: 600;
+		font-family: 'Inter';
+		border: 1px solid rgba(66, 109, 60, 0.274);
 		padding: 0.5rem 1.5rem;
-		font-size: 1.6rem;
-		background-color: rgba(245, 222, 179, 0.534);
+		font-size: 1.5rem;
+		background-color: rgba(245, 222, 179, 0.151);
 		border-radius: 10px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			background-color: rgb(100, 109, 100);
+			background-color: rgb(44, 92, 44);
 			color: rgb(205, 205, 205);
 		}
 	}

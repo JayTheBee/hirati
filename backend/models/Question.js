@@ -14,10 +14,6 @@ const questionSchema = new Schema({
   language: {
     type: String,
   },
-  languageId: {
-    type: String,
-  },
-
   taskId: {
     type: Schema.Types.ObjectId,
     ref: 'Task',
@@ -26,7 +22,7 @@ const questionSchema = new Schema({
   rubrics: {
     cputime: Number,
     memory: Number,
-    score: Number,
+    status: Number,
   },
   testcase: {
     input: [String],

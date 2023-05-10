@@ -16,7 +16,7 @@ export const createQuestion = async (req, res, next) => {
       status: req.body.status,
     },
     points: req.body.points,
-
+    language: req.body.language,
     resultSample: {
       time: req.body.result.time,
       language: req.body.result.language,
@@ -43,10 +43,10 @@ export const updateQuestion = async (req, res, next) => {
     const updatedTask = await Question.findByIdAndUpdate(req.params.taskId, {
       title: req.body.title,
       description: req.body.description,
-      performance: {
+      rubrics: {
         cputime: req.body.cputime,
         memory: req.body.memory,
-        score: req.body.score,
+        status: req.body.status,
       },
       testcase: {
         input: req.body.input,
@@ -54,6 +54,9 @@ export const updateQuestion = async (req, res, next) => {
       },
       example: req.body.example,
       constraints: req.body.constraints,
+      language: req.body.language,
+      score: req.body.score,
+      count: req.body.count,
     }, { new: true });
     return res.status(200).json(updatedTask);
   } catch (err) {
@@ -64,6 +67,7 @@ export const updateQuestion = async (req, res, next) => {
 
 export const getCurrentQuestion = async (req, res, next) => {
   try {
+    // const question = await Question.find({ taskId: req.params.taskId }).sort({ createdAt: -1 });
     const question = await Question.find({ taskId: req.params.taskId });
     return res.status(200).json(question);
   } catch (err) {

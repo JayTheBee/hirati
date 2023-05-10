@@ -22,7 +22,7 @@
 	align-items: center;
 	background-color: #187f52;
 	padding: 1rem 2rem;
-	font-size: 1.8rem;
+	font-size: 1.5rem;
 	border: none;
 	margin: 1rem 0%;
 	color: white;
@@ -34,54 +34,7 @@
 		color: rgb(205, 205, 205);
 	}
 }
-.addNewForm {
-	margin-top: 4rem;
-	width: 100%;
-	label {
-		font-size: 1.5rem;
-		margin-left: 1.5rem;
-	}
-	h1 {
-		margin-left: 50%;
-	}
-	input,
-	textarea {
-		font-size: smaller;
 
-		display: block;
-		padding: 1rem;
-		height: 5rem;
-		width: 80%;
-		border: none;
-		border-radius: 5px;
-		font-size: 1.8rem;
-		color: black;
-		background-color: #bbbbbb;
-	}
-	input[type='text'] {
-		width: 80%;
-		height: 5rem;
-	}
-	button {
-		display: inline;
-		justify-items: center;
-		align-items: center;
-		color: rgb(255, 255, 255);
-		margin: 1rem 5rem;
-		background-color: hsl(145, 80%, 25%);
-		padding: 1rem 2rem;
-		font-size: 1.5rem;
-		border: none;
-
-		border-radius: 6px;
-		cursor: pointer;
-		transition: 0.3s ease background-color, 0.3s ease color;
-		&:hover {
-			background-color: #156542;
-			color: rgb(205, 205, 205);
-		}
-	}
-}
 .taskList_table {
 	top: 0;
 	width: 100%;
@@ -140,28 +93,23 @@ table {
 	height: 400px;
 	padding: 30px;
 	margin: 5% 20%;
-
-	@media screen and (max-width: 760px) {
-		// transform: translateY(0%);
-	}
-
 	border: solid;
-
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
 	.modalClose {
 		display: inline-block;
 		float: right;
-
-		border: 1px solid rgb(224, 224, 224);
+		font-weight: 600;
+		font-family: 'Inter';
+		border: 1px solid rgba(66, 109, 60, 0.274);
 		padding: 0.5rem 1.5rem;
-		font-size: 1.6rem;
-		background-color: rgba(245, 222, 179, 0.534);
+		font-size: 1.5rem;
+		background-color: rgba(245, 222, 179, 0.151);
 		border-radius: 10px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			background-color: rgb(100, 109, 100);
+			background-color: rgb(44, 92, 44);
 			color: rgb(205, 205, 205);
 		}
 	}
