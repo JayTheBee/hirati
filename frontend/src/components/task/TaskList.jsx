@@ -106,6 +106,7 @@ function TaskList(taskData) {
 			);
 			toast.success('New task added');
 			getTasks();
+			setIsOpen(false);
 		} catch (err) {
 			console.log(err);
 		}
@@ -139,7 +140,7 @@ function TaskList(taskData) {
         <div className={classes.action}>
         <button onClick={openModalNew} type="button" className={classes.addNew}>
           <AiFillPlusCircle />
-          <p>&nbsp;Task</p>
+        Task
         </button>
         </div>
 
@@ -160,38 +161,41 @@ function TaskList(taskData) {
 					{' '}
 					X{' '}
 				</button>
-				<h1 className={classes.titleTask}>
+				<h1 className='fw-bold fs-1' style={{color:'wheat', textShadow: '2px 2px 2px rgb(90, 62, 62)'}}>
 					{newTask._id ? 'Updating task' : 'Creating New Task'}
 				</h1>
 				<form
-					className={classes.addNewForm}
+					className='row gap-4 align-items-center'
 					onSubmit={newTask._id ? updateTask : addNewTask}
 				>
-					<label htmlFor="title">
+					<label htmlFor="title" className='fs-3 fw-bold col-4 '>
 						Enter Title:
+					</label>
 						<input
 							name="title"
 							type="text"
 							placeholder="Title"
 							id="title"
+							className='rounded-pill col-4 border-0 p-3 fs-5'
 							defaultValue={newTask.title ? newTask.title : ''}
 							required
 						/>
-					</label>
 
-					<label htmlFor="category">
+					<label htmlFor="category" className='fs-3 fw-bold col-4 '>
 						Enter Category:
+					</label>
 						<input
 							name="category"
 							type="text"
 							placeholder="Category eg. Programming"
 							defaultValue={newTask.category ? newTask.category : ''}
+							className='rounded-pill col-4 border-0 p-3 fs-5' 
 							id="category"
 						/>
-					</label>
 
-					<label htmlFor="dateExp">
+					<label htmlFor="dateExp" className='fs-3 fw-bold col-12 '>
 						Enter Validity/Expiration for task:
+					</label>
 						<input
 							name="dateExp"
 							type="datetime-local"
@@ -201,13 +205,15 @@ function TaskList(taskData) {
 									: ''
 							}
 							id="dateExp"
+							className='rounded-pill m-2 col-4 border-0 p-3 fs-5'
 							required
 						/>
-					</label>
-					<button type="submit">
-						{' '}
-						<AiFillPlusCircle /> &nbsp; Add
-					</button>
+						<div className='container'>
+							<button type="submit" className='w-25 btn btn-success rounded p-3 border-bottom fs-4'>
+								{' '}
+								<AiFillPlusCircle /> &nbsp; Add/Update
+							</button>
+						</div>
 				</form>
 			</Modal>
       </>

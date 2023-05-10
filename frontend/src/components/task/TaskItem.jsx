@@ -8,76 +8,46 @@ import {
   AiFillDelete, AiFillEdit, AiFillFileAdd, AiOutlineCloseCircle,
 } from 'react-icons/ai';
 import toast from 'react-hot-toast';
+import { BiCuboid } from 'react-icons/bi';
 import question from '../../resource/question.png';
 import LanguagesDropdown from '../editor/LanguagesDropdown';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import languageOptions from '../editor/languageOption';
 // All data Stored for db submission
-// let collateData = [];
+let collateData = [];
 // for Dev purpose only delete later
-let collateData = [
-  {
-    language: 'C (Clang 9.2.0)',
-    languageId: 50,
-    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
-    input: '213',
-    output: '213',
-    cputime: '25',
-    memory: '25',
-    status: '50',
-    points: '213',
-    result: {
-      time: '0.161',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Accepted',
-      memory: 6980,
-    },
-    count: 1,
-    task_id: '63d8cc1c97db8f00a2debf15',
-  },
-  {
-    language: 'C (Clang 9.2.0)',
-    languageId: 50,
-    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
-    input: '213',
-    output: '213',
-    cputime: '25',
-    memory: '25',
-    status: '50',
-    points: '213',
-    result: {
-      time: '0.161',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Accepted',
-      memory: 6980,
-    },
-    count: 2,
-    task_id: '63d8cc1c97db8f00a2debf15',
-  },
-  {
-    language: 'C (Clang 9.2.0)',
-    languageId: 50,
-    description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
-    input: '213',
-    output: '213',
-    cputime: '25',
-    memory: '25',
-    status: '50',
-    points: '213',
-    result: {
-      time: '0.161',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Accepted',
-      memory: 6980,
-    },
-    count: 3,
-    task_id: '63d8cc1c97db8f00a2debf15',
-  },
-];
+// let collateData = [
+//   {
+//     rubrics: {
+//       cputime: 25,
+//       memory: 25,
+//     },
+//     testcase: {
+//       input: [
+//         '213',
+//       ],
+//       output: [
+//         '213',
+//       ],
+//     },
+//     resultSample: {
+//       time: {
+//         $numberDecimal: '0.161',
+//       },
+//       language: 'JavaScript',
+//       languageId: '63',
+//       status: 'Accepted',
+//     },
+//     _id: '6454c753d0b669eea5651431',
+//     questionCount: 1,
+//     description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
+//     taskId: '63d8cc1c97db8f00a2debf15',
+//     points: 213,
+//     createdAt: '2023-05-05T09:07:31.324Z',
+//     updatedAt: '2023-05-05T09:07:31.324Z',
+//   },
+// ];
 
 // editor Data is given for now cuz its so damn slow fetching from judge0
 let editorData = {
@@ -92,17 +62,20 @@ let additionalCase = [];
 let additionalRubrics = [];
 let languageName = {};
 let currentEdit = 0;
-const userData = JSON.parse(localStorage.getItem('user'));
+
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
 }) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const [viewStackmodal, setviewStackmodal] = React.useState(false);
   const [editStackModal, setEditStackModal] = React.useState(false);
+  const [modalTakeExam, setTakeExam] = React.useState(false);
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
   const [data, setData] = React.useState([]);
+
+  const userData = JSON.parse(localStorage.getItem('user'));
 
   function openModal() {
     setIsOpen(true);
@@ -245,6 +218,10 @@ function TaskItem({
 
   const closeViewAllModal = () => {
     setviewStackmodal(false);
+  };
+
+  const closeExam = () => {
+    setTakeExam(false);
   };
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
@@ -423,6 +400,29 @@ function TaskItem({
     setData(collateData);
   };
 
+  // Student Access to task
+  const getQuestion = async (taskId) => {
+    try {
+      const { data } = await axios.get(`/api/question/${taskId}`);
+      // console.log(data);
+      // if (data) {
+      // 	setTaskList(
+      // 		data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      // 	);
+      // }
+      console.log(data);
+      setData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  function openExam(task_id) {
+    setTakeExam(true);
+    setData(data);
+    getQuestion(task_id);
+  }
+
   return (
     <tr className={classes.task_item}>
       <td>
@@ -438,223 +438,231 @@ function TaskItem({
       <td>{moment(task.dateExp).format('MMMM Do YYYY, h:mm a')}</td>
       <td>{task.category}</td>
 
-      <td>
-        <p className={moment().isBefore(task.dateExp) ? classes.active : classes.completed}>
+      <td className={moment().isBefore(task.dateExp) ? classes.active : classes.completed}>
+        <p>
           {moment().isBefore(task.dateExp) ? 'Active' : 'Completed'}
         </p>
       </td>
 
       <td>
         {
-        userData.role !== 'teacher' ? (
-          <div className={classes.action}>
-            <button onClick={openModal} type="button" className={classes.assignBtn}>
-              <AiFillFileAdd />
-              {' '}
-              Add
-            </button>
-
-            {/* MODAL for question */}
-            <Modal
-              isOpen={modalIsOpen}
-              onRequestClose={closeModal}
-              className={classes.modal}
-              overlayClassName={classes.overlay}
-              contentLabel="Assign Task"
-              ariaHideApp={false}
-            >
-              {/* modal render question */}
-              <button onClick={closeModal} type="button" className={classes.modalClose}>
-                <AiOutlineCloseCircle />
-              </button>
-              <div className={classes.titleTask}>
-                <h5 className="fw-bolder">
-                  Task Name
-                </h5>
-
-                <h1 className={classes.titleQuestion}>
-                  {` ${task.title} `}
-                </h1>
-              </div>
-              <h2 className="text-center fw-bold">
-                Question #
-                {`${counter}`}
-              </h2>
-              <br />
-              <h4>Please fill necessary details such as Language, Description and Sample Code. While Test Cases and Rubrics are'nt necessary, these are important for Automated Grading. Rubrics(Memory, Cputime and Status) requires to equate to a total of 100 but can be disabled in the event that the professor wants to manually check.  </h4>
-
-              <form className={classes.addNewForm} onSubmit="">
-                <div className={classes.row}>
-                  <div className={classes.columnInput}>
-                    <label className=" w-100">
-                      Language:
-                      <LanguagesDropdown className="" onSelectChange={languageChange} />
-                      <br />
-                    </label>
-                    <div className="w-100 ">
-                      <label htmlFor="description">
-                        Description:
-                      </label>
-                      <textarea name="description" type="areatext" placeholder="Enter Description . . ." id="description" ref={descriptionRef} required />
-                    </div>
-
-                    <label htmlFor="testcase">
-                      <br />
-                      Test Case:
-                      <div className={classes.row}>
-                        <input name="input" type="text" id="input" placeholder="Input" defaultValue="" ref={inputRef} />
-                        <input name="output" type="text" id="output" placeholder="Output" defaultValue="" ref={outputRef} />
-                        <button onClick={handleAdditionalCase} type="button">
-                          Set Additional
-                        </button>
-                      </div>
-                    </label>
-
-                    <label htmlFor="performance">
-                      <br />
-                      Rubrics for Automated Scoring:
-                      <div>
-                        <div className={classes.row}>
-
-                          <input name="cputime" type="number" placeholder="Cputime Percentage" id="y" ref={cputimeRef} defaultValue="" disabled={!toggleCondition} required />
-                          <input name="memory" type="number" placeholder="Memory Percentage" id="memory" ref={memoryRef} defaultValue="" disabled={!toggleCondition} required />
-                        </div>
-                        <div className={classes.row}>
-                          <input name="status" type="number" placeholder="Status Percentage" id="status" ref={statusRef} defaultValue="" disabled={!toggleCondition} required />
-                          <input name="points" type="number" placeholder="Total Points" id="score" ref={pointsRef} defaultValue="" disabled={!toggleCondition} required />
-                        </div>
-
-                        <div className={classes.row}>
-
-                          <label className={classes.radioLabel}>
-
-                            <input
-                              type="radio"
-                              id="enable"
-                              value="true"
-                              onChange={handleChange}
-                              checked={toggleCondition === true}
-                            />
-                            Enable
-                          </label>
-
-                          <label className={classes.radioLabel}>
-                            <input
-                              type="radio"
-                              id="disable"
-                              value="false"
-                              onChange={handleChange}
-                              checked={toggleCondition === false}
-                            />
-                            <span />
-                            Disable
-                          </label>
-
-                          <button onClick={toggleAdditionalRubrics} type="button">
-                            {/* <button onClick={handleAdditionalRubrics} type="button" disabled={!toggleCondition || addRubrics}> */}
-                            {!addRubrics ? 'Set Criteria' : 'Toggle Close'}
-                          </button>
-                        </div>
-
-                        {addRubrics && (
-                        <div className={classes.row}>
-                          <input name="rubricTitle" type="string" placeholder="Criteria Title" id="rubricTitle" ref={rubricTitleRef} />
-                          <input name="rubricRating" type="number" placeholder="Total Points" id="rubricRating" ref={rubricRatingRef} />
-                          <button type="button" onClick={handleAdditionalRubrics}>
-                            Add
-                          </button>
-                        </div>
-                        ) }
-
-                      </div>
-
-                    </label>
-
-                    <button type="button" onClick={handleAnotherQuestion}>
-                      Add Question to stack
-                    </button>
-
-                    {/*  To do view all in stack */}
-                    <button type="button" onClick={openviewStackmodal}>
-                      View All Question in stack
-                    </button>
-
-                    {/* to do Submit all data to mongodb */}
-                    <button type="button" onClick={handleSubmit}>Submit All</button>
-
-                  </div>
-
-                  <div className={classes.columnSampleCode}>
-                    <Editor handleEditorData={handleEditorData} />
-                  </div>
-
-                </div>
-
-              </form>
-            </Modal>
-
-            {/* MODAL end */}
-
-            <button
-              type="button"
-              className={classes.updateBtn}
-              onClick={openUpdateform}
-            >
-              <AiFillEdit />
-              {' '}
-              Edit
-            </button>
-
-            <button
-              type="button"
-              className={classes.deleteBtn}
-              onClick={() => deleteTask(task._id)}
-            >
-              <AiFillDelete />
-              {' '}
-              Del
-            </button>
-
-            {/* this part is for view all stack for Modal question view */}
-
-            <Modal
-              isOpen={viewStackmodal}
-              onRequestClose={closeViewAllModal}
-              className={classes.modalViewAll}
-              overlayClassName={classes.overlay}
-              contentLabel="Assign Task"
-              ariaHideApp={false}
-            >
-              {/* modal render view all stack question */}
-              <button onClick={closeViewAllModal} type="button" className={classes.modalClose}>
-                <AiOutlineCloseCircle />
-              </button>
-              <div className={classes.titleTask}>
-                <h1 className={classes.titleQuestion}>
-                  Question Stack -
-                  {' '}
-                  {` ${data.length}`}
-                </h1>
-              </div>
-              <br />
-              <h3>
-                All Questions pushed into the stack:
+        userData.role === 'teacher'
+          ? (
+            <div className={classes.action}>
+              <button onClick={openModal} type="button" className={classes.assignBtn}>
+                <AiFillFileAdd />
                 {' '}
-              </h3>
-              <div className={classes.containerAllQuestion}>
+                Add
+              </button>
 
-                {data.length > 0 ? (
-                  data.map((each) => (
-                    <div className={classes.card}>
-                      <div className={classes.content}>
-                        <img src={question} alt="Question Logo" />
-                        <div className={classes.column}>
+              {/* MODAL for question */}
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                className={classes.modal}
+                overlayClassName={classes.overlay}
+                contentLabel="Assign Task"
+                ariaHideApp={false}
+              >
+                {/* modal render question */}
+                <button onClick={closeModal} type="button" className={classes.modalClose}>
+                  X
+                </button>
+                <div className={classes.titleTask}>
+                  <h5 className="fw-bolder">
+                    Task Name
+                  </h5>
+
+                  <h1 className={classes.titleQuestion}>
+                    {` ${task.title} `}
+                  </h1>
+                </div>
+                <h2 className="text-center fw-bold">
+                  Question #
+                  {`${counter}`}
+                </h2>
+                <br />
+                <h4>Please fill necessary details such as Language, Description and Sample Code. While Test Cases and Rubrics are'nt necessary, these are important for Automated Grading. Rubrics(Memory, Cputime and Status) requires to equate to a total of 100% but can be disabled in the event that the professor wants to manually check.  </h4>
+
+                <form className={classes.addNewForm} onSubmit="">
+                  <div className={classes.row}>
+                    <div className={classes.columnInput}>
+                      <label className=" w-100">
+                        Language:
+                        <LanguagesDropdown className="" onSelectChange={languageChange} />
+                        <br />
+                      </label>
+                      <div className="w-100 ">
+                        <label htmlFor="description">
+                          Description:
+                        </label>
+                        <textarea name="description" type="areatext" placeholder="Enter Description . . ." id="description" ref={descriptionRef} required />
+                      </div>
+
+                      <label htmlFor="testcase">
+                        <br />
+                        Test Case:
+                        <div className={classes.row}>
+                          <input name="input" type="text" id="input" placeholder="Input" defaultValue="" ref={inputRef} />
+                          <input name="output" type="text" id="output" placeholder="Output" defaultValue="" ref={outputRef} />
+                          <button onClick={handleAdditionalCase} type="button">
+                            Set Additional
+                          </button>
+                        </div>
+                      </label>
+
+                      <label htmlFor="performance">
+                        <br />
+                        Rubrics for Automated Scoring:
+                        <div>
                           <div className={classes.row}>
-                            <h2>{`Question ID #${each.count}`}</h2>
+
+                            <input name="cputime" type="number" placeholder="Cputime Percentage" id="y" ref={cputimeRef} defaultValue="" disabled={!toggleCondition} required />
+                            <input name="memory" type="number" placeholder="Memory Percentage" id="memory" ref={memoryRef} defaultValue="" disabled={!toggleCondition} required />
                           </div>
                           <div className={classes.row}>
-                            <h2>Language: </h2>
-                            {/* {
+                            <input name="status" type="number" placeholder="Status Percentage" id="status" ref={statusRef} defaultValue="" disabled={!toggleCondition} required />
+                            <input name="points" type="number" placeholder="Total Points" id="score" ref={pointsRef} defaultValue="" disabled={!toggleCondition} required />
+                          </div>
+
+                          <div className={classes.row}>
+
+                            <label className={classes.radioLabel}>
+
+                              <input
+                                type="radio"
+                                id="enable"
+                                value="true"
+                                onChange={handleChange}
+                                checked={toggleCondition === true}
+                              />
+                              Enable
+                            </label>
+
+                            <label className={classes.radioLabel}>
+                              <input
+                                type="radio"
+                                id="disable"
+                                value="false"
+                                onChange={handleChange}
+                                checked={toggleCondition === false}
+                              />
+                              <span />
+                              Disable
+                            </label>
+
+                            <button onClick={toggleAdditionalRubrics} type="button">
+                              {/* <button onClick={handleAdditionalRubrics} type="button" disabled={!toggleCondition || addRubrics}> */}
+                              {!addRubrics ? 'Set Criteria' : 'Toggle Close'}
+                            </button>
+                          </div>
+
+                          {addRubrics && (
+                          <div className={classes.row}>
+                            <input name="rubricTitle" type="string" placeholder="Criteria Title" id="rubricTitle" ref={rubricTitleRef} />
+                            <input name="rubricRating" type="number" placeholder="Total Points" id="rubricRating" ref={rubricRatingRef} />
+                            <button type="button" onClick={handleAdditionalRubrics}>
+                              Add
+                            </button>
+                          </div>
+                          ) }
+
+                        </div>
+
+                      </label>
+
+                      <button type="button" onClick={handleAnotherQuestion}>
+                        Add Question to stack
+                      </button>
+
+                      {/*  To do view all in stack */}
+                      <button type="button" onClick={openviewStackmodal}>
+                        View All Question in stack
+                      </button>
+
+                      {/* to do Submit all data to mongodb */}
+                      <button type="button" onClick={handleSubmit}>Submit All from Stack</button>
+
+                    </div>
+
+                    <div className={classes.columnSampleCode}>
+                      <Editor handleEditorData={handleEditorData} />
+                    </div>
+
+                  </div>
+
+                </form>
+              </Modal>
+
+              {/* MODAL end */}
+
+              <button
+                type="button"
+                className={classes.updateBtn}
+                onClick={openUpdateform}
+              >
+                <AiFillEdit />
+                {' '}
+                Edit
+              </button>
+
+              <button
+                type="button"
+                className={classes.deleteBtn}
+                onClick={() => deleteTask(task._id)}
+              >
+                <AiFillDelete />
+                {' '}
+                Del
+              </button>
+
+              {/* this part is for view all stack for Modal question view */}
+
+              <Modal
+                isOpen={viewStackmodal}
+                onRequestClose={closeViewAllModal}
+                className={classes.modalViewAll}
+                overlayClassName={classes.overlay}
+                contentLabel="Assign Task"
+                ariaHideApp={false}
+              >
+                {/* modal render view all stack question */}
+                <button
+                  onClick={closeViewAllModal}
+                  type="button"
+                  className="float-end btn p-4 fs-1 rounded-circle"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="close"
+                >
+                  <AiOutlineCloseCircle />
+                </button>
+                <div className={classes.titleTask}>
+                  <h1 className={classes.titleQuestion}>
+                    Question Stack -
+                    {' '}
+                    {` ${data.length}`}
+                  </h1>
+                </div>
+                <br />
+                <h3>
+                  All Questions pushed into the stack:
+                  {' '}
+                </h3>
+                <div className={classes.containerAllQuestion}>
+
+                  {data.length > 0 ? (
+                    data.map((each) => (
+                      <div className={classes.card}>
+                        <div className={classes.content}>
+                          <img src={question} alt="Question Logo" />
+                          <div className={classes.column}>
+                            <div className={classes.row}>
+                              <h2>{`Question ID #${each.count}`}</h2>
+                            </div>
+                            <div className={classes.row}>
+                              <h2>Language: </h2>
+                              {/* {
                           currentEdit == each.count
                           && editStackModal ? (
                             <select name="language" id="language" defaultValue={each.language}>
@@ -666,14 +674,14 @@ function TaskItem({
                               <option value="Python">Python</option>
                             </select>
                             ) : ( */}
-                            <h4>{each.language}</h4>
-                            {/* // )
+                              <h4>{each.language}</h4>
+                              {/* // )
                             // } */}
-                          </div>
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Description: </h2>
-                            { currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Description: </h2>
+                              { currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="text"
@@ -681,36 +689,36 @@ function TaskItem({
                               defaultValue={each.description}
                             />
 
-                              ) : (<h4>{truncate(each.description, 15)}</h4>)}
-                          </div>
+                                ) : (<h4>{truncate(each.description, 15)}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Input: </h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Input: </h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="text"
                               defaultValue={each.input}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'input')}
                             />
-                              ) : (<h4>{each.input}</h4>)}
-                          </div>
+                                ) : (<h4>{each.input}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Output:</h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Output:</h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="text"
                               defaultValue={each.output}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'output')}
                             />
-                              ) : (<h4>{each.output}</h4>)}
-                          </div>
+                                ) : (<h4>{each.output}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Cpu time:</h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Cpu time:</h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="number"
@@ -718,12 +726,12 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'cputime')}
                               ref={cputimeEditRef}
                             />
-                              ) : (<h4>{each.cputime}</h4>)}
-                          </div>
+                                ) : (<h4>{each.cputime}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Memory:</h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Memory:</h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="number"
@@ -731,12 +739,12 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'memory')}
                               ref={memoryEditRef}
                             />
-                              ) : (<h4>{each.memory}</h4>)}
-                          </div>
+                                ) : (<h4>{each.memory}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>status:</h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>status:</h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="number"
@@ -744,68 +752,168 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'status')}
                               ref={statusEditRef}
                             />
-                              ) : (<h4>{each.status}</h4>)}
-                          </div>
+                                ) : (<h4>{each.status}</h4>)}
+                            </div>
 
-                          <div className={classes.row}>
-                            <h2>Total Points:</h2>
-                            {currentEdit == each.count
+                            <div className={classes.row}>
+                              <h2>Total Points:</h2>
+                              {currentEdit == each.count
                           && editStackModal ? (
                             <input
                               type="number"
                               defaultValue={each.points}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'points')}
                             />
-                              ) : (<h4>{each.points}</h4>)}
+                                ) : (<h4>{each.points}</h4>)}
+                            </div>
+
                           </div>
 
                         </div>
+                        <hr />
+                        <div className={classes.btnContainer}>
+
+                          <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
+                            <AiFillDelete />
+                          </button>
+                          <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each)}>
+                            <AiFillEdit />
+                          </button>
+                        </div>
+                        <dir className="row">
+                          <h2>Sample Code Metrics </h2>
+                          <div className="col">
+                            <h3>Language: </h3>
+                            <h4>{each.result.language}</h4>
+                          </div>
+                          <div className="col">
+                            <h3>Time: </h3>
+                            <h4>{each.result.time}</h4>
+                          </div>
+                          <div className="col">
+                            <h3>Status: </h3>
+                            <h4>{each.result.status}</h4>
+                          </div>
+                          <div className="col">
+                            <h3>Memory: </h3>
+                            <h4>{each.result.memory}</h4>
+                          </div>
+                        </dir>
 
                       </div>
-                      <hr />
-                      <div className={classes.btnContainer}>
+                    ))
 
-                        <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
-                          <AiFillDelete />
-                        </button>
-                        <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each)}>
-                          <AiFillEdit />
-                        </button>
-                      </div>
-                      <dir className="row">
-                        <h2>Sample Code Metrics </h2>
+                  ) : ('No Question Stack added')}
+                </div>
+              </Modal>
 
-                        <div className="col">
-                          <h3>Language: </h3>
-                          <h4>{each.result.language}</h4>
-                        </div>
-                        <div className="col">
-                          <h3>Time: </h3>
-                          <h4>{each.result.time}</h4>
-                        </div>
-                        <div className="col">
-                          <h3>Status: </h3>
-                          <h4>{each.result.status}</h4>
-                        </div>
-                        <div className="col">
-                          <h3>Memory: </h3>
-                          <h4>{each.result.memory}</h4>
-                        </div>
-                      </dir>
+              {/* MODAL end */}
 
+            </div>
+          ) : (
+            // student view part
+            < >
+
+              <button type="button" className="btn btn-success  fs-5 rounded-pill border-3" onClick={() => openExam(task._id)}>
+                <BiCuboid />
+                Take Exam
+              </button>
+
+              <Modal
+                isOpen={modalTakeExam}
+                onRequestClose={closeExam}
+                className={classes.modal}
+                overlayClassName={classes.overlay}
+                contentLabel="Take Exam"
+                ariaHideApp={false}
+              >
+                <button
+                  onClick={closeExam}
+                  type="button"
+                  className="float-end btn p-4 fs-1 rounded-circle"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="top"
+                  title="close"
+                >
+                  <AiOutlineCloseCircle />
+                </button>
+                <div className={classes.titleTask}>
+                  <h1 className={classes.titleQuestion}>
+                    Total Items -
+                    {' '}
+                    {data.length}
+                  </h1>
+                </div>
+                <div className="container p-4">
+                  <p className="fs-4">
+                    Welcome to the Hirati Online exam! Please read the following instructions carefully to ensure a smooth and
+                    fair testing experience. Make sure you have a stable internet connection
+                    and a quiet environment to minimize distractions. Follow the Input/Output specified for each section and submit
+                    your answers within the given timeframe. Submit the final exam only when you have completed all the questions.
+                    Double-check your answers before submission. Good luck!
+                  </p>
+                </div>
+
+                {data.length !== 0 && userData.role === 'student' ? data.map((question) => (
+                  <div className="container-fluid row gap-4 mx-auto justify-content-center my-2 mb-2">
+                    <div className={classes.titleTask}>
+                      <h1 className={classes.titleQuestion}>
+                        Question #
+                        {' '}
+                        {question.questionCount}
+                      </h1>
                     </div>
-                  ))
+                    <div className="container text-center my-0 mx-4">
+                      <p className={classes.descriptionBox}>
+                        {question.description}
+                      </p>
+                    </div>
+                    <div className="card col-4 bg-transparent border-0">
+                      <div className="card-body">
+                        <h2 className="text-center">Language</h2>
+                        <div className="my-4 container w-75 p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
+                          <h3 className="text-center">
+                            {question.language ? question.language : ''}
+                          </h3>
 
-                ) : ('No Question Stack added')}
-              </div>
-            </Modal>
+                        </div>
 
-            {/* MODAL end */}
+                        <h2 className="text-center">Expected Case Result</h2>
+                        <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
+                          Input:
+                          {' '}
+                          {question.testcase.input}
+                        </h3>
+                        <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
+                          Output:
+                          {' '}
+                          {question.testcase.output}
+                        </h3>
 
-          </div>
-        ) : (
-          <button type="button"> try</button>
-        )
+                        <div className="container text-center">
+
+                          <button type="button" className="btn btn-success p-4 rounded-pill fs-4 mx-auto my-4 "> View Sample Code</button>
+                        </div>
+
+                      </div>
+                    </div>
+
+                    <div className="card col-7 bg-transparent border-0">
+                      <div className="card-body ">
+                        <div className={classes.columnSampleCode}>
+                          <Editor handleEditorData={handleEditorData} style />
+                        </div>
+                      </div>
+                    </div>
+
+                    <hr />
+                  </div>
+
+                )) : ('yawa')}
+
+              </Modal>
+            </>
+          )
 }
       </td>
 

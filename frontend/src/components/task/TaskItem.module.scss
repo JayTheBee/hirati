@@ -1,5 +1,5 @@
 .task_item {
-	background-color: rgba(128, 128, 128, 0.226);
+	background-color: rgba(128, 128, 128, 0.123);
 	font-size: 1.5rem;
 	&:hover {
 		background-color: rgba(95, 95, 95, 0.2);
@@ -109,16 +109,18 @@ td {
 	.modalClose {
 		display: inline-block;
 		float: right;
-		border: 0px;
-		padding: 1rem;
-		font-size: 2.5rem;
-		font-weight: 900;
-		background-color: rgba(12, 8, 0, 0);
-		border-radius: 20px;
+		font-weight: 600;
+		font-family: 'Inter';
+		border: 1px solid rgba(66, 109, 60, 0.274);
+		padding: 0.5rem 1.5rem;
+		font-size: 1.5rem;
+		background-color: rgba(245, 222, 179, 0.151);
+		border-radius: 10px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			color: rgb(93, 112, 24);
+			background-color: rgb(44, 92, 44);
+			color: rgb(205, 205, 205);
 		}
 	}
 	h2 {
@@ -149,16 +151,18 @@ td {
 	.modalClose {
 		display: inline-block;
 		float: right;
-		border: 0px;
-		padding: 1rem;
-		font-size: 2.5rem;
-		font-weight: 900;
-		background-color: rgba(12, 8, 0, 0);
-		border-radius: 20px;
+		font-weight: 600;
+		font-family: 'Inter';
+		border: 1px solid rgba(66, 109, 60, 0.274);
+		padding: 0.5rem 1.5rem;
+		font-size: 1.5rem;
+		background-color: rgba(245, 222, 179, 0.151);
+		border-radius: 10px;
 		cursor: pointer;
 		transition: 0.3s ease background-color, 0.3s ease color;
 		&:hover {
-			color: rgb(93, 112, 24);
+			background-color: rgb(44, 92, 44);
+			color: rgb(205, 205, 205);
 		}
 	}
 	h2 {
@@ -169,12 +173,22 @@ td {
 .active {
 	color: rgb(4, 102, 4);
 	font-size: 1.5rem;
-	font-weight: 600;
+	text-shadow: 1px 0px 1px black;
+	font-weight: 900;
+	align-content: center;
+	p {
+		margin: auto;
+	}
 }
 .completed {
 	color: grey;
 	font-size: 1.5rem;
-	font-weight: 600;
+	text-shadow: 1px 0px 1px black;
+	font-weight: 900;
+	align-content: center;
+	p {
+		margin: auto;
+	}
 }
 
 .titleQuestion {
@@ -425,4 +439,14 @@ td {
 		margin: 5px 3px;
 		padding: 5px 10px;
 	}
+}
+
+.descriptionBox {
+	font-family: 'Inter';
+	font-size: 1.5rem;
+	font-weight: 500;
+	line-height: 25px;
+	background-color: rgba(138, 138, 138, 0.404);
+	border-radius: 20px;
+	padding: 20px;
 }
