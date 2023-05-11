@@ -83,6 +83,9 @@ function SampleCode({
   const onSelectChange = (sl) => {
     console.log('selected Option...', sl);
     setLanguage(sl);
+    handleEditorData({
+      language: sl?.value,
+    });
   };
 
   const onChange = (action, data) => {
@@ -145,7 +148,7 @@ function SampleCode({
 
       await handleEditorData({
         time: response.data.time,
-        language: response.data.language.name,
+        language: language?.value,
         id: response.data.language.id,
         status: response.data.status.description,
         memory: response.data.memory,
@@ -260,9 +263,6 @@ function SampleCode({
             <AiFillCaretRight />
           </button>
         </div>
-        <div className={classes.outputBox}>
-          <OutputWindow outputDetails={outputDetails} />
-        </div>
       </div>
 
       <div className={classes.editorBody}>
@@ -283,6 +283,9 @@ function SampleCode({
 
         <div className={classes.outputBox}>
 
+          <hr className={classes.containerline} />
+          <OutputWindow outputDetails={outputDetails} />
+
           {/* <button
             type="button"
             onClick={handleCompile}
@@ -291,7 +294,6 @@ function SampleCode({
             {processing ? 'Processing...' : 'Compile and Execute'}
           </button> */}
 
-          <hr className={classes.containerline} />
           {outputDetails && <OutputDetails outputDetails={outputDetails} />}
         </div>
       </div>
