@@ -15,9 +15,12 @@ function LandingPage() {
           src={pic}
           alt="logo"
         />
-        <h1 onClick={handleHome}>HIRATI</h1>
+        <div>
+
+          <h1 onClick={handleHome}>HIRATI</h1>
+          <h2 className={classes.tag}>Your Automated Coding Partner</h2>
+        </div>
       </nav>
-      <h2 className={classes.tag}>Your Automated Coding Partner</h2>
     </div>
   );
 }

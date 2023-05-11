@@ -6,7 +6,7 @@ import languageOptions from './languageOption';
 function LanguagesDropdown({ onSelectChange }) {
   return (
     <Select
-      placeholder="Filter By Category"
+      placeholder="Set Language"
       options={languageOptions}
       styles={customStyles}
       // defaultValue={languageOptions[0]}

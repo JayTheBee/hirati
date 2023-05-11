@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
+import Select from 'react-select';
 import { Link, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from 'axios';
@@ -10,49 +11,40 @@ import {
 import toast from 'react-hot-toast';
 import { BiCuboid } from 'react-icons/bi';
 import question from '../../resource/question.png';
-import LanguagesDropdown from '../editor/LanguagesDropdown';
+import KeywordsDropdown from './keywordsDropdown';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
-import languageOptions from '../editor/languageOption';
+
 // All data Stored for db submission
 let collateData = [];
+let keywordData = [];
 // for Dev purpose only delete later
 // let collateData = [
 //   {
-//     rubrics: {
-//       cputime: 25,
-//       memory: 25,
-//     },
-//     testcase: {
-//       input: [
-//         '213',
-//       ],
-//       output: [
-//         '213',
-//       ],
-//     },
-//     resultSample: {
-//       time: {
-//         $numberDecimal: '0.161',
-//       },
+//     language: 'JavaScript',
+//     description: 're',
+//     input: '',
+//     output: '',
+//     cputime: '25',
+//     memory: '25',
+//     status: '50',
+//     points: '49',
+//     result: {
 //       language: 'JavaScript',
-//       languageId: '63',
-//       status: 'Accepted',
 //     },
-//     _id: '6454c753d0b669eea5651431',
-//     questionCount: 1,
-//     description: '123123asdaweqwuoiqwrqw qwklrj qlwriqw qwkr jqwlruqwo irqwjrl qwjriqlwrqilwrjql wijrqwlrj qwlirjqwirluqwlriqjwrilqjwrl qijwrlq w',
-//     taskId: '63d8cc1c97db8f00a2debf15',
-//     points: 213,
-//     createdAt: '2023-05-05T09:07:31.324Z',
-//     updatedAt: '2023-05-05T09:07:31.324Z',
+//     count: 11,
+//     task_id: '645b650003610eb32ba083fd',
+//     keywords: [
+//       'if',
+//       'else',
+//     ],
 //   },
 // ];
 
 // editor Data is given for now cuz its so damn slow fetching from judge0
 let editorData = {
   time: '0.161',
-  language: 'JavaScript (Node.js 12.14.0)',
+  language: 'JavaScript',
   id: 63,
   status: 'Accepted',
   memory: 6980,
@@ -73,6 +65,8 @@ function TaskItem({
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
+
+  const [keywords, setkeywords] = React.useState([]);
   const [data, setData] = React.useState([]);
 
   const userData = JSON.parse(localStorage.getItem('user'));
@@ -98,6 +92,13 @@ function TaskItem({
     setData(data.filter((each) => each.count !== questionNumber));
     // console.log(data);
     toast.success(`Question #${questionNumber} is deleted`);
+  }
+  function handleKeywords(e) {
+    keywordData = (Array.isArray(e) ? e.map((x) => x.value) : []);
+    if (keywordData.length > 0) {
+      // handleChangeEditModal(keywordData,'keywords', )
+      console.log(keywordData);
+    }
   }
 
   useEffect(() => {
@@ -154,26 +155,23 @@ function TaskItem({
     clearRubrics();
   };
 
-  const languageChange = (selectedLanguage) => {
-    languageName = { name: selectedLanguage.name, id: selectedLanguage.id };
-    console.log(languageName);
-  };
-
   const openUpdateform = async () => {
     updateButtonClick(task);
   };
 
   // Uncomment this later
   const handleEditorData = async (data) => {
-    // editorData = data;
-    // console.log(editorData);
-
+    editorData = data;
+    // console.log(data);
+    languageName = { name: editorData.language };
     console.log(editorData);
   };
 
   // clear all values
   const clearAllVal = () => {
-    editorData = [];
+    // editorData = [...{}, { language: editorData.language }];
+    ({ language: editorData.language });
+
     additionalCase = [];
     additionalRubrics = [];
     descriptionRef.current.value = '';
@@ -181,6 +179,13 @@ function TaskItem({
     outputRef.current.value = '';
     clearRubrics();
     clearInput();
+    // console.log(editorData);
+  };
+  const hasValue = (data) => {
+    if (data !== null || data !== undefined) {
+      return data;
+    }
+    return '';
   };
 
   const handleEditModal = (data) => {
@@ -195,6 +200,13 @@ function TaskItem({
   // holy moly Dynamic update SHEESH
   const handleChangeEditModal = (e, count, field) => {
     const index = data.findIndex((each) => each.count === count);
+    if (field === 'keywords') {
+      data[index][field] = [];
+      e.forEach((each, i) => {
+        data[index][field][i] = each.value;
+      });
+      return;
+    }
 
     // collateData[index][field] = e.target.value;
     data[index][field] = e.target.value;
@@ -268,7 +280,7 @@ function TaskItem({
   };
 
   const checkRequiredIfEmpty = () => {
-    if (languageName.name === undefined || languageName.id === undefined || descriptionRef.current.value === '') {
+    if (editorData.language === undefined || descriptionRef.current.value === '') {
       toast.error('Language and Description cannot be empty');
       return true;
     }
@@ -353,7 +365,7 @@ function TaskItem({
     ) {
       collateData.push({
         language: languageName.name,
-        languageId: languageName.id,
+        // languageId: languageName.id,
         description: descriptionRef.current.value,
         input: inputRef.current.value,
         output: outputRef.current.value,
@@ -364,19 +376,21 @@ function TaskItem({
         result: editorData,
         count: counter,
         task_id: task._id,
+        keywords: keywordData,
       });
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
     } else if (additionalRubrics.length === 0 && additionalCase.length === 0 && !toggleCondition) {
       collateData.push({
         language: languageName.name,
-        languageId: languageName.id,
+        // languageId: languageName.id,
         description: descriptionRef.current.value,
         input: inputRef.current.value,
         output: outputRef.current.value,
         result: editorData,
         task_id: task._id,
         count: counter,
+        keywords: keywordData,
       });
       console.log('scene2');
     } else {
@@ -386,9 +400,10 @@ function TaskItem({
         result: editorData,
         description: descriptionRef.current.value,
         language: languageName.name,
-        languageId: languageName.id,
+        // languageId: languageName.id,
         task_id: task._id,
         count: counter,
+        keywords: keywordData,
       });
       console.log('scene3');
     }
@@ -396,8 +411,8 @@ function TaskItem({
     clearAllVal();
     toast.success(`Question #${counter} added to the stack!`);
     setCount(counter + 1);
-    console.log(collateData);
     setData(collateData);
+    console.log(data);
   };
 
   // Student Access to task
@@ -487,11 +502,14 @@ function TaskItem({
                 <form className={classes.addNewForm} onSubmit="">
                   <div className={classes.row}>
                     <div className={classes.columnInput}>
-                      <label className=" w-100">
-                        Language:
-                        <LanguagesDropdown className="" onSelectChange={languageChange} />
-                        <br />
-                      </label>
+
+                      <div className=" w-100">
+                        <label>
+                          Set Keywords:
+                        </label>
+                        <KeywordsDropdown onSelectChange={handleKeywords} />
+                      </div>
+                      <br />
                       <div className="w-100 ">
                         <label htmlFor="description">
                           Description:
@@ -717,6 +735,24 @@ function TaskItem({
                             </div>
 
                             <div className={classes.row}>
+                              <h2>Keywords: </h2>
+                              {currentEdit == each.count
+                          && editStackModal ? (
+                            <div className="container w-100">
+                              <KeywordsDropdown
+                                passValue={each.keywords}
+                                onSelectChange={(event) => handleChangeEditModal(event, each.count, 'keywords')}
+                                // onChange={(event) => handleChangeEditModal(event, each.count, 'keywords')}
+                              />
+                            </div>
+                                ) : (
+                                  <h4>
+                                    {(each.keywords).map((key, i) => (each.keywords.length - 1 === i ? `${key}` : `${key}, `))}
+                                  </h4>
+                                )}
+                            </div>
+
+                            <div className={classes.row}>
                               <h2>Cpu time:</h2>
                               {currentEdit == each.count
                           && editStackModal ? (
@@ -726,7 +762,7 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'cputime')}
                               ref={cputimeEditRef}
                             />
-                                ) : (<h4>{each.cputime}</h4>)}
+                                ) : (<h4>{ each.points ? `${each.cputime} %` : '0 %'}</h4>)}
                             </div>
 
                             <div className={classes.row}>
@@ -739,7 +775,7 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'memory')}
                               ref={memoryEditRef}
                             />
-                                ) : (<h4>{each.memory}</h4>)}
+                                ) : (<h4>{each.points ? `${each.memory} %` : '0 %'}</h4>)}
                             </div>
 
                             <div className={classes.row}>
@@ -752,7 +788,7 @@ function TaskItem({
                               onChange={(event) => handleChangeEditModal(event, each.count, 'status')}
                               ref={statusEditRef}
                             />
-                                ) : (<h4>{each.status}</h4>)}
+                                ) : (<h4>{each.status ? `${each.status} %` : '0 %'}</h4>)}
                             </div>
 
                             <div className={classes.row}>
@@ -764,7 +800,7 @@ function TaskItem({
                               defaultValue={each.points}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'points')}
                             />
-                                ) : (<h4>{each.points}</h4>)}
+                                ) : (<h4>{ each.points ? `${each.points} pts.` : '0 %'}</h4>)}
                             </div>
 
                           </div>
@@ -781,22 +817,22 @@ function TaskItem({
                           </button>
                         </div>
                         <dir className="row">
-                          <h2>Sample Code Metrics </h2>
+                          <h3>Sample Code Metrics </h3>
                           <div className="col">
-                            <h3>Language: </h3>
-                            <h4>{each.result.language}</h4>
+                            <h4>Language: </h4>
+                            <h5>{each.result.language}</h5>
                           </div>
                           <div className="col">
-                            <h3>Time: </h3>
-                            <h4>{each.result.time}</h4>
+                            <h4>Time: </h4>
+                            <h5>{`${each.result.time} sec`}</h5>
                           </div>
                           <div className="col">
-                            <h3>Status: </h3>
-                            <h4>{each.result.status}</h4>
+                            <h4>Status: </h4>
+                            <h5>{each.result.status}</h5>
                           </div>
                           <div className="col">
-                            <h3>Memory: </h3>
-                            <h4>{each.result.memory}</h4>
+                            <h4>Memory: </h4>
+                            <h5>{`${each.result.memory} kbs`}</h5>
                           </div>
                         </dir>
 
@@ -877,7 +913,6 @@ function TaskItem({
                           </h3>
 
                         </div>
-
                         <h2 className="text-center">Expected Case Result</h2>
                         <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
                           Input:
@@ -909,7 +944,9 @@ function TaskItem({
                     <hr />
                   </div>
 
-                )) : ('yawa')}
+                )) : (
+                  'No Uploaded Question Yet!'
+                )}
 
               </Modal>
             </>

@@ -396,11 +396,11 @@ td {
 
 			.row {
 				display: flex;
+				flex-wrap: wrap;
 				width: 100%;
 				align-items: center;
 				margin-bottom: 5px;
 				justify-content: space-between;
-				overflow: auto;
 				h2 {
 					font-weight: bolder;
 					font-size: 1.5rem;
@@ -410,6 +410,7 @@ td {
 				h4 {
 					font-size: 1.5rem;
 					font-weight: 700;
+					font-family: 'Inter';
 				}
 			}
 			.column {
