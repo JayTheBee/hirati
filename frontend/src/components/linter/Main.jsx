@@ -31,7 +31,7 @@ function LintCall({ code, lang }) {
 
     const conf = { 'Content-Type': 'application/json' };
     const payload = { code };
-    const { data } = await axios.post(`/api/lint/${lang.name}`, payload, { headers: conf });
+    const { data } = await axios.post(`/api/lint/${lang}`, payload, { headers: conf });
     console.log('data is ', data);
     setLintRes(data);
   };

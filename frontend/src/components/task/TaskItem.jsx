@@ -396,7 +396,7 @@ function TaskItem({
   const getQuestion = async (taskId) => {
     try {
       const { data } = await axios.get(`/api/question/${taskId}`);
-      if (userData.role === 'teacher' && data.length > 0) {
+      if (userData.role === 'student' && data.length > 0) {
         data.forEach((each) => {
           console.log(each.rubrics?.cputime ?? 0);
           collateData.push({
@@ -423,7 +423,7 @@ function TaskItem({
           });
         });
         // console.log();
-        console.log(collateData);
+        console.log('collated is ', collateData);
         setCount(data.length + 1);
         setData(collateData);
         return;
@@ -907,7 +907,7 @@ function TaskItem({
                 </div>
 
                 {data.length !== 0 && userData.role === 'student' ? data.map((question) => (
-                  <div className="container-fluid row gap-4 mx-auto justify-content-center my-2 mb-2">
+                  <div key={question.questionId} className="container-fluid row gap-4 mx-auto justify-content-center my-2 mb-2">
                     <div className={classes.titleTask}>
                       <h1 className={classes.titleQuestion}>
                         Question #
@@ -929,17 +929,21 @@ function TaskItem({
                           </h3>
 
                         </div>
-                        <h2 className="text-center">Expected Case Result</h2>
-                        <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
-                          Input:
-                          {' '}
-                          {question.testcase.input}
-                        </h3>
-                        <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
-                          Output:
-                          {' '}
-                          {question.testcase.output}
-                        </h3>
+                        {/* sample code for conditional rendering of input/output */}
+                        {/* {question.flag && } */}
+                        <div>
+                          <h2 className="text-center">Expected Case Result</h2>
+                          <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
+                            Input:
+                            {' '}
+                            {question.input}
+                          </h3>
+                          <h3 className="mb-2 container p-4 border border-dark border-4" style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}>
+                            Output:
+                            {' '}
+                            {question.output}
+                          </h3>
+                        </div>
 
                         <div className="container text-center">
 

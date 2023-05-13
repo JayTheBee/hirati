@@ -13,6 +13,8 @@ import OutputDetails from './OutputDetails';
 import ThemeDropdown from './ThemeDropdown';
 import LanguagesDropdown from './LanguagesDropdown';
 import classes from './playGround.module.scss';
+import LintCall from '../linter/Main';
+import ConstructCheck from '../construct-checking/Main';
 
 const showSuccessToast = (msg) => {
   toast.success(msg || 'Compiled Successfully!', {
@@ -104,10 +106,12 @@ function SampleCode({
   const getLanguage = async () => {
     const options = {
       method: 'GET',
-      url: 'https://judge0-ce.p.rapidapi.com/languages',
+      url: `${import.meta.env.VITE_JUDGE_LINK}/languages`,
       headers: {
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'content-type': 'application/json',
+        'Content-Type': 'application/json',
+        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
     };
 
@@ -122,13 +126,15 @@ function SampleCode({
     const options = {
       method: 'GET',
       //   url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
-      url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
+      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions/${token}`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
+        'content-type': 'application/json',
+        'Content-Type': 'application/json',
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
+        // 'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
       },
     };
     try {
@@ -175,15 +181,15 @@ function SampleCode({
     const options = {
       method: 'POST',
       //   url: process.env.REACT_APP_RAPID_API_URL,
-      url: 'https://judge0-ce.p.rapidapi.com/submissions',
+      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
       data: formData,
     };
@@ -285,7 +291,8 @@ function SampleCode({
 
           <hr className={classes.containerline} />
           <OutputWindow outputDetails={outputDetails} />
-
+          <LintCall code={code} lang={language.value} />
+          <ConstructCheck code={code} lang={language.value} />
           {/* <button
             type="button"
             onClick={handleCompile}
