@@ -33,10 +33,15 @@ const questionSchema = new Schema({
     type: Number,
   },
 
+  keywords: {
+    type: [String],
+  },
+
   resultSample: {
     time: Schema.Types.Decimal128,
     language: String,
     languageId: String,
+    memory: Number,
     status: String,
   },
   // add 'rubrics' later for grading guide automation
