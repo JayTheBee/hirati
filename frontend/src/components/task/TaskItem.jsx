@@ -18,37 +18,7 @@ import Editor from '../editor/QuestionEditor';
 // All data Stored for db submission
 let collateData = [];
 let keywordData = [];
-// for Dev purpose only delete later
-// let collateData = [
-//   {
-//     language: 'JavaScript',
-//     description: 're',
-//     input: '',
-//     output: '',
-//     cputime: '25',
-//     memory: '25',
-//     status: '50',
-//     points: '49',
-//     result: {
-//       language: 'JavaScript',
-//     },
-//     count: 11,
-//     task_id: '645b650003610eb32ba083fd',
-//     keywords: [
-//       'if',
-//       'else',
-//     ],
-//   },
-// ];
-
-// editor Data is given for now cuz its so damn slow fetching from judge0
-let editorData = {
-  time: '0.161',
-  language: 'JavaScript',
-  id: 63,
-  status: 'Accepted',
-  memory: 6980,
-};
+let editorData = {};
 
 let additionalCase = [];
 let additionalRubrics = [];
@@ -65,34 +35,30 @@ function TaskItem({
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [addRubrics, setAddRubrics] = React.useState(false);
   const [counter, setCount] = React.useState(1);
-
-  const [keywords, setkeywords] = React.useState([]);
   const [data, setData] = React.useState([]);
 
   const userData = JSON.parse(localStorage.getItem('user'));
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function openviewStackmodal() {
-    setviewStackmodal(true);
-  }
+  // View all in stack modal fetch existing question from db if meron
 
   function truncate(str, n) {
     return (str.length > n) ? `${str.slice(0, n - 1)}...` : str;
   }
 
-  function deleteQuestionStack(questionNumber) {
+  async function deleteQuestionStack(eachData) {
     // weird useState behavior due to asynchronous in nature
     // console.log(collateData);
     // collateData = data.filter((each) => each.count !== questionNumber);
     // console.log(collateData);
 
-    setData(data.filter((each) => each.count !== questionNumber));
-    // console.log(data);
-    toast.success(`Question #${questionNumber} is deleted`);
+    // setData(data.filter((each) => each.count !== questionNumber));
+    console.log(eachData);
+    if (Object.prototype.hasOwnProperty.call(eachData, 'questionId')) { await axios.delete(`/api/question/${eachData.questionId}`); }
+    setData(data.filter((each) => each.count !== eachData.count));
+    setCount(counter - 1);
+    toast.success(`Question #${eachData.count} is deleted`);
   }
+
   function handleKeywords(e) {
     keywordData = (Array.isArray(e) ? e.map((x) => x.value) : []);
     if (keywordData.length > 0) {
@@ -171,7 +137,6 @@ function TaskItem({
   const clearAllVal = () => {
     // editorData = [...{}, { language: editorData.language }];
     ({ language: editorData.language });
-
     additionalCase = [];
     additionalRubrics = [];
     descriptionRef.current.value = '';
@@ -190,11 +155,17 @@ function TaskItem({
 
   const handleEditModal = (data) => {
     currentEdit = data.count;
+
+    // if (parseInt(data.status) === 0
+    // && parseInt(data.cputime) === 0
+    // && parseInt(data.memory) === 0) { setEditStackModal(!editStackModal); return; }
     if ((parseInt(data.status)
-    + parseInt(data.cputime)
-    + parseInt(data.memory) !== 100)) {
+      + parseInt(data.cputime)
+      + parseInt(data.memory) !== 100)) {
       toast.error('Please enter valid percentage for cpu,memory and status that equates to 100%');
-    } else setEditStackModal(!editStackModal);
+      return;
+    }
+    setEditStackModal(!editStackModal);
   };
 
   // holy moly Dynamic update SHEESH
@@ -217,19 +188,21 @@ function TaskItem({
   };
 
   const closeModal = () => {
-    if (confirm('Exiting means resetting all the value in stack! Please submit all before proceeding')) {
-      setCount(1);
-      setAddRubrics(false);
-      setToggleCondition(true);
-      collateData = [];
-      setData([]);
-      clearAllVal();
-      setIsOpen(false);
-    }
+    // if (confirm('Exiting means resetting all the value in stack! Please submit all before proceeding')) {
+    setCount(1);
+    setAddRubrics(false);
+    setToggleCondition(true);
+    collateData = [];
+    setData([]);
+    clearAllVal();
+    setIsOpen(false);
+    // }
   };
 
   const closeViewAllModal = () => {
-    setviewStackmodal(false);
+    // logic for preventing user from closing modal while edit mode is true
+    if (editStackModal == true) { setviewStackmodal(true); toast.error('Please finish Editing before closing! '); } else { setviewStackmodal(false); }
+    // setviewStackmodal(false);
   };
 
   const closeExam = () => {
@@ -238,13 +211,17 @@ function TaskItem({
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
   const handleSubmit = () => {
+    console.log(data);
     try {
       if (data.length > 0) {
-        collateData.map(async (each) => {
-          await axios.post('/api/question/', each);
+        data.map(async (each) => {
+          (Object.prototype.hasOwnProperty.call(data, 'questionId'))
+            ? await axios.put('/api/question/', each)
+            : await axios.post('/api/question/', each);
         });
         clearAllVal();
         toast.success('All questions in the stack are uploaded!');
+        closeModal();
       } else { toast.error('Cannot Upload due to empty stack'); }
     } catch (err) {
       console.log(err);
@@ -419,23 +396,56 @@ function TaskItem({
   const getQuestion = async (taskId) => {
     try {
       const { data } = await axios.get(`/api/question/${taskId}`);
-      // console.log(data);
-      // if (data) {
-      // 	setTaskList(
-      // 		data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-      // 	);
-      // }
-      console.log(data);
-      setData(data);
+      if (userData.role === 'teacher' && data.length > 0) {
+        data.forEach((each) => {
+          console.log(each.rubrics?.cputime ?? 0);
+          collateData.push({
+            count: each.questionCount,
+            language: each.resultSample.language,
+            cputime: (each.rubrics?.cputime ?? 0),
+            memory: (each.rubrics?.memory ?? 0),
+            status: (each.rubrics?.status ?? 0),
+            description: each.description,
+            input: each.testcase.input,
+            output: each.testcase.output,
+            keywords: [...each.keywords],
+            result: {
+              language: each.resultSample.language,
+              time: parseFloat(each.resultSample.time?.$numberDecimal ?? 0),
+              // time: each.resultSample.time,
+              status: (each.resultSample?.status ?? 'not specified'),
+              // id: each.resultSample.time.$numberDecimal,
+              memory: each.resultSample.memory,
+            },
+            task_id: each.taskId,
+            points: each.points,
+            questionId: each._id,
+          });
+        });
+        // console.log();
+        console.log(collateData);
+        setCount(data.length + 1);
+        setData(collateData);
+        return;
+      }
     } catch (err) {
       console.log(err);
     }
   };
 
-  function openExam(task_id) {
+  function openModal(taskId) {
+    getQuestion(taskId);
+    setIsOpen(true);
+  }
+
+  function openviewStackmodal(taskId) {
+    // getQuestion(taskId);
+    setviewStackmodal(true);
+  }
+
+  function openExam(taskId) {
     setTakeExam(true);
-    setData(data);
-    getQuestion(task_id);
+    getQuestion(taskId);
   }
 
   return (
@@ -464,7 +474,7 @@ function TaskItem({
         userData.role === 'teacher'
           ? (
             <div className={classes.action}>
-              <button onClick={openModal} type="button" className={classes.assignBtn}>
+              <button onClick={() => openModal(task._id)} type="button" className={classes.assignBtn}>
                 <AiFillFileAdd />
                 {' '}
                 Add
@@ -534,13 +544,13 @@ function TaskItem({
                         Rubrics for Automated Scoring:
                         <div>
                           <div className={classes.row}>
+                            <input name="cputime" type="number" placeholder="Cputime %" id="y" ref={cputimeRef} defaultValue="" disabled={!toggleCondition} required />
+                            <input name="memory" type="number" placeholder="Memory %" id="memory" ref={memoryRef} defaultValue="" disabled={!toggleCondition} required />
 
-                            <input name="cputime" type="number" placeholder="Cputime Percentage" id="y" ref={cputimeRef} defaultValue="" disabled={!toggleCondition} required />
-                            <input name="memory" type="number" placeholder="Memory Percentage" id="memory" ref={memoryRef} defaultValue="" disabled={!toggleCondition} required />
                           </div>
                           <div className={classes.row}>
-                            <input name="status" type="number" placeholder="Status Percentage" id="status" ref={statusRef} defaultValue="" disabled={!toggleCondition} required />
-                            <input name="points" type="number" placeholder="Total Points" id="score" ref={pointsRef} defaultValue="" disabled={!toggleCondition} required />
+                            <input name="status" type="number" placeholder="Status %" id="status" ref={statusRef} defaultValue="" disabled={!toggleCondition} required />
+                            <input name="points" type="number" min="0" placeholder="Total Points" id="score" ref={pointsRef} defaultValue="" disabled={!toggleCondition} required />
                           </div>
 
                           <div className={classes.row}>
@@ -594,7 +604,7 @@ function TaskItem({
                       </button>
 
                       {/*  To do view all in stack */}
-                      <button type="button" onClick={openviewStackmodal}>
+                      <button type="button" onClick={() => openviewStackmodal(task._id)}>
                         View All Question in stack
                       </button>
 
@@ -641,8 +651,9 @@ function TaskItem({
                 onRequestClose={closeViewAllModal}
                 className={classes.modalViewAll}
                 overlayClassName={classes.overlay}
-                contentLabel="Assign Task"
+                contentLabel="View Stack"
                 ariaHideApp={false}
+                // shouldCloseOnOverlayClick={false}
               >
                 {/* modal render view all stack question */}
                 <button
@@ -676,6 +687,7 @@ function TaskItem({
                           <img src={question} alt="Question Logo" />
                           <div className={classes.column}>
                             <div className={classes.row}>
+                              {/* <h2>{`Question ID #${each.count}`}</h2> */}
                               <h2>{`Question ID #${each.count}`}</h2>
                             </div>
                             <div className={classes.row}>
@@ -742,7 +754,6 @@ function TaskItem({
                               <KeywordsDropdown
                                 passValue={each.keywords}
                                 onSelectChange={(event) => handleChangeEditModal(event, each.count, 'keywords')}
-                                // onChange={(event) => handleChangeEditModal(event, each.count, 'keywords')}
                               />
                             </div>
                                 ) : (
@@ -799,6 +810,7 @@ function TaskItem({
                               type="number"
                               defaultValue={each.points}
                               onChange={(event) => handleChangeEditModal(event, each.count, 'points')}
+                              min="0"
                             />
                                 ) : (<h4>{ each.points ? `${each.points} pts.` : '0 %'}</h4>)}
                             </div>
@@ -809,7 +821,11 @@ function TaskItem({
                         <hr />
                         <div className={classes.btnContainer}>
 
-                          <button type="button" className={classes.deleteBtn} onClick={() => deleteQuestionStack(each.count)}>
+                          <button
+                            type="button"
+                            className={classes.deleteBtn}
+                            onClick={() => deleteQuestionStack(each)}
+                          >
                             <AiFillDelete />
                           </button>
                           <button type="button" className={classes.updateBtn} onClick={() => handleEditModal(each)}>

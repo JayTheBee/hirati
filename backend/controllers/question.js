@@ -1,8 +1,8 @@
 import Question from '../models/Question.js';
 import createError from '../utils/createError.js';
 
-export const createQuestion = async (req, res, next) => {
-  const questionData = new Question({
+export const createOrUpdateQuestion = async (req, res, next) => {
+  const questionData = {
     questionCount: req.body.count,
     description: req.body.description,
     taskId: req.body.task_id,
@@ -17,51 +17,38 @@ export const createQuestion = async (req, res, next) => {
     },
     points: req.body.points,
     language: req.body.language,
+    keywords: req.body.keywords,
     resultSample: {
       time: req.body.result.time,
       language: req.body.result.language,
       languageId: req.body.result.id,
+      memory: req.body.result.memory,
       status: req.body.result.status,
     },
-  });
-
-  console.log(questionData);
-  try {
-    const userQuestion = await questionData.save();
-    return res.status(200).json(userQuestion);
-  } catch (err) {
-    console.log(err);
-    return next(err);
-  }
-};
-
-export const updateQuestion = async (req, res, next) => {
-  try {
-    const targetTask = await Question.findById(req.params.taskId).exec();
-    if (!targetTask) return next(createError({ status: 404, message: 'Invalid target Task Id' }));
-    if (targetTask.userId.toString() !== req.user.id) return next(createError({ status: 401, message: "It's not your class." }));
-    const updatedTask = await Question.findByIdAndUpdate(req.params.taskId, {
-      title: req.body.title,
-      description: req.body.description,
-      rubrics: {
-        cputime: req.body.cputime,
-        memory: req.body.memory,
-        status: req.body.status,
-      },
-      testcase: {
-        input: req.body.input,
-        output: req.body.output,
-      },
-      example: req.body.example,
-      constraints: req.body.constraints,
-      language: req.body.language,
-      score: req.body.score,
-      count: req.body.count,
-    }, { new: true });
-    return res.status(200).json(updatedTask);
-  } catch (err) {
-    console.log(err);
-    return next(err);
+  };
+  if (Object.prototype.hasOwnProperty.call(req.body, 'questionId')) {
+    const question = await Question.findById(req.body.questionId).exec();
+    if (!question) return next(createError({ status: 404, message: 'Question Id not found!' }));
+    try {
+      const updatedQuestion = await Question.findByIdAndUpdate(
+        { _id: req.body.questionId },
+        questionData,
+        { new: true },
+      );
+      return res.status(200).json(updatedQuestion);
+    } catch (err) {
+      console.log(err);
+      return next(err);
+    }
+  } else {
+    try {
+      const querySave = new Question(questionData);
+      const createQuestion = await querySave.save();
+      return res.status(200).json(createQuestion);
+    } catch (err) {
+      console.log(err);
+      return next(err);
+    }
   }
 };
 
@@ -81,8 +68,8 @@ export const deleteQuestion = async (req, res, next) => {
     // if (targetClass.user === req.user.id) {
     //   return next(createError({ status: 401, message: "It's not your class to delete." }));
     // }
-    const targetQuestion = await Question.findById(req.params.questionId);
-    if (targetQuestion) { await Question.findOneAndDelete({ _id: req.params.questionId }); }
+    const question = await Question.findById(req.params.questionId);
+    if (question) { await Question.findOneAndDelete({ _id: req.params.questionId }); }
     return res.json('Question Deleted Successfully');
   } catch (err) {
     return next(err);

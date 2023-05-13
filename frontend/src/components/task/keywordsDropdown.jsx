@@ -2,7 +2,7 @@ import React from 'react';
 import Select from 'react-select';
 import keywords from './keywords';
 
-function KeywordsDropdown({ onSelectChange, passValue }) {
+function KeywordsDropdown({ ref, onSelectChange, passValue }) {
   const defaultVal = [];
   if (passValue) {
     passValue.forEach((each) => {
@@ -12,6 +12,7 @@ function KeywordsDropdown({ onSelectChange, passValue }) {
   //   console.log(defaultVal);
   return (
     <Select
+      ref={ref}
       isMulti
       defaultValue={defaultVal}
       name="colors"

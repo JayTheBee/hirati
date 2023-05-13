@@ -1,15 +1,15 @@
 import express from 'express';
 // deleteAllClasss
 import {
-  createQuestion, deleteQuestion, getCurrentQuestion, updateQuestion,
+  createOrUpdateQuestion, deleteQuestion, getCurrentQuestion,
 } from '../controllers/question.js';
 
 const router = express.Router();
 
-router.post('/', createQuestion);
-// router.put('/:taskId/:questionId', updateQuestion);
+router.post('/', createOrUpdateQuestion);
+router.put('/', createOrUpdateQuestion);
 router.get('/:taskId', getCurrentQuestion);
 // router.delete('/deleteAll', deleteAllClasss);
-// router.delete('/:taskId/:questionId', deleteQuestion);
+router.delete('/:questionId', deleteQuestion);
 
 export default router;
