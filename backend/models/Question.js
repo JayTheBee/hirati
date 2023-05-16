@@ -24,10 +24,15 @@ const questionSchema = new Schema({
     memory: Number,
     status: Number,
   },
-  testcase: {
-    input: [String],
-    output: [String],
-  },
+  rubricAdditional: [{
+    rubricRating: Number,
+    rubricTitle: String,
+  }],
+
+  testcase: [{
+    input: String,
+    output: String,
+  }],
 
   points: {
     type: Number,
@@ -37,10 +42,15 @@ const questionSchema = new Schema({
     type: [String],
   },
 
+  permission: {
+    type: Boolean,
+  },
+
+  code: {
+    type: String,
+  },
   resultSample: {
     time: Schema.Types.Decimal128,
-    language: String,
-    languageId: String,
     memory: Number,
     status: String,
   },

@@ -99,10 +99,14 @@ function Landing() {
   const getLanguage = async () => {
     const options = {
       method: 'GET',
-      url: 'https://judge0-ce.p.rapidapi.com/languages',
+      // url: 'https://judge0-ce.p.rapidapi.com/languages',
+      url: import.meta.VITE_RAPID_API_URL,
+
       headers: {
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
+        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
       },
     };
 
@@ -121,9 +125,9 @@ function Landing() {
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
       },
     };
     try {
@@ -165,10 +169,10 @@ function Landing() {
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
+        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
       data: formData,
     };

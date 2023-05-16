@@ -152,6 +152,7 @@ function SampleCode({
         id: response.data.language.id,
         status: response.data.status.description,
         memory: response.data.memory,
+        code,
       });
 
       showSuccessToast('Compiled Successfully!');
