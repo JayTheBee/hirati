@@ -44,10 +44,7 @@ function ConstructCheck({ code, lang }) {
   const handleSearch = (e) => {
     e.preventDefault();
     const words = code.match(/[a-zA-Z]+/g) || [];
-    console.log('CODE IS, ', words);
     const detectedWords = reservedWords.filter((word) => words.includes(word.value));
-    console.log('RESERVEDWORDS ???', reservedWords);
-    console.log('DETECTED WORDS??? ', detectedWords);
     setDetectedConstructs(detectedWords);
   };
 

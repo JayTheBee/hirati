@@ -70,7 +70,7 @@ console.log(binarySearch(arr, target));
 `;
 
 function SampleCode({
-  handleEditorData,
+  handleEditorData, role, task_id, questionId,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
@@ -121,6 +121,11 @@ function SampleCode({
       console.error(error);
     });
   };
+  const handleAnswerData = async (data) => {
+    console.log('ANSWER DATA IS: ', data);
+    const resulta = await axios.post('/api/answer', data);
+    console.log('PLEASE WORK ', resulta);
+  };
 
   const checkStatus = async (token) => {
     const options = {
@@ -151,7 +156,25 @@ function SampleCode({
       }
       setProcessing(false);
       setOutputDetails(response.data);
-
+      console.log('PROCESSED DATA: ', response.data);
+      if (role === 'student') {
+        await handleAnswerData({
+          taskId: task_id,
+          questionId,
+          judgeToken: response.data.token,
+          source_code: response.data.source_code,
+          language: response.data.language,
+          status: response.data.status,
+          answer_io: {
+            stdin: response.data.stdin,
+            stdout: response.data.stdout,
+          },
+          performance: {
+            memory: response.data.memory,
+            cputime: response.data.time,
+          },
+        });
+      }
       await handleEditorData({
         time: response.data.time,
         language: language?.value,
@@ -161,7 +184,6 @@ function SampleCode({
       });
 
       showSuccessToast('Compiled Successfully!');
-      console.log('response.data', response.data);
       return;
     } catch (err) {
       console.log('err', err);
@@ -291,8 +313,14 @@ function SampleCode({
 
           <hr className={classes.containerline} />
           <OutputWindow outputDetails={outputDetails} />
-          <LintCall code={code} lang={language.value} />
-          <ConstructCheck code={code} lang={language.value} />
+          {role === 'student'
+          && (
+          <>
+            <LintCall code={code} lang={language.value} />
+            <ConstructCheck code={code} lang={language.value} />
+          </>
+          )}
+
           {/* <button
             type="button"
             onClick={handleCompile}

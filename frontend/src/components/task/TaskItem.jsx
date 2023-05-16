@@ -130,7 +130,6 @@ function TaskItem({
     editorData = data;
     // console.log(data);
     languageName = { name: editorData.language };
-    console.log(editorData);
   };
 
   // clear all values
@@ -211,7 +210,7 @@ function TaskItem({
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
   const handleSubmit = () => {
-    console.log(data);
+    console.log('SUBMITTING DATA ', data);
     try {
       if (data.length > 0) {
         data.map(async (each) => {
@@ -913,6 +912,7 @@ function TaskItem({
                         Question #
                         {' '}
                         {question.questionCount}
+                        {console.log('USER ROLE IS ', userData.role)}
                       </h1>
                     </div>
                     <div className="container text-center my-0 mx-4">
@@ -956,8 +956,10 @@ function TaskItem({
                     <div className="card col-7 bg-transparent border-0">
                       <div className="card-body ">
                         <div className={classes.columnSampleCode}>
-                          <Editor handleEditorData={handleEditorData} style />
+                          <Editor handleEditorData={handleEditorData} role={userData.role} task_id ={question.task_id} questionId={question.questionId} style />
+                          submit button
                         </div>
+
                       </div>
                     </div>
 

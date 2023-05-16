@@ -6,9 +6,9 @@ import {
 
 const router = express.Router();
 
-router.post('/java', lintJava)
-router.post('/python', lintPython)
-router.post('/c', lintC)
-router.post('/cpp', lintCPP)
+router.post('/Java', lintJava)
+router.post('/Python', lintPython)
+router.post('/C', lintC)
+router.post('/CPP', lintCPP)
 
 export default router
