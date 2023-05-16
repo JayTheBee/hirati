@@ -5,10 +5,10 @@ export const createAnswer = async (req, res, next) => {
 	try {
 		const newAnswer = new Answer(req.body);
 		const savedAnswer = await newAnswer.save();
-	 
-		res.status(200).json({message: 'Created Answer data', data: savedAnswer});
+		
+		return res.status(200).json({message: 'Created Answer data', data: savedAnswer});
 	} catch (err) {
-		res.status(500).json({ error: err.message });
+		return res.status(500).json({ error: err.message });
 	}
 }
 
