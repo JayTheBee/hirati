@@ -128,6 +128,19 @@ td {
 	}
 }
 
+.modalSampleCode {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+	width: 50%;
+	height: 70%;
+	padding: 30px;
+	margin: 8% 20%;
+	border: solid 3px rgb(0, 0, 0);
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+}
+
 .modalViewAll {
 	position: absolute;
 	overflow: auto;
@@ -334,6 +347,25 @@ td {
 	border-radius: 30px;
 	padding: 30px;
 	width: 100%;
+	button {
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #50a573f1;
+		color: white;
+		border: solid 1px black;
+	}
+	button:hover {
+		background-color: #39966e;
+	}
+	label {
+		font-size: 1.5rem;
+		font-family: 'Poppins';
+		align-self: center;
+	}
+	input {
+		padding: 5px;
+		border-radius: 5px;
+	}
 }
 // .language {
 // 	width: 100%;

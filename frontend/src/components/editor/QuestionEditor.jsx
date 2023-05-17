@@ -38,37 +38,13 @@ const showErrorToast = (msg, timer) => {
 };
 
 const javascriptDefault = `/**
-* Problem: Binary Search: Search a sorted array for a target value.
+* Some Comment
 */
-
-// Time: O(log n)
-const binarySearch = (arr, target) => {
- return binarySearchHelper(arr, target, 0, arr.length - 1);
-};
-
-const binarySearchHelper = (arr, target, start, end) => {
- if (start > end) {
-   return false;
- }
- let mid = Math.floor((start + end) / 2);
- if (arr[mid] === target) {
-   return mid;
- }
- if (arr[mid] < target) {
-   return binarySearchHelper(arr, target, mid + 1, end);
- }
- if (arr[mid] > target) {
-   return binarySearchHelper(arr, target, start, mid - 1);
- }
-};
-
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-console.log(binarySearch(arr, target));
 `;
 
 function SampleCode({
   handleEditorData,
+  answerFlag, codeId, questionId,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
@@ -106,8 +82,8 @@ function SampleCode({
       method: 'GET',
       url: 'https://judge0-ce.p.rapidapi.com/languages',
       headers: {
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
 
@@ -125,10 +101,8 @@ function SampleCode({
       url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
     try {
@@ -139,6 +113,7 @@ function SampleCode({
       if (statusId === 1 || statusId === 2) {
         // still processing
         setTimeout(() => {
+          setOutputDetails(response.data);
           checkStatus(token);
         }, 2000);
         return;
@@ -152,8 +127,12 @@ function SampleCode({
         id: response.data.language.id,
         status: response.data.status.description,
         memory: response.data.memory,
+        output: atob(outputDetails?.stdout),
+        input: customInput,
         code,
-      });
+        answerFlag,
+        questionId,
+      }, { codeId });
 
       showSuccessToast('Compiled Successfully!');
       console.log('response.data', response.data);
@@ -181,10 +160,8 @@ function SampleCode({
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
       data: formData,
     };

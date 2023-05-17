@@ -19,16 +19,7 @@ import question from '../../resource/question.png';
 import KeywordsDropdown from './keywordsDropdown';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
-
-// All data Stored for db submission
-let collateData = [];
-
-let keywordData = [];
-let editorData = {};
-
-const additionalCase = [];
-const additionalRubrics = [];
-let currentEdit = 0;
+import AnswerButtonSubmit from '../answer/Answer';
 
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
@@ -46,8 +37,16 @@ function TaskItem({
     { rubricTitle: '', rubricRating: '' },
   ]);
   const [data, setData] = React.useState([]);
-
+  let editorData = {};
+  const answerData = [{}];
   const userData = JSON.parse(localStorage.getItem('user'));
+  // All data Stored for db submission
+  let collateData = [];
+
+  let keywordData = [];
+  // let editorData = {};
+
+  let currentEdit = 0;
 
   // View all in stack modal fetch existing question from db if meron
 
@@ -203,10 +202,13 @@ function TaskItem({
   const openUpdateform = async () => {
     updateButtonClick(task);
   };
-
-  const handleEditorData = async (data) => {
-    editorData = data;
+  // print('yawa2')
+  const handleEditorData = async (data, { codeId }) => {
+    if (data.answerFlag) {
+      answerData[codeId] = data;
+    } else { editorData = data; }
     // console.log(data);
+    console.log(answerData);
     // console.log(editorData);
   };
 
@@ -267,14 +269,12 @@ function TaskItem({
   };
 
   const closeModal = () => {
-    // if (confirm('Exiting means resetting all the value in stack! Please submit all before proceeding')) {
     setCount(1);
     setToggleCondition(true);
     collateData = [];
     setData([]);
     clearAllVal();
     setIsOpen(false);
-    // }
   };
 
   const closeViewAllModal = () => {
@@ -484,7 +484,7 @@ function TaskItem({
         return;
       }
       setData(data);
-      console.log(collateData);
+      console.log(data);
     } catch (err) {
       console.log(err);
     }
@@ -1207,7 +1207,7 @@ function TaskItem({
               </div>
 
               {data.length !== 0 && userData.role === 'student'
-							  ? data.map((question) => (
+							  ? data.map((question, index) => (
   <div className="container-fluid row gap-4 mx-auto justify-content-center my-2 mb-2">
     <div className={classes.titleTask}>
       <h1 className={classes.titleQuestion}>
@@ -1227,8 +1227,8 @@ function TaskItem({
         <div
           className="my-4 container w-75 p-4 border border-dark border-4"
           style={{
-														  backgroundColor: 'rgba(138, 138, 138, 0.404)',
-														  borderRadius: '20px',
+            backgroundColor: 'rgba(138, 138, 138, 0.404)',
+            borderRadius: '20px',
           }}
         >
           <h3 className="text-center">
@@ -1239,8 +1239,8 @@ function TaskItem({
         <div
           className="mb-4 container p-4 border border-dark border-4 fw-bolder"
           style={{
-														  backgroundColor: 'rgba(138, 138, 138, 0.404)',
-														  borderRadius: '20px',
+            backgroundColor: 'rgba(138, 138, 138, 0.404)',
+            borderRadius: '20px',
           }}
         >
           <div className="d-block text-center">
@@ -1265,8 +1265,8 @@ function TaskItem({
         <div
           className="mb-4 container-fluid p-4 border border-dark border-4"
           style={{
-														  backgroundColor: 'rgba(138, 138, 138, 0.404)',
-														  borderRadius: '20px',
+            backgroundColor: 'rgba(138, 138, 138, 0.404)',
+            borderRadius: '20px',
           }}
         >
           <div className="d-block text-center">
@@ -1287,10 +1287,7 @@ function TaskItem({
         <h2 className=" fw-bolder">Additional Rubrics </h2>
         <div
           className="mb-2 container-fluid p-4 border border-dark border-4"
-          style={{
-														  backgroundColor: 'rgba(138, 138, 138, 0.404)',
-														  borderRadius: '20px',
-          }}
+          style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}
         >
           <div className="d-block text-center">
             <div className="row">
@@ -1327,7 +1324,7 @@ function TaskItem({
           <Modal
             isOpen={viewSample}
             onRequestClose={() => setViewSample(!viewSample)}
-            className={classes.modal}
+            className={classes.modalSampleCode}
             overlayClassName={classes.overlay}
             contentLabel="view sample code"
             ariaHideApp={false}
@@ -1346,14 +1343,17 @@ function TaskItem({
     <div className="card col-7 bg-transparent border-0">
       <div className="card-body ">
         <div className={classes.columnSampleCode}>
-          <Editor handleEditorData={handleEditorData} style />
+          <Editor handleEditorData={handleEditorData} answerFlag codeId={index} questionId={question._id} />
         </div>
       </div>
     </div>
-
     <hr />
+    {/* on button to submit all answer */}
+    {data.length - 1 === index ? (
+      <AnswerButtonSubmit answerData={answerData} close={closeExam} />
+    ) : (<br />)}
   </div>
-								  ))
+                ))
 							  : 'No Uploaded Question Yet!'}
             </Modal>
           </>
