@@ -21,6 +21,8 @@ import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import AnswerButtonSubmit from '../answer/Answer';
 
+let editorData = {};
+
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
 }) {
@@ -37,7 +39,6 @@ function TaskItem({
     { rubricTitle: '', rubricRating: '' },
   ]);
   const [data, setData] = React.useState([]);
-  let editorData = {};
   const answerData = [{}];
   const userData = JSON.parse(localStorage.getItem('user'));
   // All data Stored for db submission
@@ -161,8 +162,6 @@ function TaskItem({
   const memoryRef = useRef();
   const statusRef = useRef();
   const pointsRef = useRef();
-  const rubricTitleRef = useRef();
-  const rubricRatingRef = useRef();
   const descriptionRef = useRef();
 
   // modal edit ref
@@ -206,15 +205,19 @@ function TaskItem({
   const handleEditorData = async (data, codeId) => {
     if (data.answerFlag) {
       answerData[codeId] = data;
-    } else { editorData = data; }
+    } else {
+      editorData = data;
+      React.memo(editorData);
+    }
     // console.log(data);
-    console.log(data);
+    // console.log(data);
     console.log(editorData);
   };
 
   // clear all values
   const clearAllVal = () => {
     ({ language: editorData.language });
+    console.log(editorData);
     setRubricBox([{ rubricTitle: '', rubricRating: '' }]);
     setInputBox([{ input: '', output: '' }]);
     descriptionRef.current.value = '';
@@ -376,6 +379,9 @@ function TaskItem({
   };
 
   const handleAnotherQuestion = () => {
+    console.log(editorData);
+    console.log(descriptionRef.current.value);
+
     if (checkRequiredIfEmpty()) {
       return;
     }
@@ -393,7 +399,7 @@ function TaskItem({
     }
 
     // Scenario 1: All rubrics are required (Enabled)
-    if (additionalRubrics.length === 0 && toggleCondition) {
+    if (toggleCondition) {
       collateData.push({
         language: editorData.language,
         description: descriptionRef.current.value,
@@ -412,7 +418,7 @@ function TaskItem({
       });
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
-    } else if (additionalRubrics.length === 0 && !toggleCondition) {
+    } else if (!toggleCondition) {
       collateData.push({
         language: editorData.language,
         description: descriptionRef.current.value,
@@ -441,7 +447,6 @@ function TaskItem({
       });
       console.log('scene3');
     }
-
     clearAllVal();
     toast.success(`Question #${counter} added to the stack!`);
     setCount(counter + 1);
