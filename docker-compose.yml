@@ -1,0 +1,45 @@
+version: "3"
+services:
+  db:
+    image: mongo:latest
+    container_name: "hirati-mongo"
+    # hostname: mongo
+    ports:
+      - 27017:27017
+    user: 1000:1000
+    volumes:
+      - ./db:/data/db
+
+  api:
+    container_name: hirati-api
+    build:
+      context: ./backend
+      target: development
+    volumes:
+      - ./backend/:/app/src
+    restart: unless-stopped
+    environment:
+      - DB_CONNECTION_STRING=mongodb://hirati-mongo:27017/tasksdb
+    depends_on:
+      - db  
+    # ports:
+    #   - 8080:8080
+
+  app:
+    container_name: hirati-react
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend/src:/app/src
+    restart: unless-stopped
+    environment: 
+      - VITE_BACKEND=http://hirati-api:8080/
+      - VITE_JUDGE_LINK=http://judge.hirati.app/
+      - VITE_PORT=3001
+    depends_on:
+      - api
+      - db  
+    ports:
+      - 3001:3001
+
