@@ -208,8 +208,8 @@ function TaskItem({
       answerData[codeId] = data;
     } else { editorData = data; }
     // console.log(data);
-    console.log(answerData);
-    // console.log(editorData);
+    console.log(data);
+    console.log(editorData);
   };
 
   // clear all values

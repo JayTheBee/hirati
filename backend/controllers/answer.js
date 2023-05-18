@@ -7,6 +7,7 @@ import createError from '../utils/createError.js';
 const getQuestion = async (questionId) => {
   try {
     const question = await Question.findById({ _id: questionId });
+    console.log('QUESTION IS: ', question);
     return (question);
   } catch (err) {
     return (console.log(err));
@@ -75,7 +76,7 @@ const wait = (ms = 1000) => new Promise((resolve) => {
 const checkStatus = async (initialData) => {
   try {
     console.log('CHECKING STATUS....');
-    const batchURLs = initialData.map((element) => `${import.meta.env.VITE_JUDGE_LINK}/submissions/${element.token}`);
+    const batchURLs = initialData.map((element) => `${process.env.BETOS_JUDGE_LINK}/submissions/${element.token}`);
     console.log('URLS ARE: ', batchURLs);
     const batchResponses = await Promise.all(batchURLs.map((url) => axios.get(url)));
     const batchStatuses = batchResponses.map((e) => e.data.status.id);
@@ -88,28 +89,28 @@ const checkStatus = async (initialData) => {
     }
     console.log('BATCH RESPONSES ARE STILL: ', batchResponses);
     await wait(3000);
-    await checkStatus(initialDatah);
+    await checkStatus(initialData);
   } catch (error) {
     console.log(error);
   }
 };
 
-const judgeChecking = async (cases, language, source_code) => {
+const judgeChecking = async (cases, language_id, source_code) => {
   // Format submission data for judge0
   const subs = cases.map((element) => (
     {
-      language_id: language.id,
+      language_id,
       source_code,
       stdin: element.input,
       expected_output: element.output,
     }));
 
   const judgeSubmissions = { submissions: subs };
-  const url = `${import.meta.env.VITE_RAPID_API_URL}/submissions/batch`;
+  const url = `${process.env.BETOS_JUDGE_LINK}/submissions/batch`;
   const conf = {
     'Content-Type': 'application/json',
-    'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
-    'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
+    // 'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+    // 'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
   };
 
   // Initial Call for judge0
@@ -123,8 +124,17 @@ const judgeChecking = async (cases, language, source_code) => {
   }
 };
 
-const autocheck = (answerData) => {
+const autocheck = () => {
+  const answerData = [
+    {
+      taskId: '645b283ad9eba11259186aa7',
+      questionId: '6463a275e6c8ecb5d4beb5eb',
+      source_code: 'print(input())',
+      code_tokens: ['print'],
+    },
+  ];
   answerData.forEach((each) => {
+    console.log('DID I MAKE IT HERE');
     const question = getQuestion(each.questionId);
     const judgeResults = judgeChecking(question.testcase, question.language, each.source_code);
   });

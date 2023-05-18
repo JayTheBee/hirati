@@ -7,28 +7,14 @@ import {
 
 function AnswerButtonSubmit({ answerData, close }) {
   const code_tokens = [];
-
-  // const dummyData = [
-  //   {
-  //     time: '0.028',
-  //     language: 'JavaScript',
-  //     id: 63,
-  //     status: 'Runtime Error (NZEC)',
-  //     memory: 7264,
-  //     code: "print('yaw')",
-  //     answerFlag: true,
-  //     output: 'yawa23\n',
-  //     input: '',
-  //     questionId: '6463a275e6c8ecb5d4beb5eb',
-  //   },
-  //   {
-  //       taskId: 'test3289kj4594tj',
-  //       questionId,
-  //       source_code: response.data.source_code, base64
-  //       code_tokens: [string] source code tokenized as words
-  //       lint results:
-  //   },
-  // ];
+  const dummyData = [
+    {
+      taskId: '645b283ad9eba11259186aa7',
+      questionId: '6463a275e6c8ecb5d4beb5eb',
+      source_code: 'print(input())',
+      code_tokens: ['print'],
+    },
+  ];
 
   // ARRAY OF THIS v
   //         taskId: task_id,

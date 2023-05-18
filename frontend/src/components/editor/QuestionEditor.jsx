@@ -120,7 +120,6 @@ function SampleCode({
       }
       setProcessing(false);
       setOutputDetails(response.data);
-
       await handleEditorData({
         time: response.data.time,
         language: language?.value,
