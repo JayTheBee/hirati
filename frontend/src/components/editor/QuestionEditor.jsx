@@ -56,8 +56,7 @@ function SampleCode({
   const enterPress = useKeyPress('Enter');
   const ctrlPress = useKeyPress('Control');
 
-  const onSelectChange = (sl) => {
-    console.log('selected Option...', sl);
+  const onSelectChange = async (sl) => {
     setLanguage(sl);
     handleEditorData({
       language: sl?.value,
@@ -132,7 +131,7 @@ function SampleCode({
         answerFlag,
         questionId,
         data: response.data,
-      }, { codeId });
+      }, codeId);
 
       showSuccessToast('Compiled Successfully!');
       console.log('response.data', response.data);
