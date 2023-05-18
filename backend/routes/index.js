@@ -17,10 +17,6 @@ router.use('/tasks', checkAuth, tasksRoutes);
 router.use('/class', checkAuth, classsRoutes);
 router.use('/question', checkAuth, questionRoutes);
 router.use('/answer', checkAuth, answerRoutes);
-router.use('/lint', lintRoutes)
-
-
-
-
+// router.use('/lint', lintRoutes)
 
 export default router;
