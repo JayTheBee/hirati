@@ -203,7 +203,7 @@ function TaskItem({
     updateButtonClick(task);
   };
   // print('yawa2')
-  const handleEditorData = async (data, { codeId }) => {
+  const handleEditorData = async (data, codeId) => {
     if (data.answerFlag) {
       answerData[codeId] = data;
     } else { editorData = data; }

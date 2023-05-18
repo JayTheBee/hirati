@@ -6,30 +6,65 @@ import {
 } from 'react-icons/ai';
 
 function AnswerButtonSubmit({ answerData, close }) {
-  const dummyData = [
-    {
-      time: '0.028',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Runtime Error (NZEC)',
-      memory: 7264,
-      code: "print('yaw')",
-      answerFlag: true,
-      output: 'yawa23\n',
-      input: '',
-      code: "print('yawa23')",
-      answerFlag: true,
-      questionId: '6463a275e6c8ecb5d4beb5eb',
-    },
-  ];
-  const handleSubmitCode = () => {
+  const code_tokens = [];
+
+  // const dummyData = [
+  //   {
+  //     time: '0.028',
+  //     language: 'JavaScript',
+  //     id: 63,
+  //     status: 'Runtime Error (NZEC)',
+  //     memory: 7264,
+  //     code: "print('yaw')",
+  //     answerFlag: true,
+  //     output: 'yawa23\n',
+  //     input: '',
+  //     questionId: '6463a275e6c8ecb5d4beb5eb',
+  //   },
+  //   {
+  //       taskId: 'test3289kj4594tj',
+  //       questionId,
+  //       source_code: response.data.source_code, base64
+  //       code_tokens: [string] source code tokenized as words
+  //       lint results:
+  //   },
+  // ];
+
+  // ARRAY OF THIS v
+  //         taskId: task_id,
+  //         questionId,
+  //         source_code: response.data.source_code, base64
+  //         code_tokens: [string] source code tokenized as words
+  //         lint results:
+
+  const handleWordtokens = (answerData) => {
+    let source_code;
+    answerData.forEach((each, i) => {
+      // console.log(each.data);
+      source_code = each?.data?.source_code;
+      const tokens = source_code?.match(/[a-zA-Z]+/g) || [];
+      code_tokens.push(tokens);
+    });
+  };
+
+  const handleSubmitCode = async () => {
     // console.log(answerData);
     // change to answerData
-    if (dummyData.length > 0) {
+    // handle batchSubmissions here
+    // handleWordtokens(answerData.data.source_code);
+    console.log(answerData);
+    handleWordtokens(answerData);
+    console.log(code_tokens);
+    // console.log(handleWordtokens);
+
+    if (answerData.length > 0) {
+    // if (dummyData.length > 0) {
       try {
         answerData.forEach(async (each) => {
+        // dummyData.forEach(async (each) => {
           await axios.post(`/api/answer/${each.questionId}`, each);
-          console.log(each);
+        // Promise.a; l;
+        //   console.log(each);
         });
         toast.success('All Answers are Submitted!');
         //   close();

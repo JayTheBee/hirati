@@ -6,10 +6,12 @@ import tasksRoutes from './tasks.js';
 import classsRoutes from './class.js';
 import questionRoutes from './question.js';
 import answerRoutes from './answer.js';
+import { testingEndpoint } from '../controllers/answer.js';
 
 const router = express.Router();
 
 router.use('/auth', authRoutes);
+router.post('/test', testingEndpoint);
 router.use('/users', checkAuth, usersRoutes);
 router.use('/tasks', checkAuth, tasksRoutes);
 router.use('/class', checkAuth, classsRoutes);

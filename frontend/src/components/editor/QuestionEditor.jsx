@@ -127,11 +127,12 @@ function SampleCode({
         id: response.data.language.id,
         status: response.data.status.description,
         memory: response.data.memory,
-        output: atob(outputDetails?.stdout),
+        output: outputDetails?.stdout,
         input: customInput,
         code,
         answerFlag,
         questionId,
+        data: response.data,
       }, { codeId });
 
       showSuccessToast('Compiled Successfully!');
