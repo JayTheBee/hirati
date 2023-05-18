@@ -49,7 +49,6 @@ export const createAnswer = async (req, res, next) => {
     output: req.body.output,
     time: req.body.time,
   };
-
   // automatedChecking(questionData);
   //  for uncomment later
   const newAnswer = new Answer(questionData);
@@ -60,13 +59,6 @@ export const createAnswer = async (req, res, next) => {
     console.log(err);
     return next(err);
   }
-
-  // Test Dev Box
-  // automatedChecking( );
-};
-
-export const addAllAnswer = async (req, res, next) => {
-  const addAll = req.body;
 };
 
 const wait = (ms = 1000) => new Promise((resolve) => {
@@ -124,8 +116,8 @@ const judgeChecking = async (cases, language_id, source_code) => {
   }
 };
 
-const autocheck = () => {
-  const answerData = [
+const autocheck = (answerData) => {
+  const dummy = [
     {
       taskId: '645b283ad9eba11259186aa7',
       questionId: '6463a275e6c8ecb5d4beb5eb',
@@ -141,31 +133,6 @@ const autocheck = () => {
 };
 
 export const createAllAnswers = async (req, res, next) => {
-  const dummyData = [
-    {
-      time: '0.028',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Runtime Error (NZEC)',
-      memory: 7264,
-      code: "print('yaw')",
-      answerFlag: true,
-      code: "print('yawa23')",
-      questionId: '6463a275e6c8ecb5d4beb5eb',
-    },
-    {
-      time: '0.028',
-      language: 'JavaScript',
-      id: 63,
-      status: 'Runtime Error (NZEC)',
-      memory: 7264,
-      code: "print('yaw')",
-      answerFlag: true,
-      code: "print('yawa23')",
-      questionId: '6463a275e6c8ecb5d4beb5eb',
-    },
-  ];
-
   // ARRAY OF THIS v
   //         taskId: task_id,
   //         questionId,
@@ -200,3 +167,8 @@ export const createAllAnswers = async (req, res, next) => {
 // -> check metric weights(from question fetch)
 // -> percentage to total points( % * total points)(computation nalang)
 // -> calculate points(cpuscore,memoryscore, statusscore = total aquiredpoints)(notsure pa dito)
+
+export const addAllAnswer = async (req, res, next) => {
+  // autocheck(req);
+  console.log('THIS IS THE DATA ', req.body);
+};
