@@ -5,8 +5,7 @@ import usersRoutes from './users.js';
 import tasksRoutes from './tasks.js';
 import classsRoutes from './class.js';
 import questionRoutes from './question.js';
-import lintRoutes from './linters.js'
-import answerRoutes from './answer.js'
+import answerRoutes from './answer.js';
 
 const router = express.Router();
 
@@ -16,10 +15,5 @@ router.use('/tasks', checkAuth, tasksRoutes);
 router.use('/class', checkAuth, classsRoutes);
 router.use('/question', checkAuth, questionRoutes);
 router.use('/answer', checkAuth, answerRoutes);
-router.use('/lint', lintRoutes)
-
-
-
-
 
 export default router;

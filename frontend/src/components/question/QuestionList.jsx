@@ -7,7 +7,7 @@ import { Link, useParams } from 'react-router-dom';
 import QuestionItem from './QuestionItem';
 import classes from './QuestionList.module.scss';
 import { useLocation } from 'react-router-dom';
-// import { deleteQuestion } from '../../../../backend/controllers/question';
+import { deleteQuestion } from '../../../../backend/controllers/question';
 
 let questionData = {
   description: null ,

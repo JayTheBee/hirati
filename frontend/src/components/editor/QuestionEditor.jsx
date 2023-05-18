@@ -13,8 +13,6 @@ import OutputDetails from './OutputDetails';
 import ThemeDropdown from './ThemeDropdown';
 import LanguagesDropdown from './LanguagesDropdown';
 import classes from './playGround.module.scss';
-import LintCall from '../linter/Main';
-import ConstructCheck from '../construct-checking/Main';
 
 const showSuccessToast = (msg) => {
   toast.success(msg || 'Compiled Successfully!', {
@@ -82,12 +80,10 @@ function SampleCode({
   const getLanguage = async () => {
     const options = {
       method: 'GET',
-      url: `${import.meta.env.VITE_JUDGE_LINK}/languages`,
+      url: 'https://judge0-ce.p.rapidapi.com/languages',
       headers: {
-        'content-type': 'application/json',
-        'Content-Type': 'application/json',
-        // 'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
-        // 'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
 
@@ -97,23 +93,16 @@ function SampleCode({
       console.error(error);
     });
   };
-  const handleAnswerData = async (data) => {
-    console.log('ANSWER DATA IS: ', data);
-    const resulta = await axios.post('/api/answer', data);
-    console.log('PLEASE WORK ', resulta);
-  };
 
   const checkStatus = async (token) => {
     const options = {
       method: 'GET',
       //   url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
-      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions/${token}`,
+      url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
-        'content-type': 'application/json',
-        'Content-Type': 'application/json',
-        // 'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
-        // 'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
     try {
@@ -131,25 +120,7 @@ function SampleCode({
       }
       setProcessing(false);
       setOutputDetails(response.data);
-      console.log('PROCESSED DATA: ', response.data);
-      if (role === 'student') {
-        await handleAnswerData({
-          taskId: task_id,
-          questionId,
-          judgeToken: response.data.token,
-          source_code: response.data.source_code,
-          language: response.data.language,
-          status: response.data.status,
-          answer_io: {
-            stdin: response.data.stdin,
-            stdout: response.data.stdout,
-          },
-          performance: {
-            memory: response.data.memory,
-            cputime: response.data.time,
-          },
-        });
-      }
+
       await handleEditorData({
         time: response.data.time,
         language: language?.value,
@@ -164,6 +135,7 @@ function SampleCode({
       }, { codeId });
 
       showSuccessToast('Compiled Successfully!');
+      console.log('response.data', response.data);
       return;
     } catch (err) {
       console.log('err', err);
@@ -183,13 +155,13 @@ function SampleCode({
     const options = {
       method: 'POST',
       //   url: process.env.REACT_APP_RAPID_API_URL,
-      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions`,
+      url: 'https://judge0-ce.p.rapidapi.com/submissions',
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
         'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
-        // // 'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
       data: formData,
     };
@@ -291,13 +263,6 @@ function SampleCode({
 
           <hr className={classes.containerline} />
           <OutputWindow outputDetails={outputDetails} />
-          {role === 'student'
-          && (
-          <>
-            <LintCall code={code} lang={language.value} />
-            <ConstructCheck code={code} lang={language.value} />
-          </>
-          )}
 
           {/* <button
             type="button"
