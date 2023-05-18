@@ -294,7 +294,7 @@ function TaskItem({
 
   // One instance for now -->> On going with other scenario, impelements Create when all fields are given
   const handleSubmit = () => {
-    console.log(data);
+    console.log('SUBMITTING DATA ', data);
     try {
       if (data.length > 0) {
         data.map(async (each) => {

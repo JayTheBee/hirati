@@ -121,8 +121,8 @@ function Landing() {
     const options = {
       method: 'GET',
       //   url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
-      url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-      params: { base64_encoded: 'true', fields: '*' },
+      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions/${token}`,
+      params: { base64_encoded: 'true' },
       headers: {
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
         'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
@@ -164,8 +164,8 @@ function Landing() {
     const options = {
       method: 'POST',
       //   url: process.env.REACT_APP_RAPID_API_URL,
-      url: 'https://judge0-ce.p.rapidapi.com/submissions',
-      params: { base64_encoded: 'true', fields: '*' },
+      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions`,
+      params: { base64_encoded: 'true' },
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
