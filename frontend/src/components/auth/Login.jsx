@@ -7,6 +7,7 @@ import classes from './AuthForm.module.scss';
 function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [forgot, setForgot] = useState(true);
   const login = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -29,6 +30,11 @@ function Login() {
 
   const register = async () => {
     navigate('/register');
+  };
+
+  // Axios Call to mail
+  const handleForgot = async () => {
+
   };
 
   return (
@@ -56,8 +62,16 @@ function Login() {
       <div>
         <p>
           New here?
-          <p className={classes.register} onClick={register}>Register</p>
         </p>
+        <p className={classes.register} onClick={register}>Register</p>
+        <p className={classes.register} onClick={() => setForgot(!forgot)}>Forgot Password?</p>
+        {forgot && (
+          <div className=" d-flex  align-content-center forgot justify-content-center">
+            <input className="round rounded p-3" type="email" name="email" id="email" style={{ border: '0px', borderRadius: '10px' }} placeholder="Enter Mail" />
+            <button className="bg-success rounded-start text-white p-4" style={{ border: '0px', borderRadius: '10px' }} type="button">Send</button>
+
+          </div>
+        )}
 
       </div>
       {error && <div className={classes.error_msg}>{error}</div>}
