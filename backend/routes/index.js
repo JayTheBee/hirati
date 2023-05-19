@@ -18,10 +18,6 @@ router.use('/tasks', checkAuth, tasksRoutes);
 router.use('/class', checkAuth, classsRoutes);
 router.use('/question', checkAuth, questionRoutes);
 router.use('/answer', checkAuth, answerRoutes);
-<<<<<<< HEAD
-// router.use('/lint', lintRoutes)
-=======
 router.use('/lint', lintRoutes);
->>>>>>> 097e1dcf320afaaad9fe0e76222608fb8e6b8c8d
 
 export default router;

@@ -19,7 +19,10 @@ function AnswerButtonSubmit({ answerData, close }) {
     let tokens;
     answerData.forEach((each, index) => {
       source_code = each?.data?.source_code;
+      source_code = atob(source_code);
+      console.log('SOURCE CODE IS: ', source_code);
       tokens = source_code?.match(/[a-zA-Z]+/g) || [];
+      console.log('SOURCE TOKEN IS: ', tokens);
       answerData[index].code_tokens = tokens;
     });
   };
@@ -37,12 +40,12 @@ function AnswerButtonSubmit({ answerData, close }) {
       try {
         answerData.forEach(async (each) => {
         // mongo db insert
-          // await axios.post(`/api/answer/${each.questionId}`, each);
+          await axios.post(`/api/answer/${each.questionId}`, each);
           console.log(each);
         });
 
         // controller pass data only
-        await axios.post('/api/answer/', answerData);
+        // await axios.post('/api/answer/', answerData);
         toast.success('All Answers are Submitted!');
         //   close();
       } catch (error) {

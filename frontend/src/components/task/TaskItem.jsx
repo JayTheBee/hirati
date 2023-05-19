@@ -22,6 +22,8 @@ import Editor from '../editor/QuestionEditor';
 import AnswerButtonSubmit from '../answer/Answer';
 
 let editorData = {};
+let keywordData = [];
+let currentEdit = 0;
 
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
@@ -44,10 +46,9 @@ function TaskItem({
   // All data Stored for db submission
   let collateData = [];
 
-  let keywordData = [];
+
   // let editorData = {};
 
-  let currentEdit = 0;
 
   // View all in stack modal fetch existing question from db if meron
 

@@ -18,16 +18,20 @@ const AnswerSchema = new Schema({
     ref: 'Question',
   },
   // array of Student mail assigned to class
-  input: {
-    type: String,
-  },
-  output: {
-    type: String,
-  },
+  // input: {
+  //   type: String,
+  // },
+  // output: {
+  //   type: String,
+  // },
   resultAnswer: {
-    time: Schema.Types.Decimal128,
+    cputime: Schema.Types.Decimal128,
     memory: Number,
     status: String,
+  },
+  code_tokens: {
+    type: Array,
+    required: true,
   },
 }, { timestamps: true });
 
