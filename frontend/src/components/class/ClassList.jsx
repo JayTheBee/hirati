@@ -147,6 +147,7 @@ function ClassList(userData) {
         getClass();
         setError('');
         toast.success('Class Joined Succesfully');
+        setModalJoin(false);
       }catch(e){
         if (
           e.response && e.response.status >= 400 && e.response.status <= 500
@@ -206,7 +207,7 @@ function ClassList(userData) {
   return (
       <div>
     <div className={classes.title}>
-      <h1 className={classes.pageTitle}>Class List </h1>
+      <h1 className={classes.pageTitle}> {checkRole()?'MY CLASSES': 'MY CLASS LIST'} </h1>
     </div>
 
   <div className='container-fluid rounded-pill px-4 py-0 ' style={{backgroundColor:'#187f524b' }} >
@@ -215,21 +216,20 @@ function ClassList(userData) {
     
       <div>
         {/* //// test */}
-        <button onClick={openModalNew} type="button" className={checkRole()? 'd-none' :'d-flex align-items-center border border-dark px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
+        <button onClick={openModalNew} type="button" className={checkRole()? 'd-none' :'d-flex align-items-center  px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
           <AiFillPlusCircle />
           <p className='my-auto p-2'>&nbsp;Add</p>
         </button>
 
 
-        <button onClick={openModalJoin} type="button" className={!checkRole()?'d-none' :'d-flex align-items-center border border-dark px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
+        <button onClick={openModalJoin} type="button" className={!checkRole()?'d-none' :'d-flex align-items-center  px-4 btn btn-success mt-4 rounded-pill text-white fs-4 fw-bold'} >
           <AiFillPlusCircle />
           <p className='my-auto p-2'>&nbsp;Join</p>
         </button>
       </div>
       <Modal
         isOpen={modalIsOpen}
-        // onAfterOpen={afterOpenModal}
-            onRequestClose={closeModal}
+        onRequestClose={closeModal}
         className={classes.customModal}
         overlayClassName={classes.overlay}
         contentLabel="Assign Task"
@@ -278,12 +278,12 @@ function ClassList(userData) {
         <form className={classes.addNewForm} onSubmit={ joinClass}>
           <h3 className='text-center'>Class Code is Case Sensitive and requires only 5 alphanumeric String</h3>
           <br />
-          <label htmlFor="" className='text-center fs-4'>
+          <label htmlFor="" className='text-center fs-4 my-4 p-3'>
             Please Enter Valid Class Code <br /> 
             
             <input className='w-100' maxLength="5" minLength={5} name="teamCode" type="text" placeholder="Class Code" defaultValue={classData.className} disabled={!checkRole()?true:false}/>
           </label>
-            <button className='mx-4 d-flex align-items-center' type="submit" disabled={!checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { !checkRole() ?'Disabled' : 'Add'}</button>
+            <button className='mx-4 d-flex align-items-center my-4' type="submit" disabled={!checkRole() ?true:false}> <AiFillPlusCircle/> &nbsp; { !checkRole() ?'Disabled' : 'Add'}</button>
         </form>
         {error && <div className={classes.error_msg}>{error}</div>} 
       </Modal> 
@@ -294,15 +294,15 @@ function ClassList(userData) {
 
 
       {classList.length > 0 ? (
-        <div className='d-grid container-fluid fs-5 px-4 gap-2 overflow-auto '>
+        <div className='d-grid container-fluid fs-5 px-4 gap-4 overflow-auto '>
 
         <table className={classes.taskList_table}>
           <tbody>
-            <tr className='my-2'>
+            <tr className='my-2 fw-bold'>
               <td>Classname</td>
               <td>Date Created</td>
               <td>List Of Participants Email</td>
-              <td>Number of Students</td>
+              <td>Total Students</td>
               <td>Team Code</td>
               <td>Action</td>
             </tr>

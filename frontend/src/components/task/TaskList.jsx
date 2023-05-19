@@ -227,10 +227,10 @@ function TaskList(taskData) {
 
 			
 			{taskList.length > 0 ? (
-				<div className={classes.tableContainer}>
+				<div className='d-grid container-fluid fs-5 px-4 gap-4 overflow-auto'>
 					<table className={classes.taskList_table}>
-						<tbody>
-							<tr>
+						<tbody >
+							<tr className='my-2 fw-bold'>
 								<td>Count</td>
 								<td>Title</td>
 								<td>Date Created</td>

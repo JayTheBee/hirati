@@ -956,7 +956,7 @@ function TaskItem({
                     <div className="card col-7 bg-transparent border-0">
                       <div className="card-body ">
                         <div className={classes.columnSampleCode}>
-                          <Editor handleEditorData={handleEditorData} role={userData.role} task_id ={question.task_id} questionId={question.questionId} style />
+                          <Editor handleEditorData={handleEditorData} role={userData.role} task_id={question.task_id} questionId={question.questionId} style />
                           submit button
                         </div>
 
