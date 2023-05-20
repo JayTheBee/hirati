@@ -18,7 +18,6 @@ const getQuestion = async (questionId) => {
 export const getAnswers = async (req, res, next) => {
   try {
     const answers = await Answer.find({ questionId: req.params.questionId });
-    console.log('ARE THESE THE ANSWERS? ', answers);
     return res.status(200).json(answers);
   } catch (err) {
     console.log(err);

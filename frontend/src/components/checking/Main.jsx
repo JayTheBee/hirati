@@ -28,50 +28,97 @@ function TestcaseDetails({ testcase }) {
   );
 }
 
-// function AnswerDetails({ answer }) {
-//   return (
-//     <>
+function AutoScoreDetails({ autoScores }) {
+  return (
+    <>
+      <h3>
+        RAW MEMORY SCORE:
+        {' '}
+        {autoScores.memoryScore}
+      </h3>
+      <h3>
+        RAW CPU TIME SCORE:
+        {' '}
+        {autoScores.timeScore}
+      </h3>
+      <h3>
+        RAW STATUS SCORE:
+        {' '}
+        {autoScores.statusScore}
+      </h3>
+      <h3>
+        WEIGHTED MEMORY SCORE:
+        {' '}
+        {autoScores.weightedMemory.$numberDecimal.toLocaleString()}
+      </h3>
+      <h3>
+        WEIGHTED CPU TIME SCORE:
+        {' '}
+        {autoScores.weightedTime.$numberDecimal.toLocaleString()}
+      </h3>
+      <h3>
+        WEIGHTED STATUS SCORE:
+        {' '}
+        {autoScores.weightedStatus.$numberDecimal.toLocaleString()}
+      </h3>
+      <h3>
+        TOTAL WEIGHTED SCORE:
+        {' '}
+        {autoScores.totalWeightedScore.$numberDecimal.toLocaleString()}
+      </h3>
+      <h3>
+        FINAL SCORE:
+        {' '}
+        {autoScores.convertedScore.$numberDecimal.toLocaleString()}
+      </h3>
+    </>
+  );
+}
 
-//       {answer.map((each) => (
-//         <div key={each._id}>
-//           <h2>
+function AnswerDetails({ answer }) {
+  const [userInfo, setUserInfo] = useState([]);
 
-//             ANSWER
-//             {' '}
-//             {each.answerCount}
-//           </h2>
+  useEffect(() => {
+    const fetchUserInfo = async (userId) => {
+      try {
+        const { data } = await axios.get(`/api/users/${userId}`);
+        console.log('USER INFO IS: ', data);
+        setUserInfo((prevUserInfo) => [...prevUserInfo, data]);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-//           <h3>
-//             DESCRIPTION:
-//             {' '}
-//             <b>{each.description}</b>
-//           </h3>
-//           <h3>
-//             LANGUAGE:
-//             {' '}
-//             <b>{each.language}</b>
-//           </h3>
+    // Fetch user info for each answer
+    answer.forEach((each) => {
+      fetchUserInfo(each.userId);
+    });
+  }, [answer]);
 
-//           <h3>
-//             CODE:
-//             {' '}
-//             <b>{each.code}</b>
-//           </h3>
-//           <h3>
-//             STATUS:
-//             {' '}
-//             <b>{each.status}</b>
-//           </h3>
-//           <h3>
-//             SCORE:
-//             {' '}
-//             <b>{each.score}</b>
-//           </h3>
-//         </div>
-//       ))}
-//     </>
-//   );
-// }
+  return (
+    <>
+      {answer.map((each, index) => (
+        <div key={each._id}>
+          <h3>
+            STUDENT NAME IS:
+            {' '}
+            {userInfo[index]?.name}
+          </h3>
+          <h3>
+            SOURCE CODE:
+            {' '}
+            <b>{each.code}</b>
+          </h3>
+          <h3>
+            SCORES:
+            {' '}
+            <AutoScoreDetails autoScores={each.score} />
+          </h3>
+        </div>
+      ))}
+    </>
+  );
+}
 
 function MetricDetails({ metric }) {
   return (
@@ -153,6 +200,7 @@ function QuestionDetails({ question }) {
             <b>{each.points}</b>
           </h3>
           <button type="button" onClick={() => getAnswers(each._id)}>Get Answers</button>
+          {answer && <AnswerDetails answer={answer} />}
         </div>
       ))}
     </>
