@@ -3,6 +3,7 @@ import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
 import PrivateRoutes from './components/PrivateRoutes';
 import Auth from './pages/Auth';
+import Reset from './pages/Reset';
 import Register from './pages/RegisterPage';
 import EditProfile from './pages/EditProfile';
 import Class from './pages/Class';
@@ -36,6 +37,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/editor" exact element={<Editor />} />
         <Route path="/auth/:id/verify/:token" element={<EmailVerify />} />
+        <Route path="/reset" element={<Reset />} />
         <Route path="/dummy-editor" exact element={<CodeEditor />} />
       </Routes>
     </>

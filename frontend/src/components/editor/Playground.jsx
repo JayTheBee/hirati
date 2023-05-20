@@ -100,13 +100,13 @@ function Landing() {
     const options = {
       method: 'GET',
       // url: 'https://judge0-ce.p.rapidapi.com/languages',
-      url: import.meta.VITE_RAPID_API_URL,
+      url: import.meta.env.VITE_RAPID_API_URL,
 
       headers: {
         // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
         // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
-        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
 
@@ -125,9 +125,9 @@ function Landing() {
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
         // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
       },
     };
     try {
@@ -169,8 +169,8 @@ function Landing() {
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        'X-RapidAPI-Host': import.meta.VITE_RAPID_API_HOST,
-        'X-RapidAPI-Key': import.meta.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
         // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
         // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
       },
@@ -237,41 +237,44 @@ function Landing() {
         draggable
         pauseOnHover
       />
-      <div className={classes.containerline} />
-      <div className="h-4 w-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500" />
-      <div className={classes.option}>
-        <div className="px-4 py-2">
-          <LanguagesDropdown onSelectChange={onSelectChange} />
+      <div className="d-flex row" />
+      <div className="container w-25 float-start col-4">
+        <LanguagesDropdown onSelectChange={onSelectChange} />
+        <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+        <div className={classes.playgroundBox}>
+          <OutputWindow outputDetails={outputDetails} />
+
+          <div className="container">
+
+            <CustomInput
+              customInput={customInput}
+              setCustomInput={setCustomInput}
+            />
+            <button
+              type="button"
+              onClick={handleCompile}
+              disabled={processing}
+            >
+              {processing ? 'Processing...' : 'Run'}
+            </button>
+          </div>
         </div>
-        <div>
-          <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
+        <div className="text-muted fs-4 fw-bolder">
+
+          {outputDetails && <OutputDetails outputDetails={outputDetails} />}
         </div>
+
       </div>
 
-      <div className={classes.editorBody}>
+      <div className="container col-">
         <CodeEditorWindow
           code={code}
           onChange={onChange}
           language={language?.value}
           theme={theme.value}
         />
-        <div className={classes.outputBox}>
-          <OutputWindow outputDetails={outputDetails} />
-          <CustomInput
-            customInput={customInput}
-            setCustomInput={setCustomInput}
-          />
-          <button
-            type="button"
-            onClick={handleCompile}
-            disabled={processing}
-          >
-            {processing ? 'Processing...' : 'Compile and Execute'}
-          </button>
-          {outputDetails && <OutputDetails outputDetails={outputDetails} />}
-        </div>
-      </div>
 
+      </div>
       {/* <Footer /> */}
     </>
   );

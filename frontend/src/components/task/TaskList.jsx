@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import toast from 'react-hot-toast';
 
@@ -9,14 +9,19 @@ import classes from './TaskList.module.scss';
 import Modal from 'react-modal';
 import { AiFillPlusCircle } from 'react-icons/ai';
 import { useLocation } from 'react-router-dom';
+import categoryDropdown from './categoryDropdown';
+import CategoryDropdown from './categoryDropdown';
 <script
   src="https://cdn.jsdelivr.net/npm/react-bootstrap@next/dist/react-bootstrap.min.js"
   crossorigin>
 </script>
 
 function TaskList(taskData) {
+	const categoryRef= useRef();
+
 	const [taskList, setTaskList] = useState([]);
 	const [newTask, setNewTask] = useState({});
+	const [category, setCategory] = useState('');
 	const params = useParams();
 	const location = useLocation();
 	let count = 1;	
@@ -58,12 +63,16 @@ function TaskList(taskData) {
 		await setNewTask(eachTask);
 		openModalUpdate();
 	};
+	
+	const handleCategory = (cat) => {
+		setCategory(cat.value);
+	};
 
 	const addNewTask = async e => {
 		e.preventDefault();
 		const taskData = {
 			title: e.target.title.value,
-			category: e.target.category.value,
+			category: category,
 			dateExp: e.target.dateExp.value,
 			classId: params.id,
 			completed: false,
@@ -88,7 +97,7 @@ function TaskList(taskData) {
 
 		const taskData = {
 			title: e.target.title.value,
-			category: e.target.category.value,
+			category: category,
 			dateExp: e.target.dateExp.value,
 			classId: params.id,
 			completed: true,
@@ -165,10 +174,10 @@ function TaskList(taskData) {
 					{newTask._id ? 'Updating task' : 'Creating New Task'}
 				</h1>
 				<form
-					className='row gap-4 align-items-center'
+					className=' container'
 					onSubmit={newTask._id ? updateTask : addNewTask}
 				>
-					<label htmlFor="title" className='fs-3 fw-bold col-4 '>
+					<label htmlFor="title" className='fs-3 fw-bold col-12 '>
 						Enter Title:
 					</label>
 						<input
@@ -176,24 +185,17 @@ function TaskList(taskData) {
 							type="text"
 							placeholder="Title"
 							id="title"
-							className='rounded-pill col-4 border-0 p-3 fs-5'
+							className='rounded-pill col-4 border-0 p-3 fs-5 d-block w-50'
 							defaultValue={newTask.title ? newTask.title : ''}
 							required
 						/>
 
-					<label htmlFor="category" className='fs-3 fw-bold col-4 '>
+					<label htmlFor="category" className='fs-3 fw-bold col-4 mt-2 '>
 						Enter Category:
 					</label>
-						<input
-							name="category"
-							type="text"
-							placeholder="Category eg. Programming"
-							defaultValue={newTask.category ? newTask.category : ''}
-							className='rounded-pill col-4 border-0 p-3 fs-5' 
-							id="category"
-						/>
+					<CategoryDropdown ref={categoryRef} onSelectChange={handleCategory} passValue={newTask.category ? newTask.category : ''}></CategoryDropdown>
 
-					<label htmlFor="dateExp" className='fs-3 fw-bold col-12 '>
+					<label htmlFor="dateExp" className='fs-3 fw-bold col-12 mt-2'>
 						Enter Validity/Expiration for task:
 					</label>
 						<input
@@ -208,7 +210,7 @@ function TaskList(taskData) {
 							className='rounded-pill m-2 col-4 border-0 p-3 fs-5'
 							required
 						/>
-						<div className='container'>
+						<div className='container mt-4'>
 							<button type="submit" className='w-25 btn btn-success rounded p-3 border-bottom fs-4'>
 								{' '}
 								<AiFillPlusCircle /> &nbsp; Add/Update
@@ -227,10 +229,10 @@ function TaskList(taskData) {
 
 			
 			{taskList.length > 0 ? (
-				<div className={classes.tableContainer}>
+				<div className='d-grid container-fluid fs-5 px-4 gap-4 overflow-auto'>
 					<table className={classes.taskList_table}>
-						<tbody>
-							<tr>
+						<tbody >
+							<tr className='my-2 fw-bold'>
 								<td>Count</td>
 								<td>Title</td>
 								<td>Date Created</td>

@@ -183,37 +183,6 @@ td {
 	}
 }
 
-.active {
-	color: rgb(4, 102, 4);
-	font-size: 1.5rem;
-	text-shadow: 1px 0px 1px black;
-	font-weight: 900;
-	align-content: center;
-	p {
-		margin: auto;
-	}
-}
-.completed {
-	color: grey;
-	font-size: 1.5rem;
-	text-shadow: 1px 0px 1px black;
-	font-weight: 900;
-	align-content: center;
-	p {
-		margin: auto;
-	}
-}
-
-.titleQuestion {
-	display: inline;
-	text-transform: capitalize;
-	font-size: 1.25em;
-	color: wheat;
-	text-shadow: 2px 2px 2px rgb(90, 62, 62);
-}
-.titleTask {
-	font-size: 1.5em;
-}
 // modal for question
 
 .topBar {
@@ -483,3 +452,42 @@ td {
 	border-radius: 20px;
 	padding: 20px;
 }
+.active {
+	color: rgb(4, 102, 4);
+	font-size: 2rem;
+	text-shadow: 1px 2px 1px black;
+	font-weight: 900;
+	align-content: center;
+	font-family: 'Poppins', sans-serif;
+	p {
+		margin: auto;
+	}
+}
+.active:hover {
+	color: #76cf919a;
+}
+.completed {
+	color: grey;
+	font-size: 1.5rem;
+	text-shadow: 1px 2px 1px black;
+	font-weight: 900;
+	align-content: center;
+	p {
+		margin: auto;
+	}
+}
+.completed:hover {
+	color: #9e97979a;
+}
+
+.titleQuestion {
+	display: inline;
+	text-transform: capitalize;
+	font-size: 1.25em;
+	color: wheat;
+	text-shadow: 2px 2px 2px rgb(90, 62, 62);
+}
+.titleTask {
+	font-size: 1.5em;
+}
+// modal for question

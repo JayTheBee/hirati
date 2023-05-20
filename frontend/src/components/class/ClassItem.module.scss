@@ -1,8 +1,8 @@
 .task_item {
-	background-color: rgba(128, 128, 128, 0.226);
+	background-color: rgba(85, 73, 73, 0.075);
 	font-size: 1.25rem;
 	&:hover {
-		background-color: rgba(95, 95, 95, 0.2);
+		background-color: rgba(107, 107, 107, 0.158);
 	}
 }
 .action {
@@ -168,4 +168,8 @@ tr {
 	font-weight: bolder;
 	color: rgb(13, 72, 121);
 	text-decoration: underline;
+}
+
+td {
+	border-radius: 10px !important;
 }
