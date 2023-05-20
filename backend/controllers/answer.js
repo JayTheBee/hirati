@@ -14,13 +14,24 @@ const getQuestion = async (questionId) => {
   }
 };
 
-export const testingEndpoint = async (req, res, next) => {
+// Make a function to get all the answers connected to a question
+export const getAnswers = async (req, res, next) => {
   try {
-    console.log('PUTANG INA MO');
-    // autocheck()
-    return res.status(200).json({ message: 'jonjeng' });
+    const answers = await Answer.find({ questionId: req.params.questionId });
+    console.log('ARE THESE THE ANSWERS? ', answers);
+    return res.status(200).json(answers);
   } catch (err) {
-    return next(err);
+    console.log(err);
+  }
+};
+
+// Make a function to get answer by id
+export const getAnswerById = async (req, res, next) => {
+  try {
+    const answer = await Answer.findById({ _id: req.params.answerId });
+    return res.status(200).json(answer);
+  } catch (err) {
+    console.log(err);
   }
 };
 
@@ -73,6 +84,9 @@ const getScore = async (dataresArr, question) => {
     const convertedScore = (totalWeightedScore / dataresArr.length) * question.points;
     console.log('MEMORY SCORES ARE: ', weightedMemory, 'TIME: ', weightedTime, 'STATUS: ', weightedStatus, ' TOTAL IS: ', totalWeightedScore, 'CONVERTED: ', convertedScore);
     return ({
+      memoryScore,
+      timeScore,
+      statusScore,
       weightedMemory,
       weightedTime,
       weightedStatus,

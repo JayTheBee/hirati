@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
 import Select from 'react-select';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from 'axios';
 
@@ -513,6 +513,11 @@ function TaskItem({
     setViewSample(!viewSample);
   };
 
+  const navigate = useNavigate();
+  const routeToScore = (taskId) => {
+    navigate(`/score/${taskId}`);
+  };
+
   return (
     <tr className={classes.task_item}>
       <td>{count}</td>
@@ -797,9 +802,10 @@ function TaskItem({
               {' '}
               Del
             </button>
+            {/* Make button redirect to /score after click */}
             <button
               type="button"
-              // onClick={test}
+              onClick={() => routeToScore(task._id)}
             >
               Check
             </button>

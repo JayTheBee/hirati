@@ -13,7 +13,7 @@ import Playground from './pages/Playground';
 import EmailVerify from './components/auth/EmailVerification';
 import Editor from './pages/Editor';
 import CodeEditor from './components/editor jb/Main';
-import Scoring from './components/score/Main';
+import Scoring from './components/checking/Main';
 
 function App() {
   return (
