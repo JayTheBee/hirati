@@ -14,16 +14,6 @@ const getQuestion = async (questionId) => {
   }
 };
 
-// const getTaskId = async (questionId) => {
-//   try {
-//     const question = await Question.findById({ _id: questionId });
-//     console.log('TaskID IS: ', question.taskId);
-//     return (question.taskId);
-//   } catch (err) {
-//     return (console.log(err));
-//   }
-// };
-
 export const testingEndpoint = async (req, res, next) => {
   try {
     console.log('PUTANG INA MO');
@@ -50,17 +40,47 @@ export const createAnswer = async (req, res, next) => {
       status: req.body.status,
     },
   };
-  autocheck(questionData, req.body.id);
+  questionData.score = await autocheck(questionData, req.body.id);
   //  for uncomment later
   console.log('THIS IS THE DATABASE DATA: ', questionData);
   const newAnswer = new Answer(questionData);
   try {
     // autocheck(req.body);
-    const userClass = await newAnswer.save();
-    return res.status(200).json(userClass);
+    const userAnswer = await newAnswer.save();
+    console.log('THIS IS THE USER ANSWER SAVED: ', userAnswer);
+    return res.status(200).json(userAnswer);
   } catch (err) {
     console.log(err);
     return next(err);
+  }
+};
+
+const getScore = async (dataresArr, question) => {
+  try {
+    const cputimeConstraint = parseFloat(question.resultSample.time) + (0.010 * dataresArr.length);
+    const memoryConstraint = question.resultSample.memory + (500 * dataresArr.length);
+    let memoryScore = 0; let timeScore = 0; let
+      statusScore = 0;
+    dataresArr.map((element) => {
+      if (parseFloat(element.time) < cputimeConstraint) timeScore += 1;
+      if (element.memory < memoryConstraint) memoryScore += 1;
+      if (element.status.id === 3) statusScore += 1;
+    });
+    const weightedMemory = memoryScore * question.rubrics.memory * 0.01;
+    const weightedTime = timeScore * question.rubrics.cputime * 0.01;
+    const weightedStatus = statusScore * question.rubrics.status * 0.01;
+    const totalWeightedScore = weightedMemory + weightedTime + weightedStatus;
+    const convertedScore = (totalWeightedScore / dataresArr.length) * question.points;
+    console.log('MEMORY SCORES ARE: ', weightedMemory, 'TIME: ', weightedTime, 'STATUS: ', weightedStatus, ' TOTAL IS: ', totalWeightedScore, 'CONVERTED: ', convertedScore);
+    return ({
+      weightedMemory,
+      weightedTime,
+      weightedStatus,
+      totalWeightedScore,
+      convertedScore,
+    });
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -68,33 +88,15 @@ const wait = (ms = 1000) => new Promise((resolve) => {
   setTimeout(resolve, ms);
 });
 
-const getScores = async (respArr) => {
-
-  // EACH RESPONSE IS  {
-  //   stdout: '1\n',
-  //   time: '0.013',
-  //   memory: 3168,
-  //   stderr: null,
-  //   token: '21b2681b-d11d-469c-b24f-662819a7ce66',
-  //   compile_output: null,
-  //   message: null,
-  //   status: { id: 3, description: 'Accepted' }
-  // }
-
-  // respArr.time, respArr.memory, status
-}
-
-
-
 const checkStatus = async (initialData) => {
   try {
     console.log('CHECKING STATUS....');
-    const batchURLs = initialData.map((element) => `${process.env.VITE_RAPID_API_URL}/${element.token}`);
+    const batchURLs = await initialData.map((element) => `${process.env.BETOS_JUDGE_LINK}/submissions/${element.token}`);
     console.log('URLS ARE: ', batchURLs);
     const conf = {
       'Content-Type': 'application/json',
-      'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-      'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+      // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+      // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
     };
     // eslint-disable-next-line max-len
     const batchResponses = await Promise.all(batchURLs.map((url) => axios.get(url, { headers: conf })));
@@ -102,46 +104,43 @@ const checkStatus = async (initialData) => {
 
     // If submission is done processing
     if ((!batchStatuses.includes(1)) && (!batchStatuses.includes(2))) {
-      // console.log('BATCH RESPONSES ARE NOW: ', batchResponses);
       batchResponses.map((element) => {
         console.log('EACH RESPONSE IS ', element.data);
       });
       const datarespArr = batchResponses.map((element) => element.data);
-
-      // return (datarespArr);
+      return (datarespArr);
       // If still processing wait 3 seconds and reprocess recursively
     }
-    // console.log('BATCH RESPONSES ARE STILL: ', batchResponses);
     await wait(3000);
-    await checkStatus(initialData);
+    return checkStatus(initialData);
   } catch (error) {
     console.log(error);
   }
 };
 
-const judgeChecking = async (cases, language_id, source_code) => {
+const judgeChecking = async (cases, langId, source) => {
   // Format submission data for judge0
   console.log('WHAT DO CASES LOOOK LIKE: ', cases);
   const subs = await cases.map((element) => (
     {
-      language_id,
-      source_code,
+      language_id: langId,
+      source_code: source,
       stdin: element.input,
       expected_output: element.output,
     }));
-  console.log('SUBS LOOK LIKE THIS: ', subs);
   const judgeSubmissions = { submissions: subs };
-  const url = `${process.env.VITE_RAPID_API_URL}/batch`;
+  console.log('DATA LOOKS LIKE THIS: ', judgeSubmissions);
+  const url = `${process.env.BETOS_JUDGE_LINK}/submissions/batch/`;
   const conf = {
     'Content-Type': 'application/json',
-    'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-    'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+    // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+    // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
   };
 
   // Initial Call for judge0
   try {
     const { data } = await axios.post(url, judgeSubmissions, { headers: conf });
-    const judgeResponses = checkStatus(data);
+    const judgeResponses = await checkStatus(data);
     console.log('JUDGE RESPONSES ARE NOW: ', judgeResponses);
     return judgeResponses;
   } catch (error) {
@@ -150,48 +149,12 @@ const judgeChecking = async (cases, language_id, source_code) => {
 };
 
 const autocheck = async (answerData, langId) => {
-  // const questionData = {
-  //   code: req.body.code,
-  //   userId: req.user.id,
-  //   questionId: req.body.questionId,
-  //   code_tokens: req.body.code_tokens,
-  //   resultAnswer: {
-  //     cputime: req.body.time,
-  //     memory: req.body.memory,
-  //     status: req.body.status,
-  //   },
-  // };
-
   const question = await getQuestion(answerData.questionId);
-  await judgeChecking(question.testcase, langId, answerData.code);
+  const testo = await judgeChecking(question.testcase, langId, answerData.code);
+  const score = await getScore(testo, question);
+  return score;
 };
 
-// export const createAllAnswers = async (req, res, next) => {
-//   // ARRAY OF THIS v
-//   //         taskId: task_id,
-//   //         questionId,
-//   //         source_code: response.data.source_code, base64
-//   //         code_tokens: [string] source code tokenized as words
-//   //         lint results:
-
-//   try {
-//     // DITO ang auto checking function
-//     autocheck(req.body);
-
-//     const dataArray = req.body; // Assuming the array is sent in the request body
-
-//     // Iterate over the array and save each item to the database
-//     for (const data of dataArray) {
-//       const newData = new DataModel(data);
-//       await newData.save();
-//     }
-
-//     res.status(201).json({ message: 'Data inserted successfully.' });
-//   } catch (err) {
-//     console.error('Error inserting data:', err);
-//     res.status(500).json({ error: 'An error occurred.' });
-//   }
-// };
 // TODO LIST PA
 // Perform Automated Assesment here
 // -> get all answer by                               goodss na
