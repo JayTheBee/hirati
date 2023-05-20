@@ -12,6 +12,7 @@ import Playground from './pages/Playground';
 import EmailVerify from './components/auth/EmailVerification';
 import Editor from './pages/Editor';
 import CodeEditor from './components/editor jb/Main';
+import Scoring from './components/score/Main';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/class/:id" element={<Task />} />
           <Route path="/class/:id/task" element={<Question />} />
           <Route path="/playground" element={<Playground />} />
+          <Route path="/score/:id" element={<Scoring />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />

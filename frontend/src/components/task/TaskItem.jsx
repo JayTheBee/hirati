@@ -46,9 +46,7 @@ function TaskItem({
   // All data Stored for db submission
   let collateData = [];
 
-
   // let editorData = {};
-
 
   // View all in stack modal fetch existing question from db if meron
 
@@ -803,6 +801,12 @@ function TaskItem({
               {' '}
               Del
             </button>
+            <button
+              type="button"
+              // onClick={test}
+            >
+              Check
+            </button>
 
             {/* this part is for view all stack for Modal question view */}
 
@@ -1092,8 +1096,11 @@ function TaskItem({
         >
           <AiFillDelete />
         </button>
+
       </div>
+
     ))}
+
   </>
 																) : (
   <>
