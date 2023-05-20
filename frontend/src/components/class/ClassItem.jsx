@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import moment from 'moment';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AiFillDelete, AiFillEdit, AiTwotoneEye } from 'react-icons/ai';
 import classes from './ClassItem.module.scss';
 
@@ -12,6 +12,8 @@ function ClassItem({
   const openUpdateform = async (e) => {
     updateButtonClick(eachClass);
   };
+  const navigate = useNavigate();
+
   return (
     <tr className={classes.task_item}>
       <td>
@@ -41,8 +43,7 @@ function ClassItem({
         { eachClass.teamCode}
       </td>
 
-      <td>
-
+      <td className="bg-none p-2" style={{ background: 'rgba(128, 128, 128, 10);' }}>
         {
           role === 'teacher'
             ? (
@@ -70,15 +71,18 @@ function ClassItem({
               </div>
             )
             : (
-              <div>
+              <div className="container mx-auto">
                 <button
                   type="button"
-                  className={classes.viewBtn}
-                  onClick={() => openUpdateform(eachClass._id)}
+                  className="btn btn-success d-flex fs-3 rounded-pill"
                 >
-                  <AiTwotoneEye />
                   {' '}
-                  View
+                  <AiTwotoneEye />
+                  {/* <p className="fs-5 m-auto">Visit</p> */}
+                  <Link to={`class/${eachClass._id}`} className="text-white" state={{ classId: eachClass.id, className: eachClass.className }}>
+                    {' '}
+                    <p className="fs-5 m-auto">Visit</p>
+                  </Link>
                 </button>
               </div>
             )

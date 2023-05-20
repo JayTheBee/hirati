@@ -87,11 +87,11 @@ function Register() {
       </form>
       {error && <div className={classes.error_msg}>{error}</div>}
       {msg && <div className={classes.sucess_msg}>{msg}</div>}
-      <div>
+      <div className="d-flex gap-2 align-items-center ">
         <p className={classes.flex}>
           Return to
-          <p className={classes.register} onClick={handleHome}>Login</p>
         </p>
+        <p className={classes.register} onClick={handleHome}>Login</p>
 
       </div>
     </div>

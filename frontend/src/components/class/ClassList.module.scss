@@ -190,11 +190,10 @@
 	position: absolute;
 	overflow: auto;
 	justify-content: space-between;
-	width: 50%;
-	height: 350px;
+	width: 400px;
+	height: 400px;
 	padding: 30px;
 	margin: 5% 20%;
-	border: solid;
 	background: rgb(140, 184, 131);
 	border-radius: 20px;
 	input {
@@ -227,4 +226,8 @@
 		background-color: rgb(100, 109, 100);
 		color: rgb(205, 205, 205);
 	}
+}
+
+tr {
+	background-color: #4c8b71b4;
 }

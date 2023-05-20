@@ -235,10 +235,6 @@ function TaskItem({
 
   const handleEditModal = (data) => {
     currentEdit = data.count;
-
-    // if (parseInt(data.status) === 0
-    // && parseInt(data.cputime) === 0
-    // && parseInt(data.memory) === 0) { setEditStackModal(!editStackModal); return; }
     if (
       parseInt(data.status) + parseInt(data.cputime) + parseInt(data.memory)
 			!== 100
@@ -747,12 +743,12 @@ function TaskItem({
                       <input
                         type="checkbox"
                         id="checkbox"
-                        className="m-auto"
+                        className="mx-3 my-auto"
                         checked={permission}
                         onChange={permissionHandler}
                         style={{ width: '20px' }}
                       />
-                      <label htmlFor="checkbox" className="fs-4 text-center m-auto"> Show Sample Code with Students </label>
+                      <label htmlFor="checkbox" className="fs-4  my-auto"> Show Sample Code with Students </label>
                     </div>
 
                     <button type="button" onClick={handleAnotherQuestion}>
@@ -1290,9 +1286,9 @@ function TaskItem({
             </div>
 
             <div className="row ">
-              <h4 className="col fw-bolder">{`${question.rubrics.cputime}%`}</h4>
-              <h4 className="col fw-bolder ">{`${question.rubrics.memory}%`}</h4>
-              <h4 className="col fw-bolder ">{`${question.rubrics.status}%`}</h4>
+              <h4 className="col fw-bolder">{`${question.rubrics?.cputime}%`}</h4>
+              <h4 className="col fw-bolder ">{`${question.rubrics?.memory}%`}</h4>
+              <h4 className="col fw-bolder ">{`${question.rubrics?.status}%`}</h4>
             </div>
           </div>
         </div>

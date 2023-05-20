@@ -1,6 +1,7 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 import createError from '../utils/createError.js';
 
@@ -9,6 +10,7 @@ import sendEmail from '../utils/sendEmail.js';
 import Token from '../models/Token.js';
 
 export const login = async (req, res, next) => {
+  console.log(req.body);
   if (!req.body.email || !req.body.password) {
     return next(
       createError({
@@ -141,5 +143,45 @@ export const verify = async (req, res, next) => {
     return res.status(200).json({ message: 'email verified success' });
   } catch (error) {
     return next(error);
+  }
+};
+
+export const forgotPass = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return next(createError({ status: 404, message: 'Email is not Registered!' }));
+
+    const token = await new Token({
+      userId: user._id,
+      token: crypto.randomBytes(32).toString('hex'),
+    }).save();
+    const url = `Hirati Reset Email Link: ${req.headers.host}/reset?id=${user._id}&token=${token.token}`;
+    await sendEmail(req.body.email, 'Reset Password', url);
+    return res.status(200).json({ message: 'Reset Password Mail Sent!' });
+  } catch (error) {
+    return next(createError({ status: 500, message: 'something went wrong with the server!' }));
+  }
+};
+
+export const resetPass = async (req, res, next) => {
+  if (!mongoose.isValidObjectId(req.body.id)) {
+    return next(createError({ status: 401, message: 'Invalid ObjectID!' }));
+  }
+  const objectId = mongoose.Types.ObjectId(req.body.id);
+  const user = await User.findOne({ _id: objectId });
+  const token = await Token.findOne({ token: req.body.token });
+  if (!user || !token) {
+    return next(createError({ status: 401, message: 'Unauthorized!' }));
+  }
+  if (req.body.password) {
+    try {
+      const salt = await bcryptjs.genSalt(10);
+      const hashedPassword = await bcryptjs.hash(req.body.password, salt);
+      await User.findByIdAndUpdate({ _id: objectId }, { password: hashedPassword });
+      await token.remove();
+      return res.status(200).json({ message: 'Password is changed' });
+    } catch (error) {
+      return next(error);
+    }
   }
 };
