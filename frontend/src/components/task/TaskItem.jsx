@@ -11,6 +11,7 @@ import {
   AiFillDelete,
   AiFillEdit,
   AiFillFileAdd,
+  AiFillCheckCircle,
   AiOutlineCloseCircle,
 } from 'react-icons/ai';
 import toast from 'react-hot-toast';
@@ -36,7 +37,7 @@ function TaskItem({
   const [viewSample, setViewSample] = React.useState(false);
   const [permission, setPermission] = React.useState(false);
   const [counter, setCount] = React.useState(1);
-  const [inputBox, setInputBox] = React.useState([{ input: '', output: '' }]);
+  const [inputBox, setInputBox] = React.useState([{ input: [''], output: '' }]);
   const [rubricBox, setRubricBox] = React.useState([
     { rubricTitle: '', rubricRating: '' },
   ]);
@@ -65,6 +66,7 @@ function TaskItem({
   }
 
   // for inputbox Testcase functions
+  console.log(inputBox);
   const inputBoxAdd = () => {
     if (inputBox.length < 5) {
       setInputBox([...inputBox, { input: '', output: '' }]);
@@ -806,7 +808,9 @@ function TaskItem({
             <button
               type="button"
               onClick={() => routeToScore(task._id)}
+              className={classes.check}
             >
+              <AiFillCheckCircle />
               Check
             </button>
 

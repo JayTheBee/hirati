@@ -8,7 +8,7 @@ import classes from './Auth.module.scss';
 import useAuth from '../hooks/useAuth';
 import Banner from './Banner';
 
-function RegisterPage() {
+function ResetPage() {
   const { auth } = useAuth();
   const navigate = useNavigate();
 
@@ -46,4 +46,4 @@ function RegisterPage() {
   );
 }
 
-export default RegisterPage;
+export default ResetPage;
