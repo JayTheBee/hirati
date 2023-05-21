@@ -623,11 +623,14 @@ function TaskItem({
                     <br />
                     {inputBox.map((val, i) => (
                       <div className="d-flex p-6 gap-2">
-                        <input
+                        <textarea
                           name="input"
                           value={val.input}
                           placeholder="Input"
                           onChange={(e) => inputBoxChange(e, i)}
+                          className="h-25"
+                          style={{ maxHeight: '100px !important' }}
+
                         />
                         <input
                           name="output"
