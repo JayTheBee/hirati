@@ -12,6 +12,11 @@ const AnswerSchema = new Schema({
     required: true,
     ref: 'User',
   },
+  taskId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Task',
+  },
   questionId: {
     type: Schema.Types.ObjectId,
     required: true,

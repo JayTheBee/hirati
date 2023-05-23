@@ -44,7 +44,7 @@ const javascriptDefault = `/**
 
 function SampleCode({
   handleEditorData,
-  answerFlag, codeId, questionId,
+  answerFlag, codeId, questionId, taskId,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
@@ -130,11 +130,12 @@ function SampleCode({
         code,
         answerFlag,
         questionId,
+        taskId,
         data: response.data,
       }, codeId);
 
       showSuccessToast('Compiled Successfully!');
-      console.log('response.data', response.data);
+      console.log(taskId);
       return;
     } catch (err) {
       console.log('err', err);

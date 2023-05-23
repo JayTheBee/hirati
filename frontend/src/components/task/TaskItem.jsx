@@ -492,8 +492,8 @@ function TaskItem({
     }
   };
 
-  function openModal(taskId) {
-    getQuestion(taskId);
+  async function openModal(taskId) {
+    await getQuestion(taskId);
     setIsOpen(true);
   }
 
@@ -502,9 +502,20 @@ function TaskItem({
     setviewStackmodal(true);
   }
 
-  function openExam(taskId) {
+  async function openExam(task) {
+    if (!moment().isBefore(task.dateExp)) {
+      toast.error('Exam is Expired');
+      return;
+    }
+    const { data } = await axios.get(`/api/answer/${task._id}`);
+    console.log(data);
+    if (data.length > 0) {
+      toast.error('Already Taken.Cannot retake exam again!');
+      return;
+    }
     setTakeExam(true);
-    getQuestion(taskId);
+    getQuestion(task._id);
+    // console.log(taskId);
   }
 
   const permissionHandler = () => {
@@ -1184,10 +1195,10 @@ function TaskItem({
             <button
               type="button"
               className="btn btn-success  fs-5 rounded-pill border-3"
-              onClick={() => openExam(task._id)}
+              onClick={() => openExam(task)}
             >
               <BiCuboid />
-              Take Exam
+              {moment().isBefore(task.dateExp) ? 'Take Exam' : 'Completed'}
             </button>
 
             <Modal
@@ -1365,7 +1376,7 @@ function TaskItem({
     <div className="card col-7 bg-transparent border-0">
       <div className="card-body ">
         <div className={classes.columnSampleCode}>
-          <Editor handleEditorData={handleEditorData} answerFlag codeId={index} questionId={question._id} />
+          <Editor handleEditorData={handleEditorData} answerFlag codeId={index} questionId={question._id} taskId={data[0].taskId} />
         </div>
       </div>
     </div>

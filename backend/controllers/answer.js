@@ -43,6 +43,7 @@ export const createAnswer = async (req, res, next) => {
     code: req.body.code,
     userId: req.user.id,
     questionId: req.body.questionId,
+    taskId: req.body.taskId,
     code_tokens: req.body.code_tokens,
     resultAnswer: {
       cputime: req.body.time,
@@ -181,4 +182,13 @@ const autocheck = async (answerData, langId) => {
 export const addAllAnswer = async (req, res, next) => {
   // autocheck(req);
   console.log('THIS IS THE DATA ', req.body);
+};
+
+export const getAllQuestionByTask = async (req, res, next) => {
+  try {
+    const answers = await Answer.find({ taskId: req.params.taskId, userId: req.user.id });
+    return res.status(200).json(answers);
+  } catch (err) {
+    console.log(err);
+  }
 };

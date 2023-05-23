@@ -47,6 +47,7 @@ function AnswerButtonSubmit({ answerData, close }) {
         // controller pass data only
         // await axios.post('/api/answer/', answerData);
         toast.success('All Answers are Submitted!');
+        close();
         //   close();
       } catch (error) {
         toast.error('Something went wrong');
