@@ -2,40 +2,55 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const answerSchema = new Schema({
-  language: {
-	id: Number,
-	name: String,
+const AnswerSchema = new Schema({
+  code: {
+    type: String,
+    required: true,
   },
-  status: {
-	id: Number,
-	description: String,
+  userId: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
   taskId: {
     type: Schema.Types.ObjectId,
-    ref: 'Task',
     required: true,
+    ref: 'Task',
   },
   questionId: {
-	type: Schema.Types.ObjectId,
-	ref: 'Question',
-	required: true,
-   },
-  performance: {
+    type: Schema.Types.ObjectId,
+    required: true,
+    ref: 'Question',
+  },
+  resultAnswer: {
     cputime: Schema.Types.Decimal128,
     memory: Number,
+    status: String,
   },
-  answer_io: {
-    stdin: String,
-    stdoutput: String
+  score: {
+    memoryScore: Number,
+    timeScore: Number,
+    statusScore: Number,
+    weightedMemory: Schema.Types.Decimal128,
+    weightedTime: Schema.Types.Decimal128,
+    weightedStatus: Schema.Types.Decimal128,
+    totalWeightedScore: Schema.Types.Decimal128,
+    convertedScore: Schema.Types.Decimal128,
   },
-  judgeToken: {
-	type: String,
-   },
-  source_code: {
-	type: String,
-   },
-  // add 'rubrics' later for grading guide automation
+  rubricAdditional: [{
+    rubricScore: Number,
+    rubricTitle: String,
+  }],
+  code_tokens: {
+    type: Array,
+    required: true,
+  },
 }, { timestamps: true });
 
-export default mongoose.model('Answer', answerSchema);
+// // cascade Sheeeeeeesh
+// classSchema.pre('findOneAndDelete', { document: false, query: true }, async function () {
+//   const targetClass = await this.model.findOne(this.getFilter());
+//   await Task.deleteMany({ classId: targetClass._id });
+// });
+
+export default mongoose.model('Answer', AnswerSchema);

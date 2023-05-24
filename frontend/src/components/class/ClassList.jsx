@@ -9,8 +9,6 @@ import classes from './ClassList.module.scss';
 
 function ClassList(userData) {
   const [classList, setClassList] = useState([]);
-  const [isAddingNew, setIsAddingNew] = useState(false);
-  const [isUpdatingNew, setIsUpdatingNew] = useState(false);
   const [classData, setClassData] = useState({});
   const [modalIsOpen, setIsOpen] = useState(false);
   const [modalJoin, setModalJoin] = useState(false);
@@ -55,7 +53,7 @@ function ClassList(userData) {
       teamCode: makeid(5),
     };
     // classData = {...classData,studentEmail: [...classData.studentEmail, userData.data.email]};
-    classData.studentEmail = classData.studentEmail.split(',').map((item) => item.trim()).filter((a) => a);
+    classData.studentEmail = classData.studentEmail.split(/\r?\n/).map((item) => item.trim()).filter((a) => a);
     classData.studentEmail.push(userData.data.email);
     const valid = ValidateEmails(classData.studentEmail);
 
@@ -124,6 +122,7 @@ function ClassList(userData) {
         await axios.put(`/api/class/${classData._id}`, dataForUpdate);
         toast.success('Class Updated Succesfully');
         getClass();
+        closeModal();
       } catch (error) {
         toast.error('Something went wrong updating');
         console.log(error);
@@ -211,7 +210,7 @@ function ClassList(userData) {
     </div>
 
   <div className='container-fluid rounded-pill px-4 py-0 ' style={{backgroundColor:'#187f524b' }} >
-        <p class='text-white my-auto fs-4 fw-bolder'> Class {' '}  >></p>
+        <p className='text-white my-auto fs-4 fw-bolder'> Class {' '}  >></p>
     </div>
     
       <div>
@@ -252,7 +251,9 @@ function ClassList(userData) {
           <span htmlFor="" className=''>
             Email:
           </span>
-            <textarea type="textarea" className='d-inline mx-4 h-100 w-75' name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with comma seperated. Eg. Juan@gmail.com, Maria@gmail.com " disabled={checkRole()?true:false} />
+            <textarea type="textarea" className='d-inline mx-4 h-100 w-75' name="studentEmail" id='email' rows="10" defaultValue={classData.studentEmail} placeholder="Enter Student Email Participants with new line seperated values. 
+            Eg. Juan@gmail.com
+             Maria@gmail.com " disabled={checkRole()?true:false} />
           
           <button type="submit"className={checkRole()? 'd-none' :'w-25 btn btn-success p-3 m-4 fs-4 text-center rounded-pill' } > <AiFillPlusCircle/> &nbsp; { checkRole() ?'Disabled' : 'Confirm'}</button>
         </form>

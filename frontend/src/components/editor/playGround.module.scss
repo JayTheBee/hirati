@@ -91,3 +91,38 @@
 		// text-shadow: 2px 2px 2px rgb(0, 0, 0);
 	}
 }
+
+.playgroundBox {
+	margin: 15px 0px 15px;
+	p {
+		text-align: center;
+		font-size: 1.25rem;
+		font-weight: 400;
+		font-family: Verdana, Geneva, Tahoma, sans-serif;
+		background-color: rgb(253, 253, 253);
+		width: 100%;
+		margin: auto;
+		margin-top: 3px;
+		padding: 1rem;
+		border-radius: 10px;
+		border: 2px solid black;
+		box-shadow: 5px 5px 0px black;
+		overflow: auto;
+	}
+	input {
+		padding: 10px;
+		margin-top: 20px;
+		border-radius: 15px;
+		border: none;
+		width: 150px;
+	}
+	button {
+		padding: 10px;
+		margin: 0px auto;
+		background-color: green;
+		margin-left: 10px;
+		border-radius: 10px;
+		border: none;
+		color: white;
+	}
+}

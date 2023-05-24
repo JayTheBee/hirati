@@ -6,22 +6,26 @@ export const createOrUpdateQuestion = async (req, res, next) => {
     questionCount: req.body.count,
     description: req.body.description,
     taskId: req.body.task_id,
-    testcase: {
-      input: req.body.input,
-      output: req.body.output,
-    },
+    // testcase: {
+    //   input: req.body.input,
+    //   output: req.body.output,
+    // },
+    testcase: req.body.testcase,
     rubrics: {
       cputime: req.body.cputime,
       memory: req.body.memory,
       status: req.body.status,
     },
+
+    rubricAdditional: req.body.rubrics,
+    code: req.body.result.code,
+    permission: req.body.permission,
+    caseFlag: req.body.caseFlag,
     points: req.body.points,
-    language: req.body.language,
+    language: req.body.result.language,
     keywords: req.body.keywords,
     resultSample: {
       time: req.body.result.time,
-      language: req.body.result.language,
-      languageId: req.body.result.id,
       memory: req.body.result.memory,
       status: req.body.result.status,
     },

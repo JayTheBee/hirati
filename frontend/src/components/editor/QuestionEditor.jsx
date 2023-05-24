@@ -13,8 +13,6 @@ import OutputDetails from './OutputDetails';
 import ThemeDropdown from './ThemeDropdown';
 import LanguagesDropdown from './LanguagesDropdown';
 import classes from './playGround.module.scss';
-import LintCall from '../linter/Main';
-import ConstructCheck from '../construct-checking/Main';
 
 const showSuccessToast = (msg) => {
   toast.success(msg || 'Compiled Successfully!', {
@@ -40,50 +38,28 @@ const showErrorToast = (msg, timer) => {
 };
 
 const javascriptDefault = `/**
-* Problem: Binary Search: Search a sorted array for a target value.
+* Some Comment
 */
-
-// Time: O(log n)
-const binarySearch = (arr, target) => {
- return binarySearchHelper(arr, target, 0, arr.length - 1);
-};
-
-const binarySearchHelper = (arr, target, start, end) => {
- if (start > end) {
-   return false;
- }
- let mid = Math.floor((start + end) / 2);
- if (arr[mid] === target) {
-   return mid;
- }
- if (arr[mid] < target) {
-   return binarySearchHelper(arr, target, mid + 1, end);
- }
- if (arr[mid] > target) {
-   return binarySearchHelper(arr, target, start, mid - 1);
- }
-};
-
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-console.log(binarySearch(arr, target));
 `;
 
 function SampleCode({
-  handleEditorData, role, task_id, questionId,
+  handleEditorData,
+  answerFlag, codeId, questionId, taskId, caseFlag,
+  selLanguage,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
   const [theme, setTheme] = useState('');
-  const [language, setLanguage] = useState(languageOptions[0]);
+
+  const selectedOption = languageOptions.find((option) => option.label === selLanguage);
+  const [language, setLanguage] = useState(selectedOption);
 
   const enterPress = useKeyPress('Enter');
   const ctrlPress = useKeyPress('Control');
 
-  const onSelectChange = (sl) => {
-    console.log('selected Option...', sl);
+  const onSelectChange = async (sl) => {
     setLanguage(sl);
     handleEditorData({
       language: sl?.value,
@@ -106,12 +82,10 @@ function SampleCode({
   const getLanguage = async () => {
     const options = {
       method: 'GET',
-      url: `${import.meta.env.VITE_JUDGE_LINK}/languages`,
+      url: 'https://judge0-ce.p.rapidapi.com/languages',
       headers: {
-        'content-type': 'application/json',
-        'Content-Type': 'application/json',
-        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
 
@@ -121,25 +95,16 @@ function SampleCode({
       console.error(error);
     });
   };
-  const handleAnswerData = async (data) => {
-    console.log('ANSWER DATA IS: ', data);
-    const resulta = await axios.post('/api/answer', data);
-    console.log('PLEASE WORK ', resulta);
-  };
 
   const checkStatus = async (token) => {
     const options = {
       method: 'GET',
       //   url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
-      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions/${token}`,
+      url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
-        'content-type': 'application/json',
-        'Content-Type': 'application/json',
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Host': '  judge0-ce.p.rapidapi.com',
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
     };
     try {
@@ -150,40 +115,30 @@ function SampleCode({
       if (statusId === 1 || statusId === 2) {
         // still processing
         setTimeout(() => {
+          setOutputDetails(response.data);
           checkStatus(token);
         }, 2000);
         return;
       }
       setProcessing(false);
       setOutputDetails(response.data);
-      console.log('PROCESSED DATA: ', response.data);
-      if (role === 'student') {
-        await handleAnswerData({
-          taskId: task_id,
-          questionId,
-          judgeToken: response.data.token,
-          source_code: response.data.source_code,
-          language: response.data.language,
-          status: response.data.status,
-          answer_io: {
-            stdin: response.data.stdin,
-            stdout: response.data.stdout,
-          },
-          performance: {
-            memory: response.data.memory,
-            cputime: response.data.time,
-          },
-        });
-      }
       await handleEditorData({
         time: response.data.time,
         language: language?.value,
         id: response.data.language.id,
         status: response.data.status.description,
         memory: response.data.memory,
-      });
+        output: outputDetails?.stdout,
+        input: customInput,
+        code,
+        answerFlag,
+        questionId,
+        taskId,
+        data: response.data,
+      }, codeId);
 
       showSuccessToast('Compiled Successfully!');
+      console.log(taskId);
       return;
     } catch (err) {
       console.log('err', err);
@@ -203,15 +158,13 @@ function SampleCode({
     const options = {
       method: 'POST',
       //   url: process.env.REACT_APP_RAPID_API_URL,
-      url: `${import.meta.env.VITE_JUDGE_LINK}/submissions`,
+      url: 'https://judge0-ce.p.rapidapi.com/submissions',
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
         'content-type': 'application/json',
         'Content-Type': 'application/json',
-        // 'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
-        // 'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
-        // 'X-RapidAPI-Key': '9664c0cc73msh88894b5b3717254p123818jsn24299f0f6e28',
-        // 'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+        'X-RapidAPI-Key': import.meta.env.VITE_RAPID_API_KEY,
+        'X-RapidAPI-Host': import.meta.env.VITE_RAPID_API_HOST,
       },
       data: formData,
     };
@@ -278,7 +231,8 @@ function SampleCode({
       />
 
       <div>
-        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />
+        {caseFlag &&
+        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />}
         <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
         <div className={classes.row}>
           <button
@@ -313,13 +267,6 @@ function SampleCode({
 
           <hr className={classes.containerline} />
           <OutputWindow outputDetails={outputDetails} />
-          {role === 'student'
-          && (
-          <>
-            <LintCall code={code} lang={language.value} />
-            <ConstructCheck code={code} lang={language.value} />
-          </>
-          )}
 
           {/* <button
             type="button"

@@ -128,6 +128,19 @@ td {
 	}
 }
 
+.modalSampleCode {
+	position: absolute;
+	overflow: auto;
+	justify-content: space-between;
+	width: 50%;
+	height: 70%;
+	padding: 30px;
+	margin: 8% 20%;
+	border: solid 3px rgb(0, 0, 0);
+	background: rgb(140, 184, 131);
+	border-radius: 20px;
+}
+
 .modalViewAll {
 	position: absolute;
 	overflow: auto;
@@ -170,44 +183,6 @@ td {
 	}
 }
 
-.active {
-	color: rgb(4, 102, 4);
-	font-size: 2rem;
-	text-shadow: 1px 2px 1px black;
-	font-weight: 900;
-	align-content: center;
-	font-family: 'Poppins', sans-serif;
-	p {
-		margin: auto;
-	}
-}
-.active:hover {
-	color: #76cf919a;
-}
-.completed {
-	color: grey;
-	font-size: 1.5rem;
-	text-shadow: 1px 2px 1px black;
-	font-weight: 900;
-	align-content: center;
-	p {
-		margin: auto;
-	}
-}
-.completed:hover {
-	color: #9e97979a;
-}
-
-.titleQuestion {
-	display: inline;
-	text-transform: capitalize;
-	font-size: 1.25em;
-	color: wheat;
-	text-shadow: 2px 2px 2px rgb(90, 62, 62);
-}
-.titleTask {
-	font-size: 1.5em;
-}
 // modal for question
 
 .topBar {
@@ -270,7 +245,7 @@ td {
 		font-size: 1.5rem;
 		color: black;
 		background-color: #ffffff;
-		min-height: 15rem;
+		min-height: 8rem;
 		width: 100%;
 	}
 
@@ -341,6 +316,25 @@ td {
 	border-radius: 30px;
 	padding: 30px;
 	width: 100%;
+	button {
+		padding: 10px;
+		border-radius: 5px;
+		background-color: #50a573f1;
+		color: white;
+		border: solid 1px black;
+	}
+	button:hover {
+		background-color: #39966e;
+	}
+	label {
+		font-size: 1.5rem;
+		font-family: 'Poppins';
+		align-self: center;
+	}
+	input {
+		padding: 5px;
+		border-radius: 5px;
+	}
 }
 // .language {
 // 	width: 100%;
@@ -457,4 +451,61 @@ td {
 	background-color: rgba(138, 138, 138, 0.404);
 	border-radius: 20px;
 	padding: 20px;
+}
+.active {
+	color: rgb(4, 102, 4);
+	font-size: 2rem;
+	text-shadow: 1px 2px 1px black;
+	font-weight: 900;
+	align-content: center;
+	font-family: 'Poppins', sans-serif;
+	p {
+		margin: auto;
+	}
+}
+.active:hover {
+	color: #76cf919a;
+}
+.completed {
+	color: grey;
+	font-size: 1.5rem;
+	text-shadow: 1px 2px 1px black;
+	font-weight: 900;
+	align-content: center;
+	p {
+		margin: auto;
+	}
+}
+.completed:hover {
+	color: #9e97979a;
+}
+
+.titleQuestion {
+	display: inline;
+	text-transform: capitalize;
+	font-size: 1.25em;
+	color: wheat;
+	text-shadow: 2px 2px 2px rgb(90, 62, 62);
+}
+.titleTask {
+	font-size: 1.5em;
+}
+// modal for question
+
+.check {
+	background: rgb(255, 255, 255);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid rgba(226, 255, 241, 0.767);
+	padding: 0.5rem 0.5rem;
+	font-size: 1.25rem;
+	color: rgb(13, 109, 37);
+	border-radius: 10px;
+	cursor: pointer;
+	transition: 0.3s ease background-color, 0.3s ease color;
+	&:hover {
+		background-color: rgba(128, 128, 128, 0.733);
+		color: rgb(228, 228, 228);
+	}
 }

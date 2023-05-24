@@ -7,7 +7,9 @@ import classes from './AuthForm.module.scss';
 function Login() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
-  const [forgot, setForgot] = useState(true);
+  const [forgot, setForgot] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const login = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -33,8 +35,27 @@ function Login() {
   };
 
   // Axios Call to mail
-  const handleForgot = async () => {
-
+  const forgotHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    if (e.target.forgotEmail.value == '') {
+      toast.error('Please Enter Valid Email!');
+      setLoading(false);
+      return;
+    }
+    try {
+      setLoading(true);
+      await axios.post(
+        '/api/auth/forgot',
+        { email: e.target.forgotEmail.value },
+      );
+      toast.success('Email Sent! ');
+    } catch (error) {
+      setError(error.response.data.message);
+      toast.error('Something went wrong');
+    }
+    setForgot(false);
+    setLoading(false);
   };
 
   return (
@@ -66,11 +87,10 @@ function Login() {
         <p className={classes.register} onClick={register}>Register</p>
         <p className={classes.register} onClick={() => setForgot(!forgot)}>Forgot Password?</p>
         {forgot && (
-          <div className=" d-flex  align-content-center forgot justify-content-center">
-            <input className="round rounded p-3" type="email" name="email" id="email" style={{ border: '0px', borderRadius: '10px' }} placeholder="Enter Mail" />
-            <button className="bg-success rounded-start text-white p-4" style={{ border: '0px', borderRadius: '10px' }} type="button">Send</button>
-
-          </div>
+          <form className=" d-flex  align-content-center forgot justify-content-center" onSubmit={forgotHandler}>
+            <input className="round rounded p-3 fs-4" name="forgotEmail" id="forgotEmail" type="email" style={{ border: '0px', borderRadius: '10px' }} placeholder="Enter Email" />
+            <button className="bg-success rounded-start text-white p-4" style={{ border: '0px', borderRadius: '10px' }} type="submit" disabled={loading}>Send</button>
+          </form>
         )}
 
       </div>

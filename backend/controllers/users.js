@@ -28,6 +28,15 @@ export const getUserInfo = async (req, res, next) => {
   }
 };
 
+export const getUserById = async (req, res, next) => {
+  try {
+    const data = await User.findById(req.params.userId);
+    return res.status(200).json(data);
+  } catch (err) {
+    return next(err);
+  }
+};
+
 // export const createUser = async (req, res, next) => {
 //   try {
 //     const user = new User(req.body);

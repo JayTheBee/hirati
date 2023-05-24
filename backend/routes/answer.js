@@ -1,10 +1,16 @@
 import express from 'express';
-// deleteAllClasss
-import { createAnswer } from '../controllers/answers.js';
+import {
+  createAnswer, addAllAnswer, getAnswers, getAnswerById, getAllQuestionByTask,
+  updateAnswer,
+} from '../controllers/answer.js';
 
 const router = express.Router();
 
-router.post('/', createAnswer);
-
+router.post('/:questionId', createAnswer);
+router.post('/', addAllAnswer);
+router.get('/:taskId', getAllQuestionByTask);
+router.get('/getAll/:questionId', getAnswers);
+router.get('/get/:answerId', getAnswerById);
+router.post('/update/:answerId', updateAnswer);
 
 export default router;
