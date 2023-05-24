@@ -93,8 +93,63 @@ function AutoScoreDetails({ autoScores }) {
     </div>
   );
 }
+function RubricsAdditional({ rubAdd, answerId }) {
+  const [rubricData, setRubricData] = useState(rubAdd);
+  console.log('WHAT IS RUBADD', rubAdd)
+  const handleRubricChange = (index, value) => {
+    setRubricData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = value;
+      return newData;
+    });
+  };
+  const handleSubmit = async () => {
+    try {
+      // Make API call to update rubric ratings in the database
+      await axios.post(`/api/answers/update/${answerId}`, {
+        rubricData,
+      });
+      console.log('Rubrics ratings updated successfully!');
+    } catch (error) {
+      console.log('Error updating rubrics ratings:', error);
+    }
+  };
 
-function AnswerDetails({ answer }) {
+  return (
+    <div className="container">
+      {rubAdd.map((each, index) => (
+        <div key={each._id} className="row d-flex mx-auto">
+          <h4 className="fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
+            RUBRIC
+            {' '}
+            {index + 1}
+            {' '}
+            #
+          </h4>
+
+          <h3 className="col-4">
+            RUBRIC NAME:
+            {' '}
+            {each.rubricTitle}
+          </h3>
+          <br />
+          <h3 className="col-8">
+            RUBRIC RATING:
+            {' '}
+            <input
+              type="text"
+              value={rubricData[index] || each.rubricRating}
+              onChange={(e) => handleRubricChange(index, e.target.value)}
+            />
+          </h3>
+        </div>
+      ))}
+      <button type="button" onClick={handleSubmit} className="btn btn-primary">Submit Checks</button>
+    </div>
+  );
+}
+
+function AnswerDetails({ answer, rubAdd }) {
   const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
@@ -133,6 +188,7 @@ function AnswerDetails({ answer }) {
             {' '}
             <AutoScoreDetails autoScores={each.score} />
           </h3>
+          <RubricsAdditional rubAdd={rubAdd} answerId = {each._id}/>
         </div>
       ))}
     </>
@@ -236,7 +292,7 @@ function QuestionDetails({ question }) {
               pts.
             </h3>
             <button type="button" onClick={() => getAnswers(each._id)} className="btn btn-success rounded-pill text-white text-center fs-4">Get Answers</button>
-            {answer && <AnswerDetails answer={answer} />}
+            {answer && <AnswerDetails answer={answer} rubAdd={each.rubricAdditional} />}
           </div>
         </div>
       ))}

@@ -45,7 +45,9 @@ const questionSchema = new Schema({
   permission: {
     type: Boolean,
   },
-
+  caseFlag: {
+    type: Boolean,
+  },
   code: {
     type: String,
   },

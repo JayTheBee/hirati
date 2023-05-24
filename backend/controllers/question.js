@@ -20,6 +20,7 @@ export const createOrUpdateQuestion = async (req, res, next) => {
     rubricAdditional: req.body.rubrics,
     code: req.body.result.code,
     permission: req.body.permission,
+    caseFlag: req.body.caseFlag,
     points: req.body.points,
     language: req.body.result.language,
     keywords: req.body.keywords,

@@ -36,6 +36,7 @@ function TaskItem({
   const [toggleCondition, setToggleCondition] = React.useState(true);
   const [viewSample, setViewSample] = React.useState(false);
   const [permission, setPermission] = React.useState(false);
+  const [caseFlag, setCaseFlag] = React.useState(false);
   const [counter, setCount] = React.useState(1);
   const [inputBox, setInputBox] = React.useState([{ input: [''], output: '' }]);
   const [rubricBox, setRubricBox] = React.useState([
@@ -412,6 +413,7 @@ function TaskItem({
         keywords: keywordData,
         code: editorData.code,
         permission,
+        caseFlag,
       });
       console.log('scene1');
       // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
@@ -427,6 +429,7 @@ function TaskItem({
         keywords: keywordData,
         code: editorData.code,
         permission,
+        caseFlag,
       });
       console.log('scene2');
     } else {
@@ -441,6 +444,7 @@ function TaskItem({
         count: counter,
         keywords: keywordData,
         permission,
+        caseFlag,
       });
       console.log('scene3');
     }
@@ -520,6 +524,10 @@ function TaskItem({
 
   const permissionHandler = () => {
     setPermission(!permission);
+  };
+
+  const caseFlagHandler = () => {
+    setCaseFlag(!caseFlag);
   };
 
   const viewSampleCode = () => {
@@ -654,6 +662,17 @@ function TaskItem({
                         </button>
                       </div>
                     ))}
+                    <div className="container d-flex align-items-center">
+                      <input
+                        type="checkbox"
+                        id="checkbox"
+                        className="mx-3 my-auto"
+                        checked={caseFlag}
+                        onChange={caseFlagHandler}
+                        style={{ width: '20px' }}
+                      />
+                      <label htmlFor="checkbox" className="fs-4  my-auto"> Allow students to see test cases </label>
+                    </div>
 
                     <label htmlFor="performance">
                       <br />
@@ -1268,27 +1287,32 @@ function TaskItem({
             {question.language ? question.language : ''}
           </h3>
         </div>
-        <h2 className=" fw-bolder">Expected Case Result</h2>
-        <div
-          className="mb-4 container p-4 border border-dark border-4 fw-bolder"
-          style={{
-            backgroundColor: 'rgba(138, 138, 138, 0.404)',
-            borderRadius: '20px',
-          }}
-        >
-          <div className="d-block text-center">
-            <div className="row">
-              <h4 className="col fw-bolder">Input: </h4>
-              <h4 className="col fw-bolder">Output: </h4>
-            </div>
-            {question.testcase.map((e, pos) => (
-              <div className="row ">
-                <h4 className="col fw-bolder">{` ${e.input}`}</h4>
-                <h4 className="col fw-bolder">{` ${e.output}`}</h4>
-              </div>
-            ))}
-          </div>
+        { question.caseFlag
+  && (
+  <>
+    <h2 className=" fw-bolder">Expected Case Result</h2>
+    <div
+      className="mb-4 container p-4 border border-dark border-4 fw-bolder"
+      style={{
+        backgroundColor: 'rgba(138, 138, 138, 0.404)',
+        borderRadius: '20px',
+      }}
+    >
+      <div className="d-block text-center">
+        <div className="row">
+          <h4 className="col fw-bolder">Input: </h4>
+          <h4 className="col fw-bolder">Output: </h4>
         </div>
+        {question.testcase.map((e, pos) => (
+          <div className="row ">
+            <h4 className="col fw-bolder">{` ${e.input}`}</h4>
+            <h4 className="col fw-bolder">{` ${e.output}`}</h4>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>
+  ) }
 
         <h3 className=" fw-bolder">
           {' '}
@@ -1376,7 +1400,7 @@ function TaskItem({
     <div className="card col-7 bg-transparent border-0">
       <div className="card-body ">
         <div className={classes.columnSampleCode}>
-          <Editor handleEditorData={handleEditorData} answerFlag codeId={index} questionId={question._id} taskId={data[0].taskId} />
+          <Editor handleEditorData={handleEditorData} caseFlag={question.caseFlag} selLanguage={question.language} answerFlag codeId={index} questionId={question._id} taskId={data[0].taskId} />
         </div>
       </div>
     </div>
@@ -1390,7 +1414,7 @@ function TaskItem({
 							  : 'No Uploaded Question Yet!'}
             </Modal>
           </>
-        )}
+        ) }
       </td>
     </tr>
   );

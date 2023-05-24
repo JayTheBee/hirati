@@ -66,6 +66,27 @@ export const createAnswer = async (req, res, next) => {
   }
 };
 
+
+export const updateAnswer = async (req, res, next) => {
+  try {
+    const answerId = req.params.answerId;
+    const updatedData = {
+      rubricsAdditional: req.body.rubricsAdditional,
+    };
+
+    const updatedAnswer = await Answer.findByIdAndUpdate(answerId, updatedData, { new: true });
+
+    if (!updatedAnswer) {
+      return res.status(404).json({ message: 'Answer not found' });
+    }
+
+    return res.status(200).json(updatedAnswer);
+  } catch (err) {
+    console.log(err);
+    return next(err);
+  }
+};
+
 const getScore = async (dataresArr, question) => {
   try {
     const cputimeConstraint = parseFloat(question.resultSample.time) + (0.010 * dataresArr.length);

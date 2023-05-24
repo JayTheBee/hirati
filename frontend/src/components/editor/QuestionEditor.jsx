@@ -44,14 +44,17 @@ const javascriptDefault = `/**
 
 function SampleCode({
   handleEditorData,
-  answerFlag, codeId, questionId, taskId,
+  answerFlag, codeId, questionId, taskId, caseFlag,
+  selLanguage,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
   const [theme, setTheme] = useState('');
-  const [language, setLanguage] = useState(languageOptions[0]);
+
+  const selectedOption = languageOptions.find((option) => option.label === selLanguage);
+  const [language, setLanguage] = useState(selectedOption);
 
   const enterPress = useKeyPress('Enter');
   const ctrlPress = useKeyPress('Control');
@@ -228,7 +231,8 @@ function SampleCode({
       />
 
       <div>
-        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />
+        {caseFlag &&
+        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />}
         <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
         <div className={classes.row}>
           <button
