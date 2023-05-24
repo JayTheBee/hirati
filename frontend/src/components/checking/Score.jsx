@@ -95,18 +95,20 @@ function AutoScoreDetails({ autoScores }) {
 }
 function RubricsAdditional({ rubAdd, answerId }) {
   const [rubricData, setRubricData] = useState(rubAdd);
-  console.log('WHAT IS RUBADD', rubAdd)
-  const handleRubricChange = (index, value) => {
-    setRubricData((prevData) => {
-      const newData = [...prevData];
-      newData[index] = value;
-      return newData;
-    });
+  console.log('WHAT IS RUBADD', rubAdd);
+  console.log('WHAT IS RUBRICDATA', rubricData);
+  console.log('WHAT IS ANSWERID', answerId);
+  const handleRubricChange = (index, e) => {
+    const newRubric = [...rubricData];
+    newRubric[index][e.target.name] = e.target.value;
+    setRubricData(newRubric);
   };
+
   const handleSubmit = async () => {
     try {
       // Make API call to update rubric ratings in the database
-      await axios.post(`/api/answers/update/${answerId}`, {
+      console.log('ANO YANG PINAPASOK', rubricData);
+      await axios.post(`/api/answer/update/${answerId}`, {
         rubricData,
       });
       console.log('Rubrics ratings updated successfully!');
@@ -117,7 +119,7 @@ function RubricsAdditional({ rubAdd, answerId }) {
 
   return (
     <div className="container">
-      {rubAdd.map((each, index) => (
+      {rubAdd.length ? rubAdd.map((each, index) => (
         <div key={each._id} className="row d-flex mx-auto">
           <h4 className="fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
             RUBRIC
@@ -138,12 +140,14 @@ function RubricsAdditional({ rubAdd, answerId }) {
             {' '}
             <input
               type="text"
-              value={rubricData[index] || each.rubricRating}
-              onChange={(e) => handleRubricChange(index, e.target.value)}
+              value={rubricData.rubricScore}
+              name="rubricRating"
+              onChange={(e) => handleRubricChange(index, e)}
             />
           </h3>
         </div>
-      ))}
+      )): "No  additional rubrics added"}
+      <br />
       <button type="button" onClick={handleSubmit} className="btn btn-primary">Submit Checks</button>
     </div>
   );
@@ -188,7 +192,7 @@ function AnswerDetails({ answer, rubAdd }) {
             {' '}
             <AutoScoreDetails autoScores={each.score} />
           </h3>
-          <RubricsAdditional rubAdd={rubAdd} answerId = {each._id}/>
+          <RubricsAdditional rubAdd={rubAdd} answerId={each._id}/>
         </div>
       ))}
     </>

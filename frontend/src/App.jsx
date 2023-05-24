@@ -14,6 +14,7 @@ import EmailVerify from './components/auth/EmailVerification';
 import Editor from './pages/Editor';
 import CodeEditor from './components/editor jb/Main';
 import Scoring from './pages/Score';
+import Points from './pages/points';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="/class/:id/task" element={<Question />} />
           <Route path="/playground" element={<Playground />} />
           <Route path="/score/:id" element={<Scoring />} />
+          <Route path="/points/:id" element={<Points />} />
         </Route>
         <Route path="/auth" element={<Auth />} />
         <Route path="/register" element={<Register />} />

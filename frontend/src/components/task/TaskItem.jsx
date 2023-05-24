@@ -538,6 +538,9 @@ function TaskItem({
   const routeToScore = (taskId) => {
     navigate(`/score/${taskId}`);
   };
+  const routeToCheck =(taskId)=>{
+    navigate(`/points/${taskId}`);
+  }
 
   return (
     <tr className={classes.task_item}>
@@ -651,7 +654,7 @@ function TaskItem({
                           style={{ maxHeight: '100px !important' }}
 
                         />
-                        <input
+                        <textarea
                           name="output"
                           value={val.output}
                           placeholder="Output"
@@ -810,7 +813,7 @@ function TaskItem({
                   </div>
 
                   <div className={classes.columnSampleCode}>
-                    <Editor handleEditorData={handleEditorData} />
+                    <Editor handleEditorData={handleEditorData} role={userData.role}/>
                   </div>
                 </div>
               </form>
@@ -879,7 +882,8 @@ function TaskItem({
               <h3>All Questions pushed into the stack: </h3>
               <div className={classes.containerAllQuestion}>
                 {data.length > 0
-								  ? data.map((each, index) => (
+
+								  ? data.map ((each, index) => (
   <div className={classes.card}>
     <div className={classes.content}>
       <img src={question} alt="Question Logo" />
@@ -1202,7 +1206,7 @@ function TaskItem({
     </dir>
   </div>
 									  ))
-								  : 'No Question Stack added'}
+								  : 'No Question Stack added'}}
               </div>
             </Modal>
 
@@ -1218,6 +1222,13 @@ function TaskItem({
             >
               <BiCuboid />
               {moment().isBefore(task.dateExp) ? 'Take Exam' : 'Completed'}
+            </button>
+            <button
+              type="button"
+              className="btn btn-success  fs-5 rounded-pill border-3"
+              onClick={() => routeToCheck(task._id)}
+            >
+              Check Scores
             </button>
 
             <Modal
@@ -1400,7 +1411,7 @@ function TaskItem({
     <div className="card col-7 bg-transparent border-0">
       <div className="card-body ">
         <div className={classes.columnSampleCode}>
-          <Editor handleEditorData={handleEditorData} caseFlag={question.caseFlag} selLanguage={question.language} answerFlag codeId={index} questionId={question._id} taskId={data[0].taskId} />
+          <Editor handleEditorData={handleEditorData} selLanguage={question.language} answerFlag codeId={index} questionId={question._id} taskId={data[0].taskId} />
         </div>
       </div>
     </div>

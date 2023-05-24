@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-  createTask, deleteAllTasks, deleteTask, getAllTasks, getCurrentUserTasks, updateTask,
+  createTask, deleteAllTasks, deleteTask, getAllTasks, getCurrentUserTasks, updateTask,getTask
 } from '../controllers/task.js';
 
 const router = express.Router();
@@ -9,6 +9,7 @@ const router = express.Router();
 router.post('/', createTask);
 router.put('/:classId/:taskId', updateTask);
 router.get('/:classId', getCurrentUserTasks);
+router.post('/:taskId', getTask);
 router.delete('/:classId/', deleteAllTasks);
 router.delete('/:classId/:taskId', deleteTask);
 

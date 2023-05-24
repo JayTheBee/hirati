@@ -34,6 +34,14 @@ export const getAnswerById = async (req, res, next) => {
   }
 };
 
+export const getUserAnswers = async (req, res, next) => {
+  try {
+    const answer = await Answer.find({ userId: req.user.id, questionId: req.params.questionId });
+    return res.status(200).json(answer);
+  } catch (err) {
+    console.log(err);
+  }
+};
 // user main function -> Answer to db with automatic check
 export const createAnswer = async (req, res, next) => {
   // pa log kung nalilito naka dummy data na yan
@@ -70,12 +78,16 @@ export const createAnswer = async (req, res, next) => {
 export const updateAnswer = async (req, res, next) => {
   try {
     const answerId = req.params.answerId;
-    const updatedData = {
-      rubricsAdditional: req.body.rubricsAdditional,
-    };
+    // const updatedData = {
+    //   rubricAdditional: req.body.rubricData,
+    // };
 
-    const updatedAnswer = await Answer.findByIdAndUpdate(answerId, updatedData, { new: true });
+    console.log('BAKIT MO PINAPASOK ONII CHAN?', req.body);
+    const updatedAnswer = await Answer.updateOne({_id: req.params.answerId}, { $push: { rubricAdditional: req.body.rubricData } });
+    // { $push: { <field1>: <value1>, ... } }
 
+
+    console.log('NAUPDATE BA', updateAnswer);
     if (!updatedAnswer) {
       return res.status(404).json({ message: 'Answer not found' });
     }
@@ -126,12 +138,12 @@ const wait = (ms = 1000) => new Promise((resolve) => {
 const checkStatus = async (initialData) => {
   try {
     console.log('CHECKING STATUS....');
-    const batchURLs = await initialData.map((element) => `${process.env.BETOS_JUDGE_LINK}/submissions/${element.token}`);
+    const batchURLs = await initialData.map((element) => `${process.env.VITE_RAPID_API_URL}/${element.token}`);
     console.log('URLS ARE: ', batchURLs);
     const conf = {
       'Content-Type': 'application/json',
-      // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-      // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+      'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+      'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
     };
     // eslint-disable-next-line max-len
     const batchResponses = await Promise.all(batchURLs.map((url) => axios.get(url, { headers: conf })));
@@ -165,11 +177,11 @@ const judgeChecking = async (cases, langId, source) => {
     }));
   const judgeSubmissions = { submissions: subs };
   console.log('DATA LOOKS LIKE THIS: ', judgeSubmissions);
-  const url = `${process.env.BETOS_JUDGE_LINK}/submissions/batch/`;
+  const url = `${process.env.VITE_RAPID_API_URL}/batch/`;
   const conf = {
     'Content-Type': 'application/json',
-    // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-    // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+    'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+    'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
   };
 
   // Initial Call for judge0

@@ -44,8 +44,8 @@ const javascriptDefault = `/**
 
 function SampleCode({
   handleEditorData,
-  answerFlag, codeId, questionId, taskId, caseFlag,
-  selLanguage,
+  answerFlag, codeId, questionId, taskId,
+  selLanguage, role,
 }) {
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState('');
@@ -231,8 +231,8 @@ function SampleCode({
       />
 
       <div>
-        {caseFlag &&
-        <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />}
+        {role === 'teacher'
+        && <LanguagesDropdown onSelectChange={onSelectChange} className={classes.language} />}
         <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
         <div className={classes.row}>
           <button

@@ -77,3 +77,12 @@ export const deleteAllTasks = async (req, res, next) => {
     return next(err);
   }
 };
+
+export const getTask = async (req, res, next) => {
+  try {
+    const taskResp = await Task.findById(req.params.taskId);
+    return res.json(taskResp);
+  } catch (err) {
+    return next(err);
+  }
+};

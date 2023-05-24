@@ -38,7 +38,7 @@ const AnswerSchema = new Schema({
     convertedScore: Schema.Types.Decimal128,
   },
   rubricAdditional: [{
-    rubricScore: Number,
+    rubricRating: Number,
     rubricTitle: String,
   }],
   code_tokens: {

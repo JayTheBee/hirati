@@ -4,12 +4,13 @@ function CustomInput({ customInput, setCustomInput }) {
   return (
     <>
       {' '}
-      <input
+      <textarea
         type="text"
         value={customInput}
         onChange={(e) => setCustomInput(e.target.value)}
         placeholder="Custom input"
-        // )}
+        style={{ marginTop: '20px' }} // Add top margin of 10 pixels
+
       />
     </>
   );
