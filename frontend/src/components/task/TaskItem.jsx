@@ -603,7 +603,7 @@ function TaskItem({
               </h4>
 
               <form className={classes.addNewForm} onSubmit="">
-                <div className={classes.row}>
+                <div className="containter mb-4">
                   <div className={classes.columnInput}>
                     <div className=" w-100">
                       <label>Set Keywords:</label>
@@ -632,35 +632,43 @@ function TaskItem({
                     </button>
                     <br />
                     <br />
-                    {inputBox.map((val, i) => (
-                      <div className="d-flex p-6 gap-2">
-                        <textarea
-                          name="input"
-                          value={val.input}
-                          placeholder="Input"
-                          onChange={(e) => inputBoxChange(e, i)}
-                          className="h-25"
-                          style={{ maxHeight: '100px !important' }}
-
-                        />
-                        <input
-                          name="output"
-                          value={val.output}
-                          placeholder="Output"
-                          onChange={(e) => inputBoxChange(e, i)}
-                        />
-                        <button onClick={() => inputBoxDelete(i)}>
-                          Delete
-                        </button>
-                      </div>
-                    ))}
+                    <div className="row container-fluid">
+                      {inputBox.map((val, i) => (
+                        <div className="col">
+                          <textarea
+                            name="input"
+                            value={val.input}
+                            placeholder="Input"
+                            onChange={(e) => inputBoxChange(e, i)}
+                            className="h-25 "
+                          />
+                          <input
+                            name="output"
+                            value={val.output}
+                            placeholder="Output"
+                            onChange={(e) => inputBoxChange(e, i)}
+                            className="h-25 w-100"
+                          />
+                          <button onClick={() => inputBoxDelete(i)}>
+                            Delete
+                          </button>
+                        </div>
+                      ))}
+                    </div>
 
                     <label htmlFor="performance">
                       <br />
                       Rubrics for Automated Scoring:
+                      <button
+                        onClick={rubricBoxAdd}
+                        className="d-inline"
+                        type="button"
+                      >
+                        Add +
+                      </button>
                       <div>
                         <div className={classes.row}>
-                          <input
+                          {/* <input
                             name="cputime"
                             type="number"
                             placeholder="Cputime %"
@@ -669,8 +677,8 @@ function TaskItem({
                             defaultValue=""
                             disabled={!toggleCondition}
                             required
-                          />
-                          <input
+                          /> */}
+                          {/* <input
                             name="memory"
                             type="number"
                             placeholder="Memory %"
@@ -679,10 +687,10 @@ function TaskItem({
                             defaultValue=""
                             disabled={!toggleCondition}
                             required
-                          />
+                          /> */}
                         </div>
                         <div className={classes.row}>
-                          <input
+                          {/* <input
                             name="status"
                             type="number"
                             placeholder="Status %"
@@ -702,11 +710,11 @@ function TaskItem({
                             defaultValue=""
                             disabled={!toggleCondition}
                             required
-                          />
+                          /> */}
                         </div>
 
-                        <div className={classes.row}>
-                          <label className={classes.radioLabel}>
+                        {/* <div className={classes.row}> */}
+                        {/* <label className={classes.radioLabel}>
                             <input
                               type="radio"
                               id="enable"
@@ -727,15 +735,9 @@ function TaskItem({
                             />
                             <span />
                             Disable
-                          </label>
-                          <button
-                            onClick={rubricBoxAdd}
-                            className="d-block float-end m-2"
-                            type="button"
-                          >
-                            Set Criteria
-                          </button>
-                        </div>
+                          </label> */}
+
+                        {/* </div> */}
                         {rubricBox.map((val, i) => (
                           <div className="d-flex p-6 gap-2">
                             <input
@@ -791,6 +793,7 @@ function TaskItem({
                   </div>
 
                   <div className={classes.columnSampleCode}>
+                    <h1> Sample Code Editor</h1>
                     <Editor handleEditorData={handleEditorData} />
                   </div>
                 </div>
@@ -987,7 +990,7 @@ function TaskItem({
           )}
         </div>
 
-        <div className={classes.row}>
+        {/* <div className={classes.row}>
           <h2>Cpu time:</h2>
           {currentEdit == each.count && editStackModal ? (
             <input
@@ -1065,7 +1068,7 @@ function TaskItem({
               {each.points ? `${each.points} pts.` : '0 %'}
             </h4>
           )}
-        </div>
+        </div> */}
 
         <div className={classes.row}>
           <h2>Rubrics Title: </h2>
@@ -1290,7 +1293,7 @@ function TaskItem({
           </div>
         </div>
 
-        <h3 className=" fw-bolder">
+        {/* <h3 className=" fw-bolder">
           {' '}
           Metrics Automated Checking
           {' '}
@@ -1315,9 +1318,9 @@ function TaskItem({
               <h4 className="col fw-bolder ">{`${question.rubrics?.status}%`}</h4>
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <h2 className=" fw-bolder">Additional Rubrics </h2>
+        <h2 className=" fw-bolder"> Rubrics For Checking </h2>
         <div
           className="mb-2 container-fluid p-4 border border-dark border-4"
           style={{ backgroundColor: 'rgba(138, 138, 138, 0.404)', borderRadius: '20px' }}
