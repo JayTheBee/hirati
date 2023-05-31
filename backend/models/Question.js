@@ -27,6 +27,12 @@ const questionSchema = new Schema({
   rubricAdditional: [{
     rubricRating: Number,
     rubricTitle: String,
+    rubricMethod: {
+      id: Number,
+      name: String,
+      label: String,
+      value: String,
+    },
   }],
 
   testcase: [{

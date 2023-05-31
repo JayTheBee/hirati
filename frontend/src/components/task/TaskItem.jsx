@@ -21,6 +21,7 @@ import KeywordsDropdown from './keywordsDropdown';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import AnswerButtonSubmit from '../answer/Answer';
+import methodOptions from './methodOptions';
 
 let editorData = {};
 let keywordData = [];
@@ -40,8 +41,9 @@ function TaskItem({
   const [counter, setCount] = React.useState(1);
   const [inputBox, setInputBox] = React.useState([{ input: [''], output: '' }]);
   const [rubricBox, setRubricBox] = React.useState([
-    { rubricTitle: '', rubricRating: '' },
+    { rubricTitle: '', rubricRating: '', rubricMethod: '' },
   ]);
+  const [filteredOptions, setFilteredOptions] = React.useState([]);
   const [data, setData] = React.useState([]);
   const answerData = [{}];
   const userData = JSON.parse(localStorage.getItem('user'));
@@ -96,7 +98,7 @@ function TaskItem({
     if (field == 'testcase') {
       temp[index].testcase.push({ input: '', output: '' });
     } else {
-      temp[index].rubrics.push({ rubricTitle: '', rubricRating: '' });
+      temp[index].rubrics.push({ rubricTitle: '', rubricRating: '', rubricMethod: '' });
     }
     setData(temp);
     setEditStackModal(false);
@@ -124,8 +126,8 @@ function TaskItem({
   // for inputbox Testcase functions enddddddd
 
   const rubricBoxAdd = () => {
-    if (rubricBox.length < 5) {
-      setRubricBox([...rubricBox, { rubricTitle: '', rubricRating: '' }]);
+    if (rubricBox.length < 3) {
+      setRubricBox([...rubricBox, { rubricTitle: '', rubricRating: '', rubricMethod: '' }]);
     } else {
       toast.error('cannot set Additional  Rubrics');
     }
@@ -136,27 +138,45 @@ function TaskItem({
     const onchangeVal = [...rubricBox];
     onchangeVal[i][name] = value;
     setRubricBox(onchangeVal);
-    console.log(rubricBox);
+    console.log('rubricBox is ', rubricBox);
   };
+
+  const rubricBoxMethod = (selected, i) => {
+    const onchangeVal = [...rubricBox];
+    onchangeVal[i].rubricMethod = selected;
+    setRubricBox(onchangeVal);
+    console.log('rubricBox Method is', rubricBox);
+  };
+
   const rubricBoxDelete = (i) => {
-    const deleteVal = [...rubricBox];
-    deleteVal.splice(i, 1);
-    setRubricBox(deleteVal);
-    console.log(rubricBox);
+    if (rubricBox.length > 1) {
+      const deleteVal = [...rubricBox];
+      deleteVal.splice(i, 1);
+      setRubricBox(deleteVal);
+      console.log(rubricBox);
+    } else {
+      toast.error('Needs at least 1 rubric per Question item');
+    }
   };
 
   function handleKeywords(e) {
     keywordData = Array.isArray(e) ? e.map((x) => x.value) : [];
+    //  e.map((x) => x.value);
     if (keywordData.length > 0) {
       // handleChangeEditModal(keywordData,'keywords', )
-      console.log(keywordData);
+      console.log('KEYWORDS ARE ', keywordData);
     }
   }
+
+  const getFilteredOptions = () => methodOptions.filter(
+    (option) => !rubricBox.some((rubric) => rubric.rubricMethod === option),
+  );
 
   useEffect(() => {
     console.log('run');
     setData(collateData);
-  }, []);
+    setFilteredOptions(getFilteredOptions());
+  }, [rubricBox]);
 
   const inputRef = useRef();
   const outputRef = useRef();
@@ -220,7 +240,7 @@ function TaskItem({
   const clearAllVal = () => {
     ({ language: editorData.language });
     console.log(editorData);
-    setRubricBox([{ rubricTitle: '', rubricRating: '' }]);
+    setRubricBox([{ rubricTitle: '', rubricRating: '', rubricMethod: '' }]);
     setInputBox([{ input: '', output: '' }]);
     descriptionRef.current.value = '';
     // inputRef.current.value = '';
@@ -539,6 +559,10 @@ function TaskItem({
     navigate(`/score/${taskId}`);
   };
 
+  const onSelectMethod = () => {
+    console.log('Test');
+  };
+
   return (
     <tr className={classes.task_item}>
       <td>{count}</td>
@@ -630,7 +654,7 @@ function TaskItem({
                       />
                     </div>
 
-                    <label htmlFor="input"> Test Case: </label>
+                    {/* <label htmlFor="input"> Test Case: </label>
                     <button
                       onClick={inputBoxAdd}
                       className="d-block float-end m-2"
@@ -662,8 +686,8 @@ function TaskItem({
                           </button>
                         </div>
                       ))}
-                    </div>
-                    <div className="container d-flex align-items-center">
+                    </div> */}
+                    {/* <div className="container d-flex align-items-center">
                       <input
                         type="checkbox"
                         id="checkbox"
@@ -673,7 +697,7 @@ function TaskItem({
                         style={{ width: '20px' }}
                       />
                       <label htmlFor="checkbox" className="fs-4  my-auto"> Allow students to see test cases </label>
-                    </div>
+                    </div> */}
 
                     <label htmlFor="performance">
                       <br />
@@ -758,25 +782,85 @@ function TaskItem({
 
                         {/* </div> */}
                         {rubricBox.map((val, i) => (
-                          <div className="d-flex p-6 gap-2">
-                            <input
-                              name="rubricTitle"
-                              value={val.rubricTitle}
-                              placeholder="Rubric Title"
-                              type="string"
-                              onChange={(e) => rubricBoxChange(e, i)}
-                            />
-                            <input
-                              name="rubricRating"
-                              value={val.rubricRating}
-                              placeholder="Rating"
-                              type="number"
-                              onChange={(e) => rubricBoxChange(e, i)}
-                            />
-                            <button type="button" onClick={() => rubricBoxDelete(i)}>
-                              Delete
-                            </button>
-                          </div>
+                          <>
+                            <div className="d-flex p-6 gap-2">
+                              <input
+                                name="rubricTitle"
+                                value={val.rubricTitle}
+                                placeholder="Rubric Title"
+                                type="string"
+                                onChange={(e) => rubricBoxChange(e, i)}
+                              />
+                              <input
+                                name="rubricRating"
+                                value={val.rubricRating}
+                                placeholder="Rubric Total Points"
+                                type="number"
+                                onChange={(e) => rubricBoxChange(e, i)}
+                              />
+                              <Select
+                                placeholder="Select Checking Method"
+                                options={filteredOptions}
+                                name="rubricMethod"
+                                value={val.rubricMethod}
+                                onChange={(selectedOption) => rubricBoxMethod(selectedOption, i)}
+                              />
+                              <button type="button" onClick={() => rubricBoxDelete(i)}>
+                                Delete
+                              </button>
+                            </div>
+                            <div>
+                              {val?.rubricMethod?.value === 'io-check' && (
+                              <>
+                                <label htmlFor="input"> Test Case: </label>
+                                <button
+                                  onClick={inputBoxAdd}
+                                  className="d-block float-end m-2"
+                                  type="button"
+                                >
+                                  Set Additional
+                                </button>
+                                <br />
+                                <br />
+                                <div className="row container-fluid">
+                                  {inputBox.map((val, i) => (
+                                    <div className="col">
+                                      <textarea
+                                        name="input"
+                                        value={val.input}
+                                        placeholder="Input"
+                                        onChange={(e) => inputBoxChange(e, i)}
+                                        className="h-25 "
+                                      />
+                                      <input
+                                        name="output"
+                                        value={val.output}
+                                        placeholder="Output"
+                                        onChange={(e) => inputBoxChange(e, i)}
+                                        className="h-25 w-100"
+                                      />
+                                      <button onClick={() => inputBoxDelete(i)}>
+                                        Delete
+                                      </button>
+                                    </div>
+                                  ))}
+                                </div>
+                                <div className="container d-flex align-items-center">
+                                  <input
+                                    type="checkbox"
+                                    id="checkbox"
+                                    className="mx-3 my-auto"
+                                    checked={caseFlag}
+                                    onChange={caseFlagHandler}
+                                    style={{ width: '20px' }}
+                                  />
+                                  <label htmlFor="checkbox" className="fs-4  my-auto"> Allow students to see test cases </label>
+                                </div>
+                              </>
+                              )}
+                            </div>
+
+                          </>
                         ))}
                       </div>
                     </label>
