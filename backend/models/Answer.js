@@ -27,16 +27,6 @@ const AnswerSchema = new Schema({
     memory: Number,
     status: String,
   },
-  score: {
-    memoryScore: Number,
-    timeScore: Number,
-    statusScore: Number,
-    weightedMemory: Schema.Types.Decimal128,
-    weightedTime: Schema.Types.Decimal128,
-    weightedStatus: Schema.Types.Decimal128,
-    totalWeightedScore: Schema.Types.Decimal128,
-    convertedScore: Schema.Types.Decimal128,
-  },
   rubricAdditional: [{
     rubricRating: Number,
     rubricTitle: String,

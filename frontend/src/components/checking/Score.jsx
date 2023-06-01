@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import Editor from '@monaco-editor/react';
 
 function TestcaseDetails({ testcase }) {
   return (
@@ -36,25 +37,81 @@ function TestcaseDetails({ testcase }) {
   );
 }
 
-function RubricDetails({rubrics, testcase}) {
+function RubricDetails({ rubrics, testcase, answerId }) {
+  const [rubricEdit, setRubricEdit] = useState(false);
+  const [rubricData, setRubricData] = useState(rubrics);
+
+  const handleRubricEdit = () => {
+    setRubricEdit(!rubricEdit);
+  };
+
+  const handleRubricChange = (rubricId, field, value) => {
+    const updatedRubrics = rubricData.map((rubric) => {
+      if (rubric._id === rubricId) {
+        return { ...rubric, [field]: value };
+      }
+      return rubric;
+    });
+    setRubricData(updatedRubrics);
+  };
+
+  const saveRubricChanges = (rubricId, rubricTitle, rubricRating) => {
+    // Make the Axios call to update the rubric in the database
+    axios
+      .post(`/api/answer/updateRubric/${answerId}`, { rubricId, rubricTitle, rubricRating })
+      .then((response) => {
+        // Handle successful response
+        console.log('RUBRIC CHANGED  SUCCESSFULLY. ANSWER: ', response.data);
+        setRubricEdit(false); // Disable editing mode
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+      });
+  };
+
   return (
     <>
       <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
         RUBRICS:
         {' '}
       </h3>
-      {rubrics.map((each) => (
+      {rubricData.map((each) => (
         <div key={each._id}>
           <h3>
             RUBRIC TITLE:
             {' '}
-            <b>{each.rubricTitle}</b>
+            {rubricEdit ? (
+              <input
+                type="text"
+                value={each.rubricTitle}
+                onChange={(e) => handleRubricChange(each._id, 'rubricTitle', e.target.value)}
+              />
+            ) : (
+              <b>{each.rubricTitle}</b>
+            )}
+
           </h3>
           <h3>
             RUBRIC SCORE IS:
             {' '}
-            <b>{each.rubricRating}</b>
+            {rubricEdit ? (
+              <input
+                type="text"
+                value={each.rubricRating}
+                onChange={(e) => handleRubricChange(each._id, 'rubricRating', e.target.value)}
+              />
+            ) : (
+              <b>{each.rubricRating}</b>
+            )}
           </h3>
+          {rubricEdit && (
+          <button type="submit" onClick={() => saveRubricChanges(each._id, each.rubricTitle, each.rubricRating)}>
+            Save Changes
+          </button>
+          )}
+          <button type="submit" onClick={handleRubricEdit}>{rubricEdit ? 'Cancel' : 'Edit'}</button>
+
           {each.rubricMethod === 'io-check' ? <TestcaseDetails testcase={testcase} /> : null }
         </div>
       ))}
@@ -62,7 +119,7 @@ function RubricDetails({rubrics, testcase}) {
   );
 }
 
-function AnswerDetails({ answer, testcase }) {
+function AnswerDetails({ answer, testcase, lang }) {
   const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
@@ -91,16 +148,26 @@ function AnswerDetails({ answer, testcase }) {
             {' '}
             {userInfo[index]?.name}
           </h3>
-          <h3>
-            SOURCE CODE:
-            {' '}
-            <b>{each.code}</b>
-          </h3>
+
+          <div className="container bg-white p-4" style={{ borderRadius: '20px' }}>
+            <h3 className="text-black fs-4">
+              SOURCE CODE:
+            </h3>
+            <Editor
+              height="25vh"
+        // width="40vw"
+              options={{ readOnly: true }}
+              language={lang}
+              value={each.code}
+              theme="light"
+            />
+          </div>
           <h3>
             SCORES:
             {' '}
           </h3>
-          <RubricDetails rubrics={each.rubricAdditional} testcase={testcase} />
+          <RubricDetails rubrics={each.rubricAdditional} testcase={testcase} answerId={each._id}/>
+
         </div>
       ))}
     </>
@@ -159,7 +226,7 @@ function QuestionDetails({ question }) {
               pts.
             </h3>
             <button type="button" onClick={() => getAnswers(each._id)} className="btn btn-success rounded-pill text-white text-center fs-4">Get Answers</button>
-            {answer && <AnswerDetails answer={answer} testcase={each.testcase} />}
+            {answer && <AnswerDetails answer={answer} testcase={each.testcase} lang={each.language} />}
           </div>
         </div>
       ))}
@@ -176,7 +243,7 @@ function Scoring() {
     questionArr.forEach((eachQuestion) => {
       let QuesPoints = 0;
       eachQuestion.rubricAdditional.forEach((eachRubric) => QuesPoints += eachRubric.rubricRating);
-      eachPoint.push({...eachQuestion, points: QuesPoints});
+      eachPoint.push({ ...eachQuestion, points: QuesPoints });
     });
     return eachPoint;
   };

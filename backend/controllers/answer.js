@@ -5,7 +5,6 @@ import Question from '../models/Question.js';
 import createError from '../utils/createError.js';
 // local functions
 
-let questionData;
 const getQuestion = async (questionId) => {
   try {
     const question = await Question.findById({ _id: questionId });
@@ -31,6 +30,32 @@ export const getAnswerById = async (req, res, next) => {
   try {
     const answer = await Answer.findById({ _id: req.params.answerId });
     return res.status(200).json(answer);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const updateRubric = async (req, res, next) => {
+  try {
+    const { answerId } = req.params;
+    const { rubricId, rubricRating, rubricTitle } = req.body;
+
+    const answer = await Answer.findById({ _id: answerId });
+    if (!answer) {
+      return res.status(404).json({ error: 'Answer not found' });
+    }
+
+    const rubricAdditionalIndex = answer.rubricAdditional.findIndex(
+      (rubric) => rubric._id.toString() === rubricId,
+    );
+    if (rubricAdditionalIndex === -1) {
+      return res.status(404).json({ error: 'RubricAdditional not found' });
+    }
+
+    answer.rubricAdditional[rubricAdditionalIndex].rubricRating = rubricRating;
+    answer.rubricAdditional[rubricAdditionalIndex].rubricTitle = rubricTitle;
+    const resAnswer = await answer.save();
+    return res.status(200).json(resAnswer);
   } catch (err) {
     console.log(err);
   }
@@ -133,7 +158,7 @@ const judgeChecking = async (cases, langId, source) => {
   const judgeSubmissions = { submissions: subs };
   console.log('DATA LOOKS LIKE THIS: ', judgeSubmissions);
   const url = `${process.env.BETOS_JUDGE_LINK}/submissions/batch/`;
-  console.log('WHY IS URL LIKE THAT', url)
+  console.log('WHY IS URL LIKE THAT', url);
   const conf = {
     'Content-Type': 'application/json',
     'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
@@ -184,13 +209,13 @@ const checkRubric = async (question, langId, source) => {
       break;
     case 'loc-check':
       rating = locCheck(source, langId, question.rubricAdditional[0].rubricRating);
-      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[0].rubricMethod.value  };
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[0].rubricMethod.value };
       rubricAdditional.push(rubricElement);
       break;
     case 'io-check':
       const testo = await judgeChecking(question.testcase, langId, source);
       const score = await getScore(testo, question);
-      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[0].rubricMethod.value  };
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[0].rubricMethod.value };
       rubricAdditional.push(rubricElement);
       break;
     default:
@@ -202,18 +227,18 @@ const checkRubric = async (question, langId, source) => {
     switch (question.rubricAdditional[1].rubricMethod.value) {
       case 'keyword-check':
         rating = keywordCheck(source, langId, question.rubricAdditional[1].rubricRating, question.keywords);
-        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value };
         rubricAdditional.push(rubricElement);
         break;
       case 'loc-check':
         rating = locCheck(source, langId, question.rubricAdditional[1].rubricRating);
-        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value };
         rubricAdditional.push(rubricElement);
         break;
       case 'io-check':
         const testo = await judgeChecking(question.testcase, langId, source);
         const score = await getScore(testo, question);
-        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[1].rubricMethod.value };
         rubricAdditional.push(rubricElement);
         break;
       default:
