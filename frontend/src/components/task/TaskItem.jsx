@@ -26,6 +26,7 @@ import methodOptions from './methodOptions';
 let editorData = {};
 let keywordData = [];
 let currentEdit = 0;
+let collateData = [];
 
 function TaskItem({
   task, deleteTask, updateButtonClick, count,
@@ -44,11 +45,11 @@ function TaskItem({
     { rubricTitle: '', rubricRating: '', rubricMethod: '' },
   ]);
   const [filteredOptions, setFilteredOptions] = React.useState([]);
-  const [data, setData] = React.useState([]);
+  const [data, setData] = useState([]);
   const answerData = [{}];
   const userData = JSON.parse(localStorage.getItem('user'));
   // All data Stored for db submission
-  let collateData = [];
+
 
   // let editorData = {};
 
@@ -178,47 +179,47 @@ function TaskItem({
     setFilteredOptions(getFilteredOptions());
   }, [rubricBox]);
 
-  const inputRef = useRef();
-  const outputRef = useRef();
-  const cputimeRef = useRef();
-  const memoryRef = useRef();
-  const statusRef = useRef();
-  const pointsRef = useRef();
+  // const inputRef = useRef();
+  // const outputRef = useRef();
+  // const cputimeRef = useRef();
+  // const memoryRef = useRef();
+  // const statusRef = useRef();
+  // const pointsRef = useRef();
   const descriptionRef = useRef();
 
   // modal edit ref
-  const cputimeEditRef = useRef();
-  const memoryEditRef = useRef();
-  const statusEditRef = useRef();
+  // const cputimeEditRef = useRef();
+  // const memoryEditRef = useRef();
+  // const statusEditRef = useRef();
 
-  const clearRubrics = () => {
-    if (toggleCondition) {
-      statusRef.current.value = '';
-      memoryRef.current.value = '';
-      cputimeRef.current.value = '';
-      pointsRef.current.value = '';
-    }
-  };
+  // const clearRubrics = () => {
+  //   if (toggleCondition) {
+  //     statusRef.current.value = '';
+  //     memoryRef.current.value = '';
+  //     cputimeRef.current.value = '';
+  //     pointsRef.current.value = '';
+  //   }
+  // };
 
-  const handleChange = (e) => {
-    const res = e.currentTarget.value === 'true';
-    console.log(res);
-    setToggleCondition(res);
-    res
-      ? (statusRef.current.style.backgroundColor = 'white')
-      : (statusRef.current.style.backgroundColor = 'gray');
-    res
-      ? (memoryRef.current.style.backgroundColor = 'white')
-      : (memoryRef.current.style.backgroundColor = 'gray');
-    res
-      ? (cputimeRef.current.style.backgroundColor = 'white')
-      : (cputimeRef.current.style.backgroundColor = 'gray');
-    res
-      ? (pointsRef.current.style.backgroundColor = 'white')
-      : (pointsRef.current.style.backgroundColor = 'gray');
+  // const handleChange = (e) => {
+  //   const res = e.currentTarget.value === 'true';
+  //   console.log(res);
+  //   setToggleCondition(res);
+  //   res
+  //     ? (statusRef.current.style.backgroundColor = 'white')
+  //     : (statusRef.current.style.backgroundColor = 'gray');
+  //   res
+  //     ? (memoryRef.current.style.backgroundColor = 'white')
+  //     : (memoryRef.current.style.backgroundColor = 'gray');
+  //   res
+  //     ? (cputimeRef.current.style.backgroundColor = 'white')
+  //     : (cputimeRef.current.style.backgroundColor = 'gray');
+  //   res
+  //     ? (pointsRef.current.style.backgroundColor = 'white')
+  //     : (pointsRef.current.style.backgroundColor = 'gray');
 
-    clearRubrics();
-  };
+  //   clearRubrics();
+  // };
 
   const openUpdateform = async () => {
     updateButtonClick(task);
@@ -245,28 +246,19 @@ function TaskItem({
     descriptionRef.current.value = '';
     // inputRef.current.value = '';
     // outputRef.current.value = '';
-    clearRubrics();
+    // clearRubrics();
     // clearInput();
     // console.log(editorData);
   };
-  const hasValue = (data) => {
-    if (data !== null || data !== undefined) {
-      return data;
-    }
-    return '';
-  };
+  // const hasValue = (data) => {
+  //   if (data !== null || data !== undefined) {
+  //     return data;
+  //   }
+  //   return '';
+  // };
 
   const handleEditModal = (data) => {
     currentEdit = data.count;
-    if (
-      parseInt(data.status) + parseInt(data.cputime) + parseInt(data.memory)
-			!== 100
-    ) {
-      toast.error(
-        'Please enter valid percentage for cpu,memory and status that equates to 100%',
-      );
-      return;
-    }
     setEditStackModal(!editStackModal);
   };
 
@@ -291,11 +283,11 @@ function TaskItem({
 
   const closeModal = () => {
     setCount(1);
-    setToggleCondition(true);
+    setIsOpen(false);
+    // setToggleCondition(true);
     collateData = [];
     setData([]);
     clearAllVal();
-    setIsOpen(false);
   };
 
   const closeViewAllModal = () => {
@@ -335,42 +327,42 @@ function TaskItem({
     }
   };
 
-  const handleAdditionalCase = () => {
-    if (inputRef.current.value && outputRef.current.value) {
-      if (confirm('Add additional case for this question?')) {
-        additionalCase.push({
-          testcase: {
-            input: inputRef.current.value,
-            output: outputRef.current.value,
-          },
-        });
-        toast.success('Additional Case Added');
-      }
-    } else if (confirm('Push to stack with missing data in input/output ?')) {
-      additionalCase.push({
-        testcase: {
-          input: inputRef.current.value,
-          output: outputRef.current.value,
-        },
-      });
-      toast.success('Additional Case Added');
-    }
-    inputRef.current.value = '';
-    outputRef.current.value = '';
-  };
+  // const handleAdditionalCase = () => {
+  //   if (inputRef.current.value && outputRef.current.value) {
+  //     if (confirm('Add additional case for this question?')) {
+  //       additionalCase.push({
+  //         testcase: {
+  //           input: inputRef.current.value,
+  //           output: outputRef.current.value,
+  //         },
+  //       });
+  //       toast.success('Additional Case Added');
+  //     }
+  //   } else if (confirm('Push to stack with missing data in input/output ?')) {
+  //     additionalCase.push({
+  //       testcase: {
+  //         input: inputRef.current.value,
+  //         output: outputRef.current.value,
+  //       },
+  //     });
+  //     toast.success('Additional Case Added');
+  //   }
+  //   inputRef.current.value = '';
+  //   outputRef.current.value = '';
+  // };
 
-  const checkRubricsPercentage = () => {
-    if (
-      toggleCondition
-			&& parseInt(statusRef.current.value)
-				+ parseInt(cputimeRef.current.value)
-				+ parseInt(memoryRef.current.value)
-				!== 100
-    ) {
-      return false;
-    }
-    return true;
-  };
+  // const checkRubricsPercentage = () => {
+  //   if (
+  //     toggleCondition
+  // 		&& parseInt(statusRef.current.value)
+  // 			+ parseInt(cputimeRef.current.value)
+  // 			+ parseInt(memoryRef.current.value)
+  // 			!== 100
+  //   ) {
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   const checkRequiredIfEmpty = () => {
     if (
@@ -383,96 +375,78 @@ function TaskItem({
     return false;
   };
 
-  const checkRubricsIfEmpty = () => {
-    if (
-      statusRef.current.value === ''
-			|| memoryRef.current.value === ''
-			|| cputimeRef.current.value === ''
-			|| pointsRef.current.value === ''
-    ) {
-      // toast.error('Memory, Points, Status and CPU time cannot be empty');
-      return true;
-    }
-    return false;
-  };
+  // const checkRubricsIfEmpty = () => {
+  //   if (
+  //     statusRef.current.value === ''
+  // 		|| memoryRef.current.value === ''
+  // 		|| cputimeRef.current.value === ''
+  // 		|| pointsRef.current.value === ''
+  //   ) {
+  //     // toast.error('Memory, Points, Status and CPU time cannot be empty');
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
-  const handleAnotherQuestion = () => {
+  const handleAnotherQuestion = async () => {
     console.log(editorData);
     console.log(descriptionRef.current.value);
 
     if (checkRequiredIfEmpty()) {
       return;
     }
-    if (checkRubricsIfEmpty() && toggleCondition) {
-      toast.error(
-        'Default Rubrics for automated Testing is enabled. Please fill all fields or disable it. ',
-      );
-      return;
-    }
-    if (!checkRubricsPercentage() && toggleCondition) {
-      toast.error(
-        'Please fill Rubrics Cputime, Memory and Status with whole number that equates to 100%',
-      );
-      return;
-    }
+    // if (checkRubricsIfEmpty() && toggleCondition) {
+    //   toast.error(
+    //     'Default Rubrics for automated Testing is enabled. Please fill all fields or disable it. ',
+    //   );
+    //   return;
+    // }
+    // if (!checkRubricsPercentage() && toggleCondition) {
+    //   toast.error(
+    //     'Please fill Rubrics Cputime, Memory and Status with whole number that equates to 100%',
+    //   );
+    //   return;
+    // }
 
     // Scenario 1: All rubrics are required (Enabled)
-    if (toggleCondition) {
-      collateData.push({
-        language: editorData.language,
-        description: descriptionRef.current.value,
-        testcase: inputBox,
-        rubrics: rubricBox,
-        cputime: cputimeRef.current.value,
-        memory: memoryRef.current.value,
-        status: statusRef.current.value,
-        points: pointsRef.current.value,
-        result: editorData,
-        count: counter,
-        task_id: task._id,
-        keywords: keywordData,
-        code: editorData.code,
-        permission,
-        caseFlag,
-      });
-      console.log('scene1');
-      // Scenario 2: disabled default rubric scenario and without additional set Criteria/TestCase
-    } else if (!toggleCondition) {
-      collateData.push({
-        language: editorData.language,
-        description: descriptionRef.current.value,
-        testcase: inputBox,
-        rubrics: rubricBox,
-        result: editorData,
-        task_id: task._id,
-        count: counter,
-        keywords: keywordData,
-        code: editorData.code,
-        permission,
-        caseFlag,
-      });
-      console.log('scene2');
-    } else {
-      collateData.push({
-        code: editorData.code,
-        rubrics: rubricBox,
-        testcase: inputBox,
-        result: editorData,
-        description: descriptionRef.current.value,
-        language: editorData.language,
-        task_id: task._id,
-        count: counter,
-        keywords: keywordData,
-        permission,
-        caseFlag,
-      });
-      console.log('scene3');
-    }
+    // if (toggleCondition) {
+    collateData.push({
+      language: editorData.language,
+      description: descriptionRef.current.value,
+      testcase: inputBox,
+      rubrics: rubricBox,
+      result: editorData,
+      count: counter,
+      task_id: task._id,
+      keywords: keywordData,
+      code: editorData.code,
+      permission,
+      caseFlag,
+    });
+    console.log('scene1');
+    // }
+    //  else {
+    //   collateData.push({
+    //     code: editorData.code,
+    //     rubrics: rubricBox,
+    //     testcase: inputBox,
+    //     result: editorData,
+    //     description: descriptionRef.current.value,
+    //     language: editorData.language,
+    //     task_id: task._id,
+    //     count: counter,
+    //     keywords: keywordData,
+    //     permission,
+    //     caseFlag,
+    //   });
+    //   console.log('scene3');
+    // }
     clearAllVal();
     toast.success(`Question #${counter} added to the stack!`);
     setCount(counter + 1);
     setData(collateData);
-    console.log(collateData);
+    console.log('collateData is ', collateData);
+    await new Promise((resolve) => setTimeout(resolve, 100));
   };
 
   // Student Access to task
@@ -484,9 +458,6 @@ function TaskItem({
           collateData.push({
             count: each.questionCount,
             language: each.language,
-            cputime: each.rubrics?.cputime ?? 0,
-            memory: each.rubrics?.memory ?? 0,
-            status: each.rubrics?.status ?? 0,
             description: each.description,
             testcase: each.testcase,
             rubrics: each.rubricAdditional,
@@ -501,13 +472,13 @@ function TaskItem({
             questionId: each._id,
           });
         });
-        console.log(data);
-        console.log(collateData);
-        setCount(data.length + 1);
-        setData(collateData);
-        // to make synchronous setData
-        await new Promise((resolve) => setTimeout(resolve, 1));
-        return;
+      console.log('data is', data);
+      console.log('collateData in getQuestion ', collateData);
+      setCount(data.length + 1);
+      setData(collateData);
+      // to make synchronous setData
+      await new Promise((resolve) => setTimeout(resolve, 1));
+      return;
       }
       setData(data);
       console.log(data);
@@ -522,7 +493,8 @@ function TaskItem({
   }
 
   function openviewStackmodal(taskId) {
-    // getQuestion(taskId);
+    // console.log('data is ', data);
+    getQuestion(taskId);
     setviewStackmodal(true);
   }
 
@@ -531,12 +503,13 @@ function TaskItem({
       toast.error('Exam is Expired');
       return;
     }
-    const { data } = await axios.get(`/api/answer/${task._id}`);
-    console.log(data);
-    if (data.length > 0) {
-      toast.error('Already Taken.Cannot retake exam again!');
-      return;
-    }
+    //uncomment this after =========================
+    // const { data } = await axios.get(`/api/answer/${task._id}`);
+    // console.log(data);
+    // if (data.length > 0) {
+    //   toast.error('Already Taken.Cannot retake exam again!');
+    //   return;
+    // }
     setTakeExam(true);
     getQuestion(task._id);
     // console.log(taskId);
@@ -818,7 +791,7 @@ function TaskItem({
                                   className="d-block float-end m-2"
                                   type="button"
                                 >
-                                  Set Additional
+                                  Set Additional Test Case
                                 </button>
                                 <br />
                                 <br />
@@ -832,7 +805,7 @@ function TaskItem({
                                         onChange={(e) => inputBoxChange(e, i)}
                                         className="h-25 "
                                       />
-                                      <input
+                                      <textarea
                                         name="output"
                                         value={val.output}
                                         placeholder="Output"

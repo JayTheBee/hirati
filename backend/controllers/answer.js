@@ -4,6 +4,8 @@ import Answer from '../models/Answer.js';
 import Question from '../models/Question.js';
 import createError from '../utils/createError.js';
 // local functions
+
+let questionData;
 const getQuestion = async (questionId) => {
   try {
     const question = await Question.findById({ _id: questionId });
@@ -51,7 +53,7 @@ export const createAnswer = async (req, res, next) => {
       status: req.body.status,
     },
   };
-  questionData.score = await autocheck(questionData, req.body.id);
+  questionData.rubricAdditional = await autocheck(questionData, req.body.id);
   //  for uncomment later
   console.log('THIS IS THE DATABASE DATA: ', questionData);
   const newAnswer = new Answer(questionData);
@@ -77,22 +79,8 @@ const getScore = async (dataresArr, question) => {
       if (element.memory < memoryConstraint) memoryScore += 1;
       if (element.status.id === 3) statusScore += 1;
     });
-    const weightedMemory = memoryScore * question.rubrics.memory * 0.01;
-    const weightedTime = timeScore * question.rubrics.cputime * 0.01;
-    const weightedStatus = statusScore * question.rubrics.status * 0.01;
-    const totalWeightedScore = weightedMemory + weightedTime + weightedStatus;
-    const convertedScore = (totalWeightedScore / dataresArr.length) * question.points;
-    console.log('MEMORY SCORES ARE: ', weightedMemory, 'TIME: ', weightedTime, 'STATUS: ', weightedStatus, ' TOTAL IS: ', totalWeightedScore, 'CONVERTED: ', convertedScore);
-    return ({
-      memoryScore,
-      timeScore,
-      statusScore,
-      weightedMemory,
-      weightedTime,
-      weightedStatus,
-      totalWeightedScore,
-      convertedScore,
-    });
+    const totalScore = timeScore + memoryScore + statusScore;
+    return totalScore;
   } catch (error) {
     console.log(error);
   }
@@ -109,8 +97,8 @@ const checkStatus = async (initialData) => {
     console.log('URLS ARE: ', batchURLs);
     const conf = {
       'Content-Type': 'application/json',
-      // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-      // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+      'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+      'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
     };
     // eslint-disable-next-line max-len
     const batchResponses = await Promise.all(batchURLs.map((url) => axios.get(url, { headers: conf })));
@@ -145,10 +133,11 @@ const judgeChecking = async (cases, langId, source) => {
   const judgeSubmissions = { submissions: subs };
   console.log('DATA LOOKS LIKE THIS: ', judgeSubmissions);
   const url = `${process.env.BETOS_JUDGE_LINK}/submissions/batch/`;
+  console.log('WHY IS URL LIKE THAT', url)
   const conf = {
     'Content-Type': 'application/json',
-    // 'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
-    // 'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
+    'X-RapidAPI-Key': process.env.VITE_RAPID_API_KEY,
+    'X-RapidAPI-Host': process.env.VITE_RAPID_API_HOST,
   };
 
   // Initial Call for judge0
@@ -162,22 +151,110 @@ const judgeChecking = async (cases, langId, source) => {
   }
 };
 
-const autocheck = async (answerData, langId) => {
-  const question = await getQuestion(answerData.questionId);
-  const testo = await judgeChecking(question.testcase, langId, answerData.code);
-  const score = await getScore(testo, question);
-  return score;
+const keywordCheck = (source, langId, total, keywords) => {
+  const words = source.match(/[a-zA-Z]+/g) || [];
+  const detected = keywords.filter((element) => !words.includes(element));
+  return total - detected.length;
 };
 
-// TODO LIST PA
-// Perform Automated Assesment here
-// -> get all answer by                               goodss na
-// -> get all Question                                goods na
-// -> compare input by output
-// -> check keywords (using js method search)
-// -> check metric weights(from question fetch)
-// -> percentage to total points( % * total points)(computation nalang)
-// -> calculate points(cpuscore,memoryscore, statusscore = total aquiredpoints)(notsure pa dito)
+const locCheck = (source, langId, total) => {
+  if (langId === 71) {
+    return total;
+  }
+  let mistakes = 0;
+  const lines = source.split('\n');
+  lines.forEach((each) => {
+    const semicolonCount = each.split(';').length - 1;
+    semicolonCount > 1 ? mistakes += 1 : null;
+  });
+  return total - mistakes;
+};
+
+const checkRubric = async (question, langId, source) => {
+  console.log('WHAT DOES QUESTION LOOK LIKE: ', question);
+  const rubricAdditional = [];
+  let rubricElement;
+  let rating;
+
+  switch (question.rubricAdditional[0].rubricMethod.value) {
+    case 'keyword-check':
+      rating = keywordCheck(source, langId, question.rubricAdditional[0].rubricRating, question.keywords);
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[0].rubricMethod.value };
+      rubricAdditional.push(rubricElement);
+      break;
+    case 'loc-check':
+      rating = locCheck(source, langId, question.rubricAdditional[0].rubricRating);
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[0].rubricMethod.value  };
+      rubricAdditional.push(rubricElement);
+      break;
+    case 'io-check':
+      const testo = await judgeChecking(question.testcase, langId, source);
+      const score = await getScore(testo, question);
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[0].rubricMethod.value  };
+      rubricAdditional.push(rubricElement);
+      break;
+    default:
+      console.log('ERROR IN RUBRIC CHECKING');
+      break;
+  }
+
+  if (question.rubricAdditional.length == 2) {
+    switch (question.rubricAdditional[1].rubricMethod.value) {
+      case 'keyword-check':
+        rating = keywordCheck(source, langId, question.rubricAdditional[1].rubricRating, question.keywords);
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricAdditional.push(rubricElement);
+        break;
+      case 'loc-check':
+        rating = locCheck(source, langId, question.rubricAdditional[1].rubricRating);
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricAdditional.push(rubricElement);
+        break;
+      case 'io-check':
+        const testo = await judgeChecking(question.testcase, langId, source);
+        const score = await getScore(testo, question);
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[1].rubricMethod.value  };
+        rubricAdditional.push(rubricElement);
+        break;
+      default:
+        console.log('ERROR IN RUBRIC CHECKING');
+        break;
+    }
+  }
+
+  if (question.rubricAdditional.length == 3) {
+    switch (question.rubricAdditional[2].rubricMethod.value) {
+      case 'keyword-check':
+        rating = keywordCheck(source, langId, question.rubricAdditional[2].rubricRating, question.keywords);
+        rubricElement = { rubricTitle: question.rubricAdditional[2].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[2].rubricMethod.value };
+        rubricAdditional.push(rubricElement);
+        break;
+      case 'loc-check':
+        rating = locCheck(source, langId, question.rubricAdditional[2].rubricRating);
+        rubricElement = { rubricTitle: question.rubricAdditional[2].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[2].rubricMethod.value };
+        rubricAdditional.push(rubricElement);
+        break;
+      case 'io-check':
+        const testo = await judgeChecking(question.testcase, langId, source);
+        const score = await getScore(testo, question);
+        rubricElement = { rubricTitle: question.rubricAdditional[2].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[2].rubricMethod.value };
+        rubricAdditional.push(rubricElement);
+        break;
+      default:
+        console.log('ERROR IN RUBRIC CHECKING');
+        break;
+    }
+  }
+  console.log('RUBRIC ADDITIONAL IS NOW: ', rubricAdditional);
+  return rubricAdditional;
+};
+
+const autocheck = async (answerData, langId) => {
+  const question = await getQuestion(answerData.questionId);
+  const rubricAdditional = await checkRubric(question, langId, answerData.code);
+
+  return rubricAdditional;
+};
 
 export const addAllAnswer = async (req, res, next) => {
   // autocheck(req);

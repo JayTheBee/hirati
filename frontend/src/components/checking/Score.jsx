@@ -5,16 +5,6 @@ import { useParams } from 'react-router-dom';
 function TestcaseDetails({ testcase }) {
   return (
     <div className="container">
-      {/* <div className="row d-flex mx-auto">
-          <h3 className="col-8">
-            WEIGHT OF CPUTIME IS:
-          </h3>
-          <h3 className="col-4">
-            {' '}
-            {metric?.cputime}
-            %
-          </h3>
-        </div> */}
       {testcase.map((each, index) => (
         <div key={each._id} className="row d-flex mx-auto">
           <h4 className="fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
@@ -46,55 +36,33 @@ function TestcaseDetails({ testcase }) {
   );
 }
 
-function AutoScoreDetails({ autoScores }) {
+function RubricDetails({rubrics, testcase}) {
   return (
-    <div className="container">
-
-      <h3>
-        RAW MEMORY SCORE:
+    <>
+      <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
+        RUBRICS:
         {' '}
-        {autoScores?.memoryScore}
       </h3>
-      <h3>
-        RAW CPU TIME SCORE:
-        {' '}
-        {autoScores?.timeScore}
-      </h3>
-      <h3>
-        RAW STATUS SCORE:
-        {' '}
-        {autoScores?.statusScore}
-      </h3>
-      <h3>
-        WEIGHTED MEMORY SCORE:
-        {' '}
-        {autoScores.weightedMemory.$numberDecimal.toLocaleString()}
-      </h3>
-      <h3>
-        WEIGHTED CPU TIME SCORE:
-        {' '}
-        {autoScores.weightedTime.$numberDecimal.toLocaleString()}
-      </h3>
-      <h3>
-        WEIGHTED STATUS SCORE:
-        {' '}
-        {autoScores.weightedStatus.$numberDecimal.toLocaleString()}
-      </h3>
-      <h3>
-        TOTAL WEIGHTED SCORE:
-        {' '}
-        {autoScores.totalWeightedScore.$numberDecimal.toLocaleString()}
-      </h3>
-      <h3>
-        FINAL SCORE:
-        {' '}
-        {autoScores.convertedScore.$numberDecimal.toLocaleString()}
-      </h3>
-    </div>
+      {rubrics.map((each) => (
+        <div key={each._id}>
+          <h3>
+            RUBRIC TITLE:
+            {' '}
+            <b>{each.rubricTitle}</b>
+          </h3>
+          <h3>
+            RUBRIC SCORE IS:
+            {' '}
+            <b>{each.rubricRating}</b>
+          </h3>
+          {each.rubricMethod === 'io-check' ? <TestcaseDetails testcase={testcase} /> : null }
+        </div>
+      ))}
+    </>
   );
 }
 
-function AnswerDetails({ answer }) {
+function AnswerDetails({ answer, testcase }) {
   const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
@@ -131,50 +99,11 @@ function AnswerDetails({ answer }) {
           <h3>
             SCORES:
             {' '}
-            <AutoScoreDetails autoScores={each.score} />
           </h3>
+          <RubricDetails rubrics={each.rubricAdditional} testcase={testcase} />
         </div>
       ))}
     </>
-  );
-}
-
-function MetricDetails({ metric }) {
-  return (
-    <div className="container">
-      <div className="row d-flex mx-auto">
-        <h3 className="col-8">
-          WEIGHT OF CPUTIME IS:
-        </h3>
-        <h3 className="col-4">
-          {' '}
-          {metric?.cputime}
-          %
-        </h3>
-      </div>
-
-      <div className="row d-flex mx-auto">
-        <h3 className="col-8">
-          WEIGHT OF MEMORY IS:
-        </h3>
-        <h3 className="col-4">
-          {' '}
-          {metric?.memory}
-          %
-        </h3>
-      </div>
-
-      <div className="row d-flex mx-auto">
-        <h3 className="col-8">
-          WEIGHT OF STATUS IS:
-        </h3>
-        <h3 className="col-4">
-          {' '}
-          {metric?.status}
-          %
-        </h3>
-      </div>
-    </div>
   );
 }
 
@@ -185,6 +114,7 @@ function QuestionDetails({ question }) {
     try {
       const { data } = await axios.get(`/api/answer/getAll/${questionId}`);
       console.log('ANSWERS ARE: ', data);
+
       setAnswer(data);
       // setQuestion(response.data);
     } catch (error) {
@@ -202,9 +132,7 @@ function QuestionDetails({ question }) {
               <b>
                 {each.questionCount}
               </b>
-              {' '}
-              Meta:
-              {' '}
+              :
             </h2>
             <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
               DESCRIPTION:
@@ -217,16 +145,11 @@ function QuestionDetails({ question }) {
             </h3>
             <h2>{each.language}</h2>
             <br />
-            <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
-              METRICS:
-            </h3>
-            <MetricDetails metric={each.rubrics} />
-            <br />
-            <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
+            {/* <h3 className="card-title fw-bolder text-muted" style={{ textShadow: '2px 2px 1px black' }}>
               TESTCASES:
               {' '}
             </h3>
-            <TestcaseDetails testcase={each.testcase} />
+            <TestcaseDetails testcase={each.testcase} /> */}
             <br />
             <h3 className="card-title fw-bolder text-warning" style={{ textShadow: '2px 2px 1px black' }}>
               Total Points:
@@ -236,7 +159,7 @@ function QuestionDetails({ question }) {
               pts.
             </h3>
             <button type="button" onClick={() => getAnswers(each._id)} className="btn btn-success rounded-pill text-white text-center fs-4">Get Answers</button>
-            {answer && <AnswerDetails answer={answer} />}
+            {answer && <AnswerDetails answer={answer} testcase={each.testcase} />}
           </div>
         </div>
       ))}
@@ -248,11 +171,22 @@ function Scoring() {
   const [question, setQuestion] = useState([]);
   const params = useParams();
 
+  const getPoints = (questionArr) => {
+    const eachPoint = [];
+    questionArr.forEach((eachQuestion) => {
+      let QuesPoints = 0;
+      eachQuestion.rubricAdditional.forEach((eachRubric) => QuesPoints += eachRubric.rubricRating);
+      eachPoint.push({...eachQuestion, points: QuesPoints});
+    });
+    return eachPoint;
+  };
+
   const getQuestions = async () => {
     try {
       const questionResp = await axios.get(`/api/question/${params.id}`);
       console.log('QUESTIONS ARE: ', questionResp.data);
-      setQuestion(questionResp.data);
+      const realQuestions = getPoints(questionResp.data);
+      setQuestion(realQuestions);
       // setQuestion(response.data);
     } catch (error) {
       console.log(error);
@@ -265,7 +199,7 @@ function Scoring() {
   return (
     <>
 
-      <h1 className="text-center fw-bold text-success" style={{ textShadow: '2px 2px 1px black' }}>TEACHER CHECKING VIEW</h1>
+      <h1 className="text-center fw-bold text-success" style={{ textShadow: '2px 2px 1px black' }}>CHECK THE STUDENT TASKS</h1>
       <div className="container row gap-4">
         {/* <div className="card col-sm"> */}
         {question && <QuestionDetails question={question} />}
