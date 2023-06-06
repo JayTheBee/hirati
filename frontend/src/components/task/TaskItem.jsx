@@ -2,11 +2,10 @@
 /* eslint-disable no-tabs */
 import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
-import Select from 'react-select';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import axios from 'axios';
-
+import Select from 'react-select';
 import {
   AiFillDelete,
   AiFillEdit,
@@ -18,6 +17,7 @@ import toast from 'react-hot-toast';
 import { BiCuboid } from 'react-icons/bi';
 import question from '../../resource/question.png';
 import KeywordsDropdown from './keywordsDropdown';
+import DualBox from './dualBox';
 import classes from './TaskItem.module.scss';
 import Editor from '../editor/QuestionEditor';
 import AnswerButtonSubmit from '../answer/Answer';
@@ -49,7 +49,6 @@ function TaskItem({
   const answerData = [{}];
   const userData = JSON.parse(localStorage.getItem('user'));
   // All data Stored for db submission
-
 
   // let editorData = {};
 
@@ -160,13 +159,9 @@ function TaskItem({
     }
   };
 
-  function handleKeywords(e) {
-    keywordData = Array.isArray(e) ? e.map((x) => x.value) : [];
-    //  e.map((x) => x.value);
-    if (keywordData.length > 0) {
-      // handleChangeEditModal(keywordData,'keywords', )
-      console.log('KEYWORDS ARE ', keywordData);
-    }
+  function handleKeywords(keywords) {
+    keywordData = keywords;
+    console.log(keywords);
   }
 
   const getFilteredOptions = () => methodOptions.filter(
@@ -472,13 +467,13 @@ function TaskItem({
             questionId: each._id,
           });
         });
-      console.log('data is', data);
-      console.log('collateData in getQuestion ', collateData);
-      setCount(data.length + 1);
-      setData(collateData);
-      // to make synchronous setData
-      await new Promise((resolve) => setTimeout(resolve, 1));
-      return;
+        console.log('data is', data);
+        console.log('collateData in getQuestion ', collateData);
+        setCount(data.length + 1);
+        setData(collateData);
+        // to make synchronous setData
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        return;
       }
       setData(data);
       console.log(data);
@@ -493,8 +488,6 @@ function TaskItem({
   }
 
   function openviewStackmodal(taskId) {
-    // console.log('data is ', data);
-    getQuestion(taskId);
     setviewStackmodal(true);
   }
 
@@ -503,7 +496,7 @@ function TaskItem({
       toast.error('Exam is Expired');
       return;
     }
-    //uncomment this after =========================
+    // uncomment this after =========================
     // const { data } = await axios.get(`/api/answer/${task._id}`);
     // console.log(data);
     // if (data.length > 0) {
@@ -610,9 +603,10 @@ function TaskItem({
               <form className={classes.addNewForm} onSubmit="">
                 <div className="containter mb-4">
                   <div className={classes.columnInput}>
-                    <div className=" w-100">
+                    {/* <KeywordsDropdown onSelectChange={handleKeywords} /> */}
+                    <div className={classes.selectContainer}>
                       <label>Set Keywords:</label>
-                      <KeywordsDropdown onSelectChange={handleKeywords} />
+                      <DualBox onSelectChange={handleKeywords} />
                     </div>
                     <br />
                     <div className="w-100 ">

@@ -510,3 +510,22 @@ td {
 		color: rgb(228, 228, 228);
 	}
 }
+
+.selectContainer {
+	width: 80%;
+	margin: auto;
+	select {
+		min-width: 100% !important;
+		border-radius: 20px;
+		padding: 20px;
+	}
+	span {
+		padding: 10px;
+	}
+	button:hover {
+		background-color: #2c4734 !important;
+	}
+	span:hover {
+		background-color: #2c4734 !important;
+	}
+}
