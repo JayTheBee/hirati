@@ -215,7 +215,7 @@ const checkRubric = async (question, langId, source) => {
     case 'io-check':
       const testo = await judgeChecking(question.testcase, langId, source);
       const score = await getScore(testo, question);
-      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[0].rubricMethod.value };
+      rubricElement = { rubricTitle: question.rubricAdditional[0].rubricTitle, rubricRating: question.rubricAdditional[0].rubricRating, rubricMethod: question.rubricAdditional[0].rubricMethod.value };
       rubricAdditional.push(rubricElement);
       break;
     default:
@@ -238,7 +238,7 @@ const checkRubric = async (question, langId, source) => {
       case 'io-check':
         const testo = await judgeChecking(question.testcase, langId, source);
         const score = await getScore(testo, question);
-        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: score, rubricMethod: question.rubricAdditional[1].rubricMethod.value };
+        rubricElement = { rubricTitle: question.rubricAdditional[1].rubricTitle, rubricRating: question.rubricAdditional[1].rubricRating, rubricMethod: question.rubricAdditional[1].rubricMethod.value };
         rubricAdditional.push(rubricElement);
         break;
       default:
@@ -256,7 +256,7 @@ const checkRubric = async (question, langId, source) => {
         break;
       case 'loc-check':
         rating = locCheck(source, langId, question.rubricAdditional[2].rubricRating);
-        rubricElement = { rubricTitle: question.rubricAdditional[2].rubricTitle, rubricRating: rating, rubricMethod: question.rubricAdditional[2].rubricMethod.value };
+        rubricElement = { rubricTitle: question.rubricAdditional[2].rubricTitle, rubricRating: question.rubricAdditional[2].rubricRating, rubricMethod: question.rubricAdditional[2].rubricMethod.value };
         rubricAdditional.push(rubricElement);
         break;
       case 'io-check':

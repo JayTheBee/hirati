@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { set } from 'mongoose';
 import classes from './AuthForm.module.scss';
 
 function Login() {

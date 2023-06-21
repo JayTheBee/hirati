@@ -37,6 +37,16 @@ function TestcaseDetails({ testcase }) {
   );
 }
 
+function RubricMethodDetails({ rubricMethod }) {
+  if (rubricMethod === 'io-check') {
+    return (<b>Input Output Tests</b>);
+  } if (rubricMethod === 'keyword-check') {
+    return (<b>Keyword Checking</b>);
+  } if (rubricMethod === 'loc-check') {
+    return (<b>Line of Codes Checking</b>);
+  }
+}
+
 function RubricDetails({ rubrics, testcase, answerId }) {
   const [rubricEdit, setRubricEdit] = useState(false);
   const [rubricData, setRubricData] = useState(rubrics);
@@ -105,6 +115,20 @@ function RubricDetails({ rubrics, testcase, answerId }) {
               <b>{each.rubricRating}</b>
             )}
           </h3>
+          <h3>
+            RUBRIC METHOD IS:
+            {' '}
+            {rubricEdit ? (
+              <input
+                type="text"
+                value={each.rubricMethod}
+                onChange={(e) => handleRubricChange(each._id, 'rubricRating', e.target.value)}
+              />
+            ) : (
+              <RubricMethodDetails rubricMethod={each.rubricMethod} />
+            )}
+          </h3>
+
           {rubricEdit && (
           <button type="submit" onClick={() => saveRubricChanges(each._id, each.rubricTitle, each.rubricRating)}>
             Save Changes
@@ -166,7 +190,7 @@ function AnswerDetails({ answer, testcase, lang }) {
             SCORES:
             {' '}
           </h3>
-          <RubricDetails rubrics={each.rubricAdditional} testcase={testcase} answerId={each._id}/>
+          <RubricDetails rubrics={each.rubricAdditional} testcase={testcase} answerId={each._id} />
 
         </div>
       ))}

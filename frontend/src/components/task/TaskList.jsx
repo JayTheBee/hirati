@@ -21,7 +21,7 @@ function TaskList(taskData) {
 
 	const [taskList, setTaskList] = useState([]);
 	const [newTask, setNewTask] = useState({});
-	const [category, setCategory] = useState('');
+	// const [category, setCategory] = useState('');
 	const params = useParams();
 	const location = useLocation();
 	let count = 1;	
@@ -64,15 +64,15 @@ function TaskList(taskData) {
 		openModalUpdate();
 	};
 	
-	const handleCategory = (cat) => {
-		setCategory(cat.value);
-	};
+	// const handleCategory = (cat) => {
+	// 	setCategory(cat.value);
+	// };
 
 	const addNewTask = async e => {
 		e.preventDefault();
 		const taskData = {
 			title: e.target.title.value,
-			category: category,
+			category: e.target.category.value,
 			dateExp: e.target.dateExp.value,
 			classId: params.id,
 			completed: false,
@@ -97,7 +97,7 @@ function TaskList(taskData) {
 
 		const taskData = {
 			title: e.target.title.value,
-			category: category,
+			category: e.target.category.value,
 			dateExp: e.target.dateExp.value,
 			classId: params.id,
 			completed: true,
@@ -193,8 +193,16 @@ function TaskList(taskData) {
 					<label htmlFor="category" className='fs-3 fw-bold col-4 mt-2 '>
 						Enter Category:
 					</label>
-					<CategoryDropdown ref={categoryRef} onSelectChange={handleCategory} passValue={newTask.category ? newTask.category : ''}></CategoryDropdown>
-
+					{/* <CategoryDropdown ref={categoryRef} onSelectChange={handleCategory} passValue={newTask.category ? newTask.category : ''}></CategoryDropdown> */}
+					<input
+							name="category"
+							type="text"
+							placeholder="Category"
+							id="category"
+							className='rounded-pill col-4 border-0 p-3 fs-5 d-block w-50'
+							defaultValue={newTask.category ? newTask.category : ''}
+							required
+						/>
 					<label htmlFor="dateExp" className='fs-3 fw-bold col-12 mt-2'>
 						Enter Validity/Expiration for task:
 					</label>

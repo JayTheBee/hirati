@@ -4,7 +4,7 @@ function CustomInput({ customInput, setCustomInput }) {
   return (
     <>
       {' '}
-      <input
+      <textarea
         type="text"
         value={customInput}
         onChange={(e) => setCustomInput(e.target.value)}

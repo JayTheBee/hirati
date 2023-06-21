@@ -64,6 +64,9 @@ export default function Navbar(userData) {
         <button className={classes.Playground} type="button" onClick={home}>
           Home
         </button>
+        <button className={classes.Playground} type="button" onClick={home}>
+          Task
+        </button>
 
         <button className={classes.Playground} type="button" onClick={handlePlayground}>
           Codepen
